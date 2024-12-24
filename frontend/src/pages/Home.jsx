@@ -1,8 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ServiceCard from '../components/ServiceCard'
 import NavigationBar from '../components/NavigationBar'
+import { UserDataContext } from '../context/userContext'
+import { useContext } from 'react'
 
 const Home = () => {
+  const { user } = useContext(UserDataContext)
+  useEffect(() => {
+    console.log(user);
+  }, [user])
   return (
     <div className='w-full h-screen font-montserrat py-5 px-4'>
         <div className='flex items-center justify-between w-full'>

@@ -1,15 +1,38 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useContext } from 'react';
+import { UserDataContext } from '../context/userContext';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-    const [firstname, setFirstname] = useState('');
-    const [lastname, setLastname] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const submitHandler = (e) => {
+    const navigate = useNavigate();
+    const { setUser } = useContext(UserDataContext);
+
+    const submitHandler = async (e) => {
         e.preventDefault();
-        console.log(firstname, lastname, email, password);
+        try {
+          const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, { firstName, lastName, email, password },
+          { headers: { 'Content-Type': 'application/json' } });
+          setUser(response.data.user);
+          const token = response.data.token;
+
+          if (!token) {
+            throw new Error('Token not return from server');
+          }
+
+          if (response.status === 201) {
+            localStorage.setItem('token', token);
+            navigate('/home');
+          }
+        } catch (error) {
+          console.error("Error:", error.response?.data || error.message);
+        }
     }
   return (
     <div className="flex flex-col items-center h-screen bg-gray-100 p-4">
@@ -17,15 +40,16 @@ const Signup = () => {
       <h2 className="text-2xl font-semibold mb-6">Create a ServiceHub account</h2>
       <form onSubmit={submitHandler}>
       <input
-      onChange={(e) => setFirstname(e.target.value)}
-        value={firstname}
+      onChange={(e) => setFirstName(e.target.value)}
+        value={firstName}
         type="text"
         placeholder="First name"
+        required
         className="w-full px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
-        onChange={(e) => setLastname(e.target.value)}
-        value={lastname}
+        onChange={(e) => setLastName(e.target.value)}
+        value={lastName}
         type="text"
         placeholder="Last name"
         className="w-full px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -35,6 +59,7 @@ const Signup = () => {
         value={email}
         type="email"
         placeholder="Email address"
+        required
         className="w-full px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
@@ -42,6 +67,7 @@ const Signup = () => {
         value={password}
         type="password"
         placeholder="Password"
+        required
         className="w-full px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 

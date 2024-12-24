@@ -18,8 +18,8 @@ module.exports.userRegister = async (req, res) => {
             expires: new Date(Date.now() + 24 * 3600000),
             httpOnly: true
         }
-        res.cookie('token', token, cookieOptions);
         const token = await user.generateToken();
+        res.cookie('token', token, cookieOptions);
         res.status(201).json({user, token});
 
     } catch (error) {
