@@ -26,6 +26,7 @@ module.exports.userRegister = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+
 module.exports.userLogin = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -45,4 +46,14 @@ module.exports.userLogin = async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
+}
+
+module.exports.userLogout = async (req, res) => {
+    res.clearCookie('token');
+    res.status(200).json({ message: 'User logged out successfully' });
+}
+
+module.exports.userProfile = async (req, res) => {
+    const user = req.user;
+    res.status(200).json({user, message: 'User profile fetched successfully'});
 }

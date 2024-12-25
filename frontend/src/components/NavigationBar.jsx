@@ -37,6 +37,7 @@ const NavigationBar = () => {
               </svg>
             <span className='text-xs font-medium leading-normal tracking-[0.015em]'>Messages</span>
             </div>
+            <Link to='/profile'>
             <div className='flex flex-col gap-1 items-center text-[#4e7397]'>
             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
                 <path
@@ -45,6 +46,7 @@ const NavigationBar = () => {
               </svg>
             <span className='text-xs font-medium leading-normal tracking-[0.015em]'>Profile</span>
             </div>
+            </Link>
         </div>
         <div className="h-5 bg-slate-50"></div>
     </div>

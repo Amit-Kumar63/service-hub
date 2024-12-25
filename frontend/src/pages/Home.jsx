@@ -3,9 +3,13 @@ import ServiceCard from '../components/ServiceCard'
 import NavigationBar from '../components/NavigationBar'
 import { UserDataContext } from '../context/userContext'
 import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
   const { user } = useContext(UserDataContext)
+  const token = localStorage.getItem('token')
+  const navigate = useNavigate()
+
   useEffect(() => {
     console.log(user);
   }, [user])
@@ -13,7 +17,9 @@ const Home = () => {
     <div className='w-full h-screen font-montserrat py-5 px-4'>
         <div className='flex items-center justify-between w-full'>
         <h2 className='text-lg font-bold w-full text-center'>Services</h2>
-        <i className="text-2xl plas ri-shopping-cart-2-line"></i>
+        {
+          token ? <i className="text-2xl plas ri-shopping-cart-2-line"></i> : <i onClick={()=> navigate('/login') } className="text-2xl plas ri-user-3-line"></i>
+        }
         </div>
         <div className='mt-8 relative'>
         <i className="text-gray-600 text-2xl absolute top-[18%] left-4 ri-search-line"></i>
