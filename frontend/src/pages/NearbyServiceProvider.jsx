@@ -4,13 +4,16 @@ import ServiceProviderPop from "../components/ServiceProviderPop";
 import { useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from '@gsap/react'
+import BookService from "../components/BookService";
 
 const NearbyServiceProvider = () => {
     const [servicePanel, setServicePanel] = useState(false);
+    const [bookServicePanel, setBookServicePanel] = useState(false);
 
     const servicePanelRef = useRef(null)
+    const bookServicePanelRef = useRef(null)
     const navigate = useNavigate();
-
+        
     useGSAP(()=> {
         if (servicePanel) {
             gsap.to(servicePanelRef.current, {
@@ -22,6 +25,18 @@ const NearbyServiceProvider = () => {
             })
         }
     }, [servicePanel])
+
+    useGSAP(()=> {
+      if (bookServicePanel) {       
+          gsap.to(bookServicePanelRef.current, {
+              transform: 'translateY(0)'
+          })
+      } else {        
+          gsap.to(bookServicePanelRef.current, {
+              transform: 'translateY(100%)'
+          })
+      }
+  }, [bookServicePanel])
 
   const providers = [
     {
@@ -37,7 +52,7 @@ const NearbyServiceProvider = () => {
   ];
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col pt-4 relative">
+    <div className="bg-gray-100 h-screen flex flex-col pt-4 relative">
         <div className="wf-full flex items-center justify-between px-4">
         <i onClick={()=> navigate(-1)} className="text-2xl ri-arrow-left-line"></i>
         <h1 className="text-2xl font-bold text-center w-full">Services</h1>
@@ -66,8 +81,11 @@ const NearbyServiceProvider = () => {
           </div>
         ))}
       </div>
-      <div ref={servicePanelRef} className="fixed translate-y-full h-screen w-full bg-white"> 
-        <ServiceProviderPop setServicePanel={setServicePanel}/>
+      <div ref={servicePanelRef} className="fixed translate-y-full h-screen w-full bottom-0 bg-white"> 
+        <ServiceProviderPop setServicePanel={setServicePanel} setBookServicePanel={setBookServicePanel} />
+      </div>
+      <div ref={bookServicePanelRef} className="fixed translate-y-full bottom-0 z-10 w-full bg-white"> 
+        <BookService setBookServicePanel={setBookServicePanel}/>
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ const ServiceProviderPop = ({...props}) => {
         </div>
         </div>
         <div className='p-4'>
-        <button className='w-full bg-[#1980E6] text-white font-semibold py-2 px-4 rounded'>
+        <button onClick={()=> props.setBookServicePanel(true)} className='w-full bg-[#1980E6] text-white font-semibold py-2 px-4 rounded'>
             Book now
         </button>
         </div>
