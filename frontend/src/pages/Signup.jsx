@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useContext } from 'react';
-import { UserDataContext } from '../context/userContext';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
@@ -12,14 +10,12 @@ const Signup = () => {
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
-    const { setUser } = useContext(UserDataContext);
 
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
           const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, { firstName, lastName, email, password },
           { headers: { 'Content-Type': 'application/json' } });
-          setUser(response.data.user);
           const token = response.data.token;
 
           if (!token) {

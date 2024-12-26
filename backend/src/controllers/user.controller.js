@@ -7,13 +7,20 @@ module.exports.userRegister = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, address } = req.body;
+    
     try {
         const user = await userService.createUser({
             firstName,
             lastName,
             email,
-            password
+            password,
+            address: {
+                city: address.city,
+                street: address.street,
+                locality: address.locality,
+                number: address.number
+            }
         });
         const cookieOptions = {
             expires: new Date(Date.now() + 24 * 3600000),

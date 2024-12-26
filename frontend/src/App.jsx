@@ -19,9 +19,9 @@ const App = () => {
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
       <Route path='/profile' element={
-        <UserProtectWrapper>
+        // <UserProtectWrapper>
         <Profile />
-        </UserProtectWrapper> 
+        // </UserProtectWrapper> 
       } />
       <Route path='service-provider' element={ <NearbyServiceProvider/> } />
     </Routes> 

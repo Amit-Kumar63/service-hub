@@ -1,22 +1,21 @@
 import React, { useEffect } from 'react'
 import ServiceCard from '../components/ServiceCard'
 import NavigationBar from '../components/NavigationBar'
-import { UserDataContext } from '../context/userContext'
-import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGetUserQuery } from '../app/api/api'
 
 const Home = () => {
-  // const { user } = useContext(UserDataContext) 
   const token = localStorage.getItem('token')
 
-  const { user } = useGetUserQuery()
+  const { data, isSuccess, isError, isLoading } = useGetUserQuery()
+  console.log(data);
+  
 
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log(user);
-  }, [user])
+    console.log('data', data);
+  }, [isLoading])
   return (
     <div className='w-full h-screen font-montserrat py-5 px-4'>
         <div className='flex items-center justify-between w-full'>

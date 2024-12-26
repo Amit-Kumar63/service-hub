@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DatePickerComponent from "./DatePicker";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { UserDataContext } from '../context/userContext'
+import { useGetUserQuery } from '../app/api/api.js'
 
 const BookService = ({...props}) => {
     
@@ -11,9 +11,21 @@ const BookService = ({...props}) => {
   const [address, setAddress] = useState("");
   const [isAddressEdit, setIsAddressEdit] = useState(false);
 
-  const user = useContext(UserDataContext);
+  const { isLoading, data } = useGetUserQuery()
   const navigate = useNavigate();
   const token = localStorage.getItem('token')
+
+  useEffect(() => {
+   
+    if (data?.address) {
+      setAddress(data.address);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,6 +86,7 @@ const BookService = ({...props}) => {
               </div>
               <div className="">
                   <button
+                      type="button"
                       className="bg-gray-300 text-white px-2 font-semibold rounded-md mb-2"
                       onClick={() => setIsAddressEdit(!isAddressEdit)}>
                       Edit
@@ -81,6 +94,7 @@ const BookService = ({...props}) => {
                   <textarea
                       disabled={!isAddressEdit}
                       value={address}
+                      defaultValue={data.address}
                       onChange={(e) => setAddress(e.target.value)}
                       placeholder="Enter your address"
                       className={`w-full resize-none p-4 bg-gray-200 rounded-lg focus:outline-none placeholder:${

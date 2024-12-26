@@ -23,6 +23,24 @@ const userSchema = new mongoose.Schema({
         length: [6, 'Password must be at least 6 characters long'],
         select: false
     },
+    address: {
+        city: {
+            type: String,
+            required: [true, 'City is required'],
+        },
+        street: {
+            type: String,
+            required: [true, 'Street is required'],
+        },
+        locality: {
+            type: String,
+            required: [true, 'Locality is required'],
+        },
+        number: {
+            type: Number,
+            required: [true, 'Number is required'],
+        }
+    }
 });
 
 userSchema.pre('save', async function(next) {

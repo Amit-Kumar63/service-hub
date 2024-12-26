@@ -4,8 +4,15 @@ module.exports.createUser = async ({
     firstName,
     lastName,
     email,
-    password
+    password,
+    address: {
+        city,
+        street,
+        locality,
+        number
+    }
 }) => {
+    
     if (!firstName || !email || !password) {
         throw new Error('Missing required fields! please fill all fields');
     }
@@ -13,7 +20,13 @@ module.exports.createUser = async ({
         firstName,
         lastName,
         email,
-        password
+        password,
+        address: {
+            city,
+            street,
+            locality,
+            number
+        }
     });
 
     return user;
