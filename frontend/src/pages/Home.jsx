@@ -4,10 +4,14 @@ import NavigationBar from '../components/NavigationBar'
 import { UserDataContext } from '../context/userContext'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useGetUserQuery } from '../app/api/api'
 
 const Home = () => {
-  const { user } = useContext(UserDataContext)
+  // const { user } = useContext(UserDataContext) 
   const token = localStorage.getItem('token')
+
+  const { user } = useGetUserQuery()
+
   const navigate = useNavigate()
 
   useEffect(() => {
