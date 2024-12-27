@@ -10,6 +10,10 @@ module.exports.createUser = async ({
         street,
         locality,
         number
+    },
+    location: {
+        lat,
+        lng
     }
 }) => {
     
@@ -26,6 +30,10 @@ module.exports.createUser = async ({
             street,
             locality,
             number
+        },
+        location: {
+            lat,
+            lng
         }
     });
 

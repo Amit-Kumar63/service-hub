@@ -1,6 +1,7 @@
 const userService = require('../services/user.service');
 const { validationResult } = require('express-validator');
 const bookingService = require('../services/booking.service');
+const { fetchLatLng } = require("../services/location.service");
 
 module.exports.userRegister = async (req, res) => {
     const errors = validationResult(req);
@@ -9,6 +10,15 @@ module.exports.userRegister = async (req, res) => {
     }
     const { firstName, lastName, email, password, address } = req.body;
     
+    await fetchLatLng(address)
+    .then((response) => {
+        address.lat = response.lat;
+        address.lng = response.lng;
+    }).catch((error) => {
+        if (error.message === "Address not found.") {
+            throw new Error("Error fetching location. Please enter valid address");
+        }
+    })
     try {
         const user = await userService.createUser({
             firstName,
@@ -20,6 +30,10 @@ module.exports.userRegister = async (req, res) => {
                 street: address.street,
                 locality: address.locality,
                 number: address.number
+            },
+            location: {
+                lat: address.lat,
+                lng: address.lng
             }
         });
         const cookieOptions = {
@@ -74,6 +88,7 @@ module.exports.createBooking = async (req, res) => {
 
     const user = req.user;
     const { serviceDate, address, serviceType } = req.body;
+    
     try {
         await bookingService.CreateBooking({
             user: user._id,

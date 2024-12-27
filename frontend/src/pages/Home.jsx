@@ -8,13 +8,11 @@ const Home = () => {
   const token = localStorage.getItem('token')
 
   const { data, isSuccess, isError, isLoading } = useGetUserQuery()
-  console.log(data);
   
-
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log('data', data);
+    // console.log('data', data);
   }, [isLoading])
   return (
     <div className='w-full h-screen font-montserrat py-5 px-4'>

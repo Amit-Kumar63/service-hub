@@ -37,8 +37,18 @@ const userSchema = new mongoose.Schema({
             required: [true, 'Locality is required'],
         },
         number: {
-            type: Number,
+            type: String,
             required: [true, 'Number is required'],
+        }
+    },
+    location: {
+        lat: {
+            type: Number,
+            required: [true, 'Latitude is required'],
+        },
+        lng: {
+            type: Number,
+            required: [true, 'Longitude is required'],
         }
     }
 });

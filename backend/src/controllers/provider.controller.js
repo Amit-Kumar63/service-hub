@@ -1,0 +1,72 @@
+const providerModel = require('../models/provider.model');
+const { validationResult } = require('express-validator');
+const { fetchLatLng } = require("../services/location.service");
+const { findProviderByCredentials } = require('../services/provider.service');
+
+module.exports.registerProvider = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { firstName, lastName, email, password, address } = req.body;
+    
+    await fetchLatLng(address)
+    .then((response) => {
+        address.lat = response.lat;
+        address.lng = response.lng;
+    }).catch((error) => {
+        if (error.message === "Address not found.") {
+            throw new Error("Error fetching location. Please enter valid address");
+        }
+    })
+    try {
+        const provider = await providerModel.create({
+            firstName,
+            lastName,
+            email,
+            password,
+            address:{
+                city: address.city,
+                street: address.street,
+                locality: address.locality,
+                number: address.number
+            },
+            location: {
+                lat: address.lat,
+                lng: address.lng
+            }
+        });
+        const cookieOptions = {
+            expires: new Date(Date.now() + 24 * 3600000),
+            httpOnly: true
+        }
+        const token = await provider.generateToken();
+        res.cookie('token', token, cookieOptions);
+        res.status(201).json({ provider, token , message: 'Provider registered successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+module.exports.loginProvider = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body;
+    try {
+        const provider = await findProviderByCredentials(email, password);
+        const token = await provider.generateToken();
+        const cookieOptions = {
+            expires: new Date(Date.now() + 24 * 3600000),
+            httpOnly: true
+        }
+        res.cookie('token', token, cookieOptions);
+        res.status(200).json({ provider, token, message: 'Provider logged in successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+module.exports.logoutProvider = async (req, res) => {
+    res.clearCookie('token');
+    res.status(200).json({ message: 'Provider logged out successfully' });
+}
