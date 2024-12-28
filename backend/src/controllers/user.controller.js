@@ -9,8 +9,8 @@ module.exports.userRegister = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { firstName, lastName, email, password, address } = req.body;
-    
-    await fetchLatLng(address)
+    const { city, locality, street } = address
+    await fetchLatLng(`${street}, ${locality}, ${city}`)
     .then((response) => {
         address.lat = response.lat;
         address.lng = response.lng;

@@ -5,11 +5,14 @@ import { lazy } from 'react'
 import Start from './pages/Start'
 import Home from './pages/Home'
 import UserProtectWrapper from './pages/UserProtectWrapper'
+import { useGetUserQuery } from './app/api/api'
 
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
 const Profile = lazy(() => import('./pages/Profile'))
 const NearbyServiceProvider = lazy(() => import('./pages/NearbyServiceProvider'))
+
+
 
 const App = () => {
   return (
@@ -19,11 +22,15 @@ const App = () => {
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
       <Route path='/profile' element={
-        // <UserProtectWrapper>
+        <UserProtectWrapper>
         <Profile />
-        // </UserProtectWrapper> 
+        </UserProtectWrapper> 
       } />
-      <Route path='service-provider' element={ <NearbyServiceProvider/> } />
+      <Route path='service-provider' element={ 
+        <UserProtectWrapper>
+        <NearbyServiceProvider />
+        </UserProtectWrapper>
+       } />
     </Routes> 
   )
 }

@@ -4,7 +4,7 @@ import LocationPicker from './map'
 const ServiceProviderPop = ({...props}) => {
   return (
     <div>
-        <h5 onClick={()=> props.setServicePanel(false)} className='text-center pt-2'>
+        <h5 className='text-center pt-2'>
         <i className="text-2xl text-gray-700 ri-arrow-down-wide-line"></i>
         </h5>
         <div className='flex items-center justify-between p-4'>

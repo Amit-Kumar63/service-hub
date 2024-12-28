@@ -26,19 +26,19 @@ const Login = () => {
       throw error;
     }
   }
-
   return (
     <div className=" h-screen bg-gray-100 p-4">
-      <button onClick={()=> navigate(-1) } className="absolute top-4 left-4 text-2xl font-bold text-gray-600">&larr;</button>
+        <Link to="/home" className="absolute top-4 left-4 text-2xl font-bold text-gray-600">&larr;</Link>
       <div className='flex flex-col mt-20'>
       <h1 className="text-2xl font-bold mb-8 text-center">Welcome back</h1>
       
-      <form onSubmit={submitHandler}>
+      <form onSubmit={submitHandler} >
       <input
       onChange={(e) => setEmail(e.target.value)}
       value={email}
         type="email"
         placeholder="email"
+        name='email'
         className="w-full px-4 py-3 mb-6 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
@@ -46,6 +46,7 @@ const Login = () => {
       value={password}
         type="password"
         placeholder="Password"
+        name='password'
         className="w-full px-4 py-3 mb-3 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       

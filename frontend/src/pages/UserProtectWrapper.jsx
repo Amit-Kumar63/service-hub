@@ -1,52 +1,27 @@
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useGetUserQuery } from '../app/api/api';
 
-const UserProtectWrapper = ({children}) => {
-    const { isLoading, setIsLoading, setUser } = useContext(UserDataContext)
-
-    const navigate = useNavigate()
-    const token = localStorage.getItem('token')
+const UserProtectWrapper = ({ children }) => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    const { isLoading, isError, isSuccess } = useGetUserQuery();
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login')
-        } else {
-            setIsLoading(false)
+        if (!isLoading && (!token || isError)) {
+            navigate('/login');
         }
-    }, [token, navigate])
-
-    useEffect(()=> {
-        async () => {
-            await axios.get(`${import.meta.env.VITE_BASE_URL}/profile`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }).then(res => {
-                if (res.status === 200) {
-                    setIsLoading(false)
-                }
-    
-            }).catch(error => {
-                console.error(error)
-                localStorage.removeItem('token')
-                navigate('/login')
-            }) 
-        }, [ isLoading ]
-    })
+    }, [token, isError]);   
 
     if (isLoading) {
         return (
             <div>
                 <h1>Loading...</h1>
             </div>
-        )
+        );
     }
-  return (
-    <div>
-        {children}
-    </div>
-  )
-}
 
-export default UserProtectWrapper
+    return <div>{children}</div>;
+};
+
+export default UserProtectWrapper;

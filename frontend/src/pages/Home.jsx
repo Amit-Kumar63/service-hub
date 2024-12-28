@@ -6,14 +6,8 @@ import { useGetUserQuery } from '../app/api/api'
 
 const Home = () => {
   const token = localStorage.getItem('token')
-
-  const { data, isSuccess, isError, isLoading } = useGetUserQuery()
   
   const navigate = useNavigate()
-
-  useEffect(() => {
-    // console.log('data', data);
-  }, [isLoading])
   return (
     <div className='w-full h-screen font-montserrat py-5 px-4'>
         <div className='flex items-center justify-between w-full'>
