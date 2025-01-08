@@ -8,32 +8,31 @@ module.exports.registerProvider = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { firstName, lastName, email, password, address } = req.body;
-    const { city, locality, street } = address
-    await fetchLatLng(`${street}, ${locality}, ${city}`)
-    .then((response) => {
-        address.lat = response.lat;
-        address.lng = response.lng;
-    }).catch((error) => {
-        if (error.message === "Address not found.") {
-            throw new Error("Error fetching location. Please enter valid address");
-        }
-    })
+    const { firstName, lastName, email, password, address, phone } = req.body;
+    let lat;
+    let lng;
+
+        await fetchLatLng(address)
+        .then((response) => {
+            lat = response.lat;
+            lng = response.lng;
+        }).catch((error) => {
+            if (error.message === "Address not found.") {
+                throw new Error("Error fetching location. Please enter valid address");
+            }
+        })
+
     try {
         const provider = await providerModel.create({
             firstName,
             lastName,
             email,
             password,
-            address:{
-                city: address.city,
-                street: address.street,
-                locality: address.locality,
-                number: address.number
-            },
+            address,
+            phone,
             location: {
-                lat: address.lat,
-                lng: address.lng
+                lat,
+                lng
             }
         });
         const cookieOptions = {

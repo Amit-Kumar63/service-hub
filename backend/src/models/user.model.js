@@ -23,23 +23,13 @@ const userSchema = new mongoose.Schema({
         length: [6, 'Password must be at least 6 characters long'],
         select: false
     },
+    phone: {
+        type: String,
+        required: [true, 'Phone number is required'],
+    },
     address: {
-        city: {
-            type: String,
-            required: [true, 'City is required'],
-        },
-        street: {
-            type: String,
-            required: [true, 'Street is required'],
-        },
-        locality: {
-            type: String,
-            required: [true, 'Locality is required'],
-        },
-        number: {
-            type: String,
-            required: [true, 'Number is required'],
-        }
+        type: String,
+        required: [true, 'Address is required'],
     },
     location: {
         lat: {

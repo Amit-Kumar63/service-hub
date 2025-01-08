@@ -9,10 +9,8 @@ router.post('/register', [
     body('firstName').isLength({ min: 3 }).withMessage('First name must be at least 3 characters long'),
     body('email').isEmail().withMessage('Invalid email'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-    body('city').isEmpty().withMessage('city is required'),
-    body('street').isEmpty().withMessage('street is required'),
-    body('locality').isEmpty().withMessage('locality is required'),
-    body('number').isEmpty().withMessage('number is required'),
+    body('address').isLength({ min: 25 }).withMessage('please enter a valid address'),
+    body('phone').isLength({ min: 10 }).withMessage('phone number is required'),
 ], userController.userRegister);
 
 router.post('/login', [

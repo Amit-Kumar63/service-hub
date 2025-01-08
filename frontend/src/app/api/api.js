@@ -6,7 +6,7 @@ export const Api = createApi({
         baseUrl: `${import.meta.env.VITE_BASE_URL}/`,
         credentials: 'include',
         prepareHeaders: (headers,)=> {
-            const token = localStorage.getItem('token')
+            const token = localStorage.getItem('token')            
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`)
             }
@@ -20,11 +20,15 @@ export const Api = createApi({
         }),
         getNearbyProviders: builder.query({
             query: ({lat, lng})=> `geo/distance?lat=${lat}&lng=${lng}`,
+        }),
+        getCurrentLocation: builder.query({
+            query: (coords)=> 'geo/get-address-from-coords'
         })
     }),
 })
 
 export const {
     useGetUserQuery,
-    useGetNearbyProvidersQuery
+    useGetNearbyProvidersQuery,
+    useGetCurrentLocationQuery
 } = Api

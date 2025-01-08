@@ -11,8 +11,9 @@ const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
 const Profile = lazy(() => import('./pages/Profile'))
 const NearbyServiceProvider = lazy(() => import('./pages/NearbyServiceProvider'))
-
-
+const ProviderLogin = lazy(() => import('./pages/ProviderLogin'))
+const ProviderSignup = lazy(() => import('./pages/ProviderSignup'))
+const ProviderHome = lazy(() => import('./pages/ProviderHome'))
 
 const App = () => {
   return (
@@ -31,6 +32,16 @@ const App = () => {
         <NearbyServiceProvider />
         </UserProtectWrapper>
        } />
+       {/* Providers Routes */}
+       <Route path='/login-provider' element={
+        <ProviderLogin />
+       } />
+        <Route path='/signup-provider' element={
+          <ProviderSignup />
+        } />
+        <Route path='/provider-home' element={
+          <ProviderHome />
+        } />
     </Routes> 
   )
 }

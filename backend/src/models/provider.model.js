@@ -24,22 +24,8 @@ const providerSchema = new mongoose.Schema({
         select: false
     },
     address: {
-        city: {
-            type: String,
-            required: [true, 'City is required'],
-        },
-        street: {
-            type: String,
-            required: [true, 'Street is required'],
-        },
-        locality: {
-            type: String,
-            required: [true, 'Locality is required'],
-        },
-        number: {
-            type: String,
-            required: [true, 'Number is required'],
-        }
+        type: String,
+        required: [true, 'Address is required'],
     },
     location: {
         lat: {

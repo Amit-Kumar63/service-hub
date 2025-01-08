@@ -5,19 +5,15 @@ module.exports.createUser = async ({
     lastName,
     email,
     password,
-    address: {
-        city,
-        street,
-        locality,
-        number
-    },
+    address,
+    phone,
     location: {
         lat,
         lng
     }
 }) => {
     
-    if (!firstName || !email || !password) {
+    if (!firstName || !email || !password || !address || !phone) {
         throw new Error('Missing required fields! please fill all fields');
     }
     const user = await userModel.create({
@@ -25,12 +21,8 @@ module.exports.createUser = async ({
         lastName,
         email,
         password,
-        address: {
-            city,
-            street,
-            locality,
-            number
-        },
+        address,
+        phone,
         location: {
             lat,
             lng

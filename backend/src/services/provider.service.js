@@ -5,18 +5,14 @@ module.exports.createProvider = async ({
     lastName,
     email,
     password,
-    address: {
-        city,
-        street,
-        locality,
-        number
-    },
+    address,
+    phone,
     location: {
         lat,
         lng
     }
 }) => {
-    if (!firstName || !email || !password || !city || !street || !locality || !number) {
+    if (!firstName || !email || !password || !address || !phone) {
         throw new Error('Missing required fields! please fill all fields');
     }
     const provider = await providerModel.create({
@@ -24,12 +20,8 @@ module.exports.createProvider = async ({
         lastName,
         email,
         password,
-        address: {
-            city,
-            street,
-            locality,
-            number
-        },
+        address,
+        phone,
         location: {
             lat,
             lng

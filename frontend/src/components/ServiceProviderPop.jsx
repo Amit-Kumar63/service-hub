@@ -1,5 +1,4 @@
 import React from 'react'
-import LocationPicker from './map'
 
 const ServiceProviderPop = ({...props}) => {
   return (
