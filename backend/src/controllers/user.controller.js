@@ -85,14 +85,13 @@ module.exports.createBooking = async (req, res) => {
     }
 
     const user = req.user;
-    const { serviceDate, address, serviceType } = req.body;
+    const { serviceDate, address } = req.body;
     
     try {
         await bookingService.CreateBooking({
             user: user._id,
             serviceDate,
             address,
-            serviceType
         });
         res.status(201).json({ message: 'Booking created successfully' });
     } catch (error) {

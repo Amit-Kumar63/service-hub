@@ -1,15 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
-// import DatePickerComponent from "./DatePicker";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useGetUserQuery } from '../app/api/api.js'
 import AddressSuggestion from "./AddressSuggestion.jsx";
 import GetLocation from "./GetLocation.jsx";
+import DatePickerComponent from "./DatePicker.jsx";
 
 const BookService = ({...props}) => {
-    
-  const [serviceType, setServiceType] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
   const [address, setAddress] = useState('')
   const [getCurrentPosition, setGetCurrentPosition] = useState('')
   const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
@@ -29,9 +27,8 @@ const BookService = ({...props}) => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/booking`, 
         {
-          serviceDate: startDate, 
+          serviceDate: date, 
           address,
-          serviceType, 
         }, 
         { 
           withCredentials: true, 
@@ -39,7 +36,7 @@ const BookService = ({...props}) => {
           'Authorization': `Bearer ${token}`
         } });
     if (response.status === 201) {
-      navigate("/home");
+      navigate("/booking-finished");
     }
     } catch (error) {
       console.error("error while creating booking :", error)
@@ -57,7 +54,6 @@ const BookService = ({...props}) => {
     }
     setUseCurrentLocationToFetch(!useCurrentLocationToFetch)
   }
-
   return (
       <div className="bg-gray-100 h-screen flex flex-col">
           <div className="flex items-center justify-between p-4">
@@ -75,6 +71,7 @@ const BookService = ({...props}) => {
               <form className="p-4 flex flex-col space-y-4" onSubmit={handleSubmit}>
               <div className="relative">
               </div>
+              <DatePickerComponent setDate={setDate}/>
                   <div className="flex flex-col gap-3">
                     <h4 className="text-lg font-semibold">Your address</h4>
                       <AddressSuggestion address={address} setAddress={setAddress} />

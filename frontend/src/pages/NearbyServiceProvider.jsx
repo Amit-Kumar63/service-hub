@@ -6,13 +6,13 @@ import gsap from "gsap";
 import { useGSAP } from '@gsap/react'
 import BookService from "../components/BookService";
 import { useGetNearbyProvidersQuery, useGetUserQuery } from "../app/api/api";
-import GetLocation from "../components/GetLocation";
 import { CircularProgress } from '@mui/material';
 
 const NearbyServiceProvider = () => {
     const [servicePanel, setServicePanel] = useState(false);
     const [bookServicePanel, setBookServicePanel] = useState(false);
-    const [location, setLocation] = useState(null);
+    const [error, setError] = useState('')
+    const [coords, setCoords] = useState('')
     const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
 
     const servicePanelRef = useRef()
@@ -23,10 +23,9 @@ const NearbyServiceProvider = () => {
         skip: !token
     });
 
-    // console.log(location)
-    const { lat, lng } = useCurrentLocationToFetch ? user?.user.location : location || {};
+    const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location;
         
-    const { isLoading, data, isError, isSuccess } = useGetNearbyProvidersQuery({ lat, lng }, {
+    const { isLoading, data, isError, isSuccess, isFetching } = useGetNearbyProvidersQuery({ lat, lng }, {
         skip: !user
     });
 
@@ -53,14 +52,32 @@ const NearbyServiceProvider = () => {
           })
       }
   }, [bookServicePanel])
+  const userCurrentLocationHandler = (e)=> {
+    setUseCurrentLocationToFetch(!useCurrentLocationToFetch)
 
-  if (userLoading) {
-    return <div>Loading... Please wait</div>
+      if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(
+              (position) => {
+                  const { latitude, longitude } = position.coords;
+                  setCoords({ lat:latitude, lng:longitude });
+              },
+              (error) => {
+                  setError(error.message);
+              },
+              {
+                  enableHighAccuracy: true,
+                  timeout: 5000,
+                  maximumAge: 0,
+              }
+          );
+      } else {
+          setError('Geolocation is not supported by this browser.');
+      }
   }
-
-  if (!data) {
-    return <div className="text-2xl font-bold text-center mt-8">No service providers found</div>
-  }  
+  if (useCurrentLocationToFetch && !data) {
+    return <div>No service providers found nearby from your current location. Please use saved location</div>
+  }
+  // check for error 
   return (
     <div className="bg-gray-100 h-screen flex flex-col pt-4 relative">
         <div className="wf-full flex items-center justify-between px-4">
@@ -69,8 +86,13 @@ const NearbyServiceProvider = () => {
         </div>
       <div className="p-4">
         <h2 className="text-lg font-bold mb-4">Nearby service providers</h2>
-        <button onClick={(e) => e.target.firstChild.data === 'Use current location' ? setUseCurrentLocationToFetch(true) : setUseCurrentLocationToFetch(false)} 
-        className={`w-full font-semibold py-3 text-nowrap mb-4 rounded ${useCurrentLocationToFetch ? 'bg-slate-700' : 'bg-gray-600'} text-white `}>{!useCurrentLocationToFetch ? 'Use current location' : 'Use saved location'}</button>
+        <button onClick={userCurrentLocationHandler} 
+        className={`w-full font-semibold py-3 text-nowrap mb-4 rounded ${useCurrentLocationToFetch ? 'bg-slate-700' : 'bg-gray-600'} text-white `}>{useCurrentLocationToFetch ? 'Use saved location' : 'Use current location'}</button>       
+        {
+          !isLoading && !data && (
+            <div className="flex items-center justify-center mt-10 text-2xl font-bold text-center">No service providers found nearby <i className="text-lg ri-emotion-normal-fill"></i></div>
+          )
+        }        
         {
           isLoading ? 
             (<div className="w-full flex items-center justify-center mt-10"><CircularProgress /></div>) : 
@@ -104,7 +126,9 @@ const NearbyServiceProvider = () => {
       <div ref={bookServicePanelRef} className="fixed translate-y-full h-screen bottom-0 z-10 w-full bg-white"> 
         <BookService setBookServicePanel={setBookServicePanel}/>
       </div>
-      <GetLocation getCurrentPosition={!useCurrentLocationToFetch} location={location} setLocation={setLocation}/>
+      {
+        error && <div className="text-2xl font-bold text-center mt-8">{error}</div>
+      }
     </div>
   );
 };

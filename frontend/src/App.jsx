@@ -14,6 +14,8 @@ const NearbyServiceProvider = lazy(() => import('./pages/NearbyServiceProvider')
 const ProviderLogin = lazy(() => import('./pages/ProviderLogin'))
 const ProviderSignup = lazy(() => import('./pages/ProviderSignup'))
 const ProviderHome = lazy(() => import('./pages/ProviderHome'))
+const BookingFinished = lazy(() => import('./pages/BookingFinished'))
+const PrivateRoute = lazy(() => import('./pages/PrivateRoutes'))
 
 const App = () => {
   return (
@@ -32,6 +34,9 @@ const App = () => {
         <NearbyServiceProvider />
         </UserProtectWrapper>
        } />
+       <Route path='/booking-finished' element={
+        <PrivateRoute isAuthenticated={true} element={<BookingFinished/>} redirectTo='/home' />
+       }/>
        {/* Providers Routes */}
        <Route path='/login-provider' element={
         <ProviderLogin />

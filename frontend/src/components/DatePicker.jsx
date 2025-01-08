@@ -1,18 +1,36 @@
-import React, { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { currentDate } from '../utils/currentDate';
 
-const DatePickerComponent = ({...props}) => {
-  
+export default function DatePickerComponent({setDate}) {
+  const [value, setValue] = useState(dayjs());
+  const [currentDateValue, setCurrentDateValue] = useState('')
+
+  useEffect(() => {
+    const date = currentDate()
+    setValue(dayjs(date))
+    setCurrentDateValue(date)
+  }, [])
+  const onChangeHandler = (newValue) => {
+      setValue(newValue);
+      setDate(newValue)
+  }
   return (
-    <div className="w-full flex items-center gap-5">
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DemoContainer components={['DatePicker']}>
         <DatePicker
-    className="w-full p-4 px-6 bg-gray-200 rounded-lg font-semibold focus:outline-none"
-    selected={props.startDate}
-    onChange={(date) => props.setStartDate(date)} />
-    <i className="text-4xl p-2 bg-gray-200 rounded-lg ri-calendar-2-line"></i>
-    </div>
+          label="Select service date"
+          value={value}
+          onChange={onChangeHandler}
+          minDate={dayjs(currentDateValue)}
+          maxDate={dayjs(currentDateValue).add(7, 'day')}
+        />
+      </DemoContainer>
+    </LocalizationProvider>
   );
-};
+}
 
-export default DatePickerComponent;

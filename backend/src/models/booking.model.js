@@ -15,10 +15,11 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Address is required']
     },
-    serviceType: {
+    status: {
         type: String,
-        required: [true, 'Service type is required']
-    },
+        enum: ['pending', 'completed', 'cancelled'],
+        default: 'pending'
+    }
 }, { timestamps: true });
 
 const bookingModel = mongoose.model('Booking', bookingSchema);

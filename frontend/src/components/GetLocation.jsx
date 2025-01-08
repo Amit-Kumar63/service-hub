@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useGetCurrentLocationQuery } from '../app/api/api';
+import { CircularProgress } from '@mui/material';
 
 const GetLocation = ({ getCurrentPosition, setGetCurrentPosition }) => {
     const [error, setError] = useState(null);
@@ -40,7 +41,7 @@ const getLocation = () => {
         <div>
             {
                 isLoading && (
-                    <div>Geting location.. Please Wait</div>
+                    <div className='w-full font-semibold text-base text-gray-700 flex items-center justify-center gap-2'><p>Geting current address..</p> <CircularProgress size={20} color='#374151'/></div>
                 )
             }
             {error && <p>Error: {error}</p>}
