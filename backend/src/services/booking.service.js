@@ -2,12 +2,14 @@ const bookingModel = require('../models/booking.model');
 
 module.exports.CreateBooking = async ({
     user,
+    provider,
     serviceDate,
-    address,
+    address
 }) => {
     try {
         const booking = await bookingModel.create({
             user,
+            provider,
             serviceDate,
             address,
         });

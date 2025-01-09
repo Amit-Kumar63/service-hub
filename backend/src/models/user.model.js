@@ -40,10 +40,16 @@ const userSchema = new mongoose.Schema({
             type: Number,
             required: [true, 'Longitude is required'],
         }
-    }
+    },
+    bookings: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Booking'
+        }
+    ]
 });
 
-userSchema.pre('save', async function(next) {
+userSchema.static('save', async function(next) {
     this.password = await bcrypt.hash(this.password, 12);
     next();
 });

@@ -7,6 +7,11 @@ const bookingSchema = new mongoose.Schema({
         ref: 'User',
         required: [true, 'User is required']
     },
+    provider: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Provider',
+        required: [true, 'Provider is required']
+    },
     serviceDate: {
         type: String,
         required: [true, 'Service date is required']

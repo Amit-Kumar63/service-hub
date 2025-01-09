@@ -77,24 +77,3 @@ module.exports.userProfile = async (req, res) => {
     const user = req.user;
     res.status(200).json({user, message: 'User profile fetched successfully'});
 }
-
-module.exports.createBooking = async (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    const user = req.user;
-    const { serviceDate, address } = req.body;
-    
-    try {
-        await bookingService.CreateBooking({
-            user: user._id,
-            serviceDate,
-            address,
-        });
-        res.status(201).json({ message: 'Booking created successfully' });
-    } catch (error) {
-        throw new Error(error.message);
-    }
-}

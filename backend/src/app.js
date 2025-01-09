@@ -22,9 +22,11 @@ app.get('/', (req, res) => {
 const userRoutes = require('./routes/user.routes');
 const providerRoutes = require('./routes/provider.routes');
 const geoRoutes = require('./routes/geo.routes');
+const bookingRoutes = require('./routes/booking.routes');
 
 app.use('/users', userRoutes);
 app.use('/providers', providerRoutes);
 app.use('/geo', geoRoutes);
+app.use('/booking', bookingRoutes);
 
 module.exports = app;

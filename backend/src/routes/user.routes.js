@@ -22,9 +22,5 @@ router.get('/profile', authMiddleware.userAuth , userController.userProfile);
 
 router.get('/logout', authMiddleware.userAuth, userController.userLogout);
 
-router.post('/booking', [
-    body('address').isEmpty().withMessage('address is required'),
-    body('serviceDate').isEmpty().withMessage('service date is required'),
-] , authMiddleware.userAuth, userController.createBooking);
 
 module.exports = router;

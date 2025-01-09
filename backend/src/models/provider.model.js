@@ -17,6 +17,10 @@ const providerSchema = new mongoose.Schema({
         unique: true,
         match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Invalid email']
     },
+    phone: {
+        type: String,
+        required: [true, 'Phone number is required'],
+    },
     password: {
         type: String,
         required: [true, 'Password is required'],
@@ -36,10 +40,16 @@ const providerSchema = new mongoose.Schema({
             type: Number,
             required: [true, 'Longitude is required'],
         }
-    }
+    },
+    services: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Service'
+        }
+    ]
 });
 
-providerSchema.pre('save', async function(next) {
+providerSchema.static('save', async function(next) {
     this.password = await bcrypt.hash(this.password, 12);
     next();
 });

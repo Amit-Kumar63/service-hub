@@ -25,10 +25,11 @@ const BookService = ({...props}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/booking`, 
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/booking/book-service`, 
         {
           serviceDate: date, 
           address,
+          provider: '677bc6316e2b93ccb3d66d99'
         }, 
         { 
           withCredentials: true, 
