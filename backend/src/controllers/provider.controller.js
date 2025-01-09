@@ -40,7 +40,7 @@ module.exports.registerProvider = async (req, res) => {
             httpOnly: true
         }
         const token = await provider.generateToken();
-        res.cookie('token', token, cookieOptions);
+        res.cookie('provider-token', token, cookieOptions);
         res.status(201).json({ provider, token , message: 'Provider registered successfully' });
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -59,13 +59,13 @@ module.exports.loginProvider = async (req, res) => {
             expires: new Date(Date.now() + 24 * 3600000),
             httpOnly: true
         }
-        res.cookie('token', token, cookieOptions);
+        res.cookie('provider-token', token, cookieOptions);
         res.status(200).json({ provider, token, message: 'Provider logged in successfully' });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 }
 module.exports.logoutProvider = async (req, res) => {
-    res.clearCookie('token');
+    res.clearCookie('provider-token');
     res.status(200).json({ message: 'Provider logged out successfully' });
 }

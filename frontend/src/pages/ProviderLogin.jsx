@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -11,6 +12,7 @@ const ProviderLogin = () => {
       e.preventDefault();
       try {
         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/providers/login`, { email, password })
+        console.log(response)
         const token = response.data.token;
   
         if(!token) {
@@ -18,11 +20,11 @@ const ProviderLogin = () => {
         }
   
         if(response.status === 200) {
-          localStorage.setItem('token', response.data.token);
-          navigate('/home');
+          localStorage.setItem('provider-token', response.data.token);
+          navigate('/provider-home');
         }
       } catch (error) {
-        throw error;
+        throw new Error(error);
       }
     }
   return (
