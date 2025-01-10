@@ -10,4 +10,5 @@ router.post('/create-service', [
     body('price').notEmpty().withMessage('price is required'),
 ], authMiddleware.providerAuth, serviceController.createServiceController);
 
+router.get('/get-services-type', authMiddleware.userAuth, serviceController.getAllUniqueServicesTypeController);
 module.exports = router

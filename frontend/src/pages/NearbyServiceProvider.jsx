@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ServiceProviderPop from "../components/ServiceProviderPop";
 import { useState } from "react";
 import gsap from "gsap";
@@ -19,6 +19,8 @@ const NearbyServiceProvider = ({user}) => {
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
     const navigate = useNavigate();
+    const { serviceType  } = useParams()
+    console.log(serviceType.slice(1));
 
     const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location
         

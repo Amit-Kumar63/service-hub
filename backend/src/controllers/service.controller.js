@@ -25,3 +25,14 @@ module.exports.createServiceController = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+
+module.exports.getAllUniqueServicesTypeController = async (req, res) => {
+    try {
+        const AllServices = await serviceModel.find();
+        const uniqueServiceType = [...new Set(AllServices.map(service => service.serviceType.toLowerCase()))];
+
+        res.status(200).json({ uniqueServiceType });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}

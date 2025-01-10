@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react'
 import ServiceCard from '../components/ServiceCard'
 import NavigationBar from '../components/NavigationBar'
 import { useNavigate } from 'react-router-dom'
-import { useGetUserQuery } from '../app/api/api'
+import { useGetServicesQuery} from '../app/api/api'
+import { CircularProgress } from "@mui/material";
 
 const Home = () => {
   const token = localStorage.getItem('token')
-  
+  const { data: services, isLoading: isServicesLoading } = useGetServicesQuery(token, {
+    skip: !token
+  })
+
   const navigate = useNavigate()
+  
   return (
     <div className='w-full h-screen font-montserrat py-5 px-4'>
         <div className='flex items-center justify-between w-full'>
@@ -21,17 +25,23 @@ const Home = () => {
             <input className='w-full py-3 px-4 pl-12 placeholder:text-base placeholder:text-gray-500 rounded-lg bg-[#E8EEF2]' type="search" placeholder='Search for service' />
         </div>
         <div className='mt-8 w-full'>
-          <h1 className='text-2xl font-bold'>Popular services</h1>
-          <div className='mt-8 space-y-7'>
-            <ServiceCard />
-            <ServiceCard />
-            <ServiceCard />
-            <ServiceCard />
-            <ServiceCard />
-            <ServiceCard />
-            <ServiceCard />
-            <ServiceCard />
+          <h1 className='text-2xl font-bold'>All services</h1>
+          {
+            isServicesLoading ? (
+              <div className='w-full h-full flex justify-center items-center mt-16'>
+                <CircularProgress />
+              </div>
+            ) : 
+          (
+            <div className='mt-8 space-y-7 pb-24'>
+            {
+              services?.uniqueServiceType.map((service, key) => (
+                <ServiceCard key={key} serviceType={service}/>
+              ))
+            }
           </div>
+          )
+          }
         </div>
         <NavigationBar />
     </div>

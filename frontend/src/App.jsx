@@ -34,7 +34,7 @@ const App = () => {
         <Profile />
         </UserProtectWrapper> 
       } />
-      <Route path='service-provider' element={ 
+      <Route path='service-provider/:serviceType' element={ 
         <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess} token={token}>
         <NearbyServiceProvider user={user} />
         </UserProtectWrapper>

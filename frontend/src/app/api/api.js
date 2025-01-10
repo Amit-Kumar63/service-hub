@@ -33,8 +33,16 @@ export const Api = createApi({
                     'Authorization': `Bearer ${token}`,
                 },
             }),
-        })
-        
+        }),
+        getServices: builder.query({
+            query: (token) => ({
+                url: `service/get-services-type`,
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            }),
+        })        
     }),
 })
 
@@ -42,5 +50,6 @@ export const {
     useGetUserQuery,
     useGetNearbyProvidersQuery,
     useGetCurrentLocationQuery,
-    useGetProviderProfileQuery
+    useGetProviderProfileQuery,
+    useGetServicesQuery
 } = Api

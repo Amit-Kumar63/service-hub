@@ -109,7 +109,7 @@ const ProviderHome = () => {
                                 <p className="text-xl font-bold">{provider?.provider.services.length}</p>
                             </div>
                             <div className="bg-white p-4 rounded shadow">
-                                <p className="text-gray-500">Total Bookings</p>
+                                <p className="text-gray-500">Total Bookings</p> 
                                 <p className="text-xl font-bold">{provider?.provider.bookings.length}</p>
                             </div>
                             <div className="bg-white p-4 rounded shadow">
@@ -163,7 +163,7 @@ const ProviderHome = () => {
                             </div>
                         ))}
                         <button
-                            className="w-full bg-blue-500 text-white py-2 rounded"
+                            className="w-full bg-blue-500 font-semibold text-white py-2 rounded"
                             onClick={() => {
                                 setAddServicePanel(!addServicePanel);
                                 addServicePanel ? setValue(0) : setValue(1);
