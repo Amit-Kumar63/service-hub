@@ -37,7 +37,6 @@ module.exports.findUserByCredentials = async (email, password) => {
         throw new Error('Invalid email or password');
     }
     const isMatch = await user.comparePassword(password);
-    console.log(isMatch);
     
     if (!isMatch) {
         throw new Error('Invalid email or password');

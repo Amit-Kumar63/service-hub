@@ -13,7 +13,6 @@ const Login = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, { email, password })
       const token = response.data.token;
-
       if(!token) {
         throw new Error('Token not return from server');
       }
@@ -23,7 +22,7 @@ const Login = () => {
         navigate('/home');
       }
     } catch (error) {
-      throw error;
+      console.error("Error:", error.response?.data || error.message);
     }
   }
   return (

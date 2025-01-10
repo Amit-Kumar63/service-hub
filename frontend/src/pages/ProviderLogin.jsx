@@ -24,7 +24,7 @@ const ProviderLogin = () => {
           navigate('/provider-home');
         }
       } catch (error) {
-        throw new Error(error);
+        console.error("Error:", error.response?.data || error.message);
       }
     }
   return (

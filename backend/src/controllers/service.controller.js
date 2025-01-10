@@ -18,6 +18,8 @@ module.exports.createServiceController = async (req, res) => {
             price,
             description
         });
+        provider.services = service._id;
+        await provider.save();
         res.status(201).json({ service });
     } catch (error) {
         res.status(400).json({ message: error.message });

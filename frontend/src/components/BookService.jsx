@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useGetUserQuery } from '../app/api/api.js'
 import AddressSuggestion from "./AddressSuggestion.jsx";
 import GetLocation from "./GetLocation.jsx";
 import DatePickerComponent from "./DatePicker.jsx";
 
-const BookService = ({...props}) => {
+const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user}) => {
   const [date, setDate] = useState(new Date());
   const [address, setAddress] = useState('')
   const [getCurrentPosition, setGetCurrentPosition] = useState('')
   const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
 
-  const { isLoading, data } = useGetUserQuery()
-  const navigate = useNavigate();
   const token = localStorage.getItem('token')
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (data?.user.address) {
-      setAddress(data?.user.address)
+    if (user?.user.address) {
+      setAddress(user?.user.address)
     }
-  }, [data]);
+  }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +27,7 @@ const BookService = ({...props}) => {
         {
           serviceDate: date, 
           address,
-          provider: '677bc6316e2b93ccb3d66d99'
+          provider: selectedProviderId
         }, 
         { 
           withCredentials: true, 

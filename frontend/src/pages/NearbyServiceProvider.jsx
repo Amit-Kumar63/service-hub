@@ -8,27 +8,24 @@ import BookService from "../components/BookService";
 import { useGetNearbyProvidersQuery, useGetUserQuery } from "../app/api/api";
 import { CircularProgress } from '@mui/material';
 
-const NearbyServiceProvider = () => {
+const NearbyServiceProvider = ({user}) => {
     const [servicePanel, setServicePanel] = useState(false);
     const [bookServicePanel, setBookServicePanel] = useState(false);
     const [error, setError] = useState('')
     const [coords, setCoords] = useState('')
     const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
+    const [selectedProviderId, setSelectedProviderId] = useState('')
 
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
-    const { data: user, isLoading: userLoading } = useGetUserQuery(undefined, {
-        skip: !token
-    });
 
-    const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location;
+    const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location
         
     const { isLoading, data, isError, isSuccess, isFetching } = useGetNearbyProvidersQuery({ lat, lng }, {
         skip: !user
     });
-
+    
     useGSAP(()=> {
         if (servicePanel) {
             gsap.to(servicePanelRef.current, {
@@ -112,7 +109,7 @@ const NearbyServiceProvider = () => {
                     <p className="text-sm text-gray-500 font-semibold">{provider.distance + " " + "km away"}</p>
                   </div>
                 </div>
-                <button onClick={()=> setBookServicePanel(true)} className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded">
+                <button onClick={()=> { setBookServicePanel(true); setSelectedProviderId(provider._id) }} className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded">
                     Book now  
                 </button>
               </div>
@@ -124,7 +121,7 @@ const NearbyServiceProvider = () => {
         <ServiceProviderPop setServicePanel={setServicePanel} setBookServicePanel={setBookServicePanel} />
       </div>
       <div ref={bookServicePanelRef} className="fixed translate-y-full h-screen bottom-0 z-10 w-full bg-white"> 
-        <BookService setBookServicePanel={setBookServicePanel}/>
+        <BookService setBookServicePanel={setBookServicePanel} selectedProviderId={selectedProviderId} isLoading={isLoading} user={user}/>
       </div>
       {
         error && <div className="text-2xl font-bold text-center mt-8">{error}</div>

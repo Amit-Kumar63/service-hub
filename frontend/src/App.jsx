@@ -18,6 +18,11 @@ const BookingFinished = lazy(() => import('./pages/BookingFinished'))
 const PrivateRoute = lazy(() => import('./pages/PrivateRoutes'))
 
 const App = () => {
+  const token = localStorage.getItem('token');
+      const { isLoading, isError, isSuccess, data: user } = useGetUserQuery(token, {
+          skip: !token
+    });
+  
   return (
     <Routes>
       <Route path='/' element={<Start />} />
@@ -30,8 +35,8 @@ const App = () => {
         </UserProtectWrapper> 
       } />
       <Route path='service-provider' element={ 
-        <UserProtectWrapper>
-        <NearbyServiceProvider />
+        <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess} token={token}>
+        <NearbyServiceProvider user={user} />
         </UserProtectWrapper>
        } />
        <Route path='/booking-finished' element={

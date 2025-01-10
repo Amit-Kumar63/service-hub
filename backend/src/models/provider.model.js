@@ -46,10 +46,17 @@ const providerSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Service'
         }
-    ]
+    ],
+    bookings: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Booking'
+        }
+    ],
 });
 
-providerSchema.static('save', async function(next) {
+providerSchema.pre('save', async function(next) {
+    if(!this.isModified("password")) return next();
     this.password = await bcrypt.hash(this.password, 12);
     next();
 });

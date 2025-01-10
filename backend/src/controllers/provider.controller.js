@@ -69,3 +69,11 @@ module.exports.logoutProvider = async (req, res) => {
     res.clearCookie('provider-token');
     res.status(200).json({ message: 'Provider logged out successfully' });
 }
+module.exports.providerProfile = async (req, res) => {
+    try {
+        const provider = req.provider;
+        res.status(200).json({ provider, message: 'Provider profile fetched successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}

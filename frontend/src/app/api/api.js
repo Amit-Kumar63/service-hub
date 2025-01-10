@@ -5,30 +5,42 @@ export const Api = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: `${import.meta.env.VITE_BASE_URL}/`,
         credentials: 'include',
-        prepareHeaders: (headers,)=> {
-            const token = localStorage.getItem('token')            
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`)
-            }
-            return headers
-        }
+       
     }),
     endpoints: (builder)=> ({
         getUser: builder.query({
-            query: ()=> 'users/profile',
+            query: (token)=> ({
+                url: 'users/profile',
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+                keepalive: true
+            }),
             keepUnusedDataFor: 600
         }),
         getNearbyProviders: builder.query({
             query: ({lat, lng})=> `geo/distance?lat=${lat}&lng=${lng}`,
         }),
         getCurrentLocation: builder.query({
-            query: (coords)=> 'geo/get-address-from-coords'
+            query: ()=> 'geo/get-address-from-coords'
+        }),
+        getProviderProfile: builder.query({
+            query: (token) => ({
+                url: `providers/provider-profile`,
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            }),
         })
+        
     }),
 })
 
 export const {
     useGetUserQuery,
     useGetNearbyProvidersQuery,
-    useGetCurrentLocationQuery
+    useGetCurrentLocationQuery,
+    useGetProviderProfileQuery
 } = Api

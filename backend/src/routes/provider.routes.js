@@ -1,6 +1,7 @@
 const express = require('express');
 const providerController = require('../controllers/provider.controller');
 const { body } = require('express-validator');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
@@ -18,5 +19,7 @@ router.post('/login', [
 ], providerController.loginProvider);
 
 router.get('/logout', providerController.logoutProvider);
+
+router.get('/provider-profile', authMiddleware.providerAuth, providerController.providerProfile);
 
 module.exports = router;
