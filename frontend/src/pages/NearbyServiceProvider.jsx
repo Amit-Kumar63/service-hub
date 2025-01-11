@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ServiceProviderPop from "../components/ServiceProviderPop";
 import { useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from '@gsap/react'
 import BookService from "../components/BookService";
-import { useGetNearbyProvidersQuery, useGetUserQuery } from "../app/api/api";
+import { useGetNearbyProvidersQuery } from "../app/api/api";
 import { CircularProgress } from '@mui/material';
 
 const NearbyServiceProvider = ({user}) => {
@@ -19,15 +19,14 @@ const NearbyServiceProvider = ({user}) => {
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
     const navigate = useNavigate();
-    const { serviceType  } = useParams()
-    console.log(serviceType.slice(1));
+    const { serviceType  } = useParams() 
 
     const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location
         
-    const { isLoading, data, isError, isSuccess, isFetching } = useGetNearbyProvidersQuery({ lat, lng }, {
+    const { isLoading, data, isError, isSuccess, isFetching } = useGetNearbyProvidersQuery({ lat, lng, serviceType: serviceType.slice(1)}, {
         skip: !user
     });
-    
+    // console.log(data?.nearbyProviders);
     useGSAP(()=> {
         if (servicePanel) {
             gsap.to(servicePanelRef.current, {
@@ -95,7 +94,7 @@ const NearbyServiceProvider = ({user}) => {
         {
           isLoading ? 
             (<div className="w-full flex items-center justify-center mt-10"><CircularProgress /></div>) : 
-            (data?.nearbyProviders.map((provider, index) => (
+            (data?.nearbyProviders.map(({provider:provider, distance}, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between p-4 bg-white rounded-lg shadow mb-4"
@@ -108,7 +107,7 @@ const NearbyServiceProvider = ({user}) => {
                   />
                   <div>
                     <h3 className="font-bold">{provider.firstName.charAt(0).toUpperCase() + provider.firstName.slice(1) + ' ' + provider.lastName.charAt(0).toUpperCase() + provider.lastName.slice(1) }</h3>
-                    <p className="text-sm text-gray-500 font-semibold">{provider.distance + " " + "km away"}</p>
+                    <p className="text-sm text-gray-500 font-semibold">{distance + " " + "km away"}</p>
                   </div>
                 </div>
                 <button onClick={()=> { setBookServicePanel(true); setSelectedProviderId(provider._id) }} className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded">

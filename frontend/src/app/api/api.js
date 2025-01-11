@@ -20,7 +20,7 @@ export const Api = createApi({
             keepUnusedDataFor: 600
         }),
         getNearbyProviders: builder.query({
-            query: ({lat, lng})=> `geo/distance?lat=${lat}&lng=${lng}`,
+            query: ({lat, lng, serviceType})=> `geo/distance?lat=${lat}&lng=${lng}&serviceType=${serviceType}`,
         }),
         getCurrentLocation: builder.query({
             query: ()=> 'geo/get-address-from-coords'
