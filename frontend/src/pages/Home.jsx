@@ -7,10 +7,8 @@ import { CircularProgress } from "@mui/material";
 const Home = () => {
   const token = localStorage.getItem('token')
 
-  const { data: services, isLoading: isServicesLoading, isError } = useGetServicesQuery(token, {
-    skip: !token
-  })
-  
+  const { data: services, isLoading: isServicesLoading, isError } = useGetServicesQuery(undefined)
+    
   const navigate = useNavigate()
   return (
     <div className='w-full h-screen font-montserrat py-5 px-4'>
