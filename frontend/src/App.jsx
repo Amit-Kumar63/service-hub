@@ -30,12 +30,12 @@ const App = () => {
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
       <Route path='/profile' element={
-        <UserProtectWrapper>
-        <Profile />
+        <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
+        <Profile user={user}/>
         </UserProtectWrapper> 
       } />
       <Route path='service-provider/:serviceType' element={ 
-        <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess} token={token}>
+        <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess} >
         <NearbyServiceProvider user={user} />
         </UserProtectWrapper>
        } />

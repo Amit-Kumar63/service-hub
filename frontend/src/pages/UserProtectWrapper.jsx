@@ -3,21 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useGetUserQuery } from '../app/api/api';
 import { CircularProgress } from '@mui/material';
 
-const UserProtectWrapper = ({ children, token, isLoading, isError, isSuccess }) => {
+const UserProtectWrapper = ({ children, isLoading, isError, isSuccess }) => {
+    const token = localStorage.getItem('token');
     const navigate = useNavigate();
     useEffect(() => {
         if (!isLoading && (!token || isError)) {
             navigate('/login');
         }
     }, [token, isError]);   
-
-    // if (isLoading) {
-    //     return (
-    //         <div>
-    //             <h1>Loading...</h1>
-    //         </div>
-    //     );
-    // }
 
     return <div>
         {

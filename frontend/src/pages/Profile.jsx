@@ -1,25 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useGetBookingsQuery } from "../app/api/api";
 
-const ProfilePage = () => {
+const ProfilePage = ({ user }) => {
+    const token = localStorage.getItem('token');
+    const { isLoading, isError, isSuccess, data: bookings } = useGetBookingsQuery(token, {
+        skip: !token
+      });
+
     const navigate = useNavigate();
-  const user = {
-    name: "Liam",
-    age: 30,
-    gender: "male",
-    joinedYear: 2019,
-    location: "San Francisco, CA",
-    phone: "+1 ***-***-1234",
-    email: "liam@gmail.com",
-    address: "1234 Mission St, San Francisco, CA",
-    bookings: [
-      { service: "Handyman", date: "Jan 20, 2023", price: "$120" },
-      { service: "Moving", date: "Jan 21, 2023", price: "$200" },
-      { service: "Cleaning", date: "Jan 22, 2023", price: "$80" },
-    ],
-  };
 
+  console.log(bookings);
   const handleLogout = async () => {
     try {
         const token = localStorage.getItem('token');
@@ -49,12 +41,12 @@ const ProfilePage = () => {
             className="w-24 h-24 rounded-full mx-auto object-cover"
           />
           <h1 className="text-lg font-bold mt-4">
-            {user.name}, age {user.age}, {user.gender}
+            {user?.user.firstName.charAt(0).toUpperCase() + user?.user.firstName.slice(1)} {user?.user.lastName.charAt(0).toUpperCase() + user?.user.lastName.slice(1)}
           </h1>
           <p className="text-sm text-gray-500">
-            Joined in {user.joinedYear}
+            Joined in {user?.user.createdAt?.split("T")[0]}
           </p>
-          <p className="text-sm text-gray-500">{user.location}</p>
+          <p className="text-sm text-gray-500">{user?.user.address}</p>
         </div>
 
         {/* Edit and Logout Buttons */}
@@ -72,18 +64,18 @@ const ProfilePage = () => {
           <h2 className="font-bold text-lg mb-3">Contact and address</h2>
           <div className="flex items-center mb-3">
             <span className="text-gray-500 mr-3">📞</span>
-            <span>{user.phone}</span>
+            <span className="font-semibold text-base text-gray-600">{user?.user.phone}</span>
           </div>
           <div className="flex items-center mb-2">
             <span className="text-gray-500 mr-2">📧</span>
-            <span>{user.email}</span>
+            <span className="font-semibold text-base text-gray-600">{user?.user.email}</span>
           </div>
           <div className="flex items-center">
             <span className="text-gray-500 mr-2">🏠</span>
             <div>
-              <span>Address</span>
-              <p className="text-sm text-gray-500">
-                {user.address}
+              <span className="font-semibold">Address</span>
+              <p className="text-sm text-gray-500 font-semibold">
+                {user?.user.address}
               </p>
             </div>
           </div>
@@ -92,16 +84,18 @@ const ProfilePage = () => {
         {/* Bookings Section */}
         <div className="mt-6">
           <h2 className="font-bold text-lg mb-3">Bookings</h2>
-          {user.bookings.map((booking, index) => (
+          {bookings?.bookings.map((booking, index) => (
+            console.log(booking),
             <div
               key={index}
               className="flex justify-between border-b py-2 font-semibold text-sm"
             >
               <div>
-                <p>{booking.service}</p>
-                <p className="text-gray-500">{booking.date}</p>
+                <p className="text-gray-800 text-base">{booking?.serviceType?.charAt(0).toUpperCase() + booking?.serviceType?.slice(1)}</p>
+                <p className="text-gray-500 text-xs mt-1">{booking?.createdAt.split("T")[0]}</p>
               </div>
-              <p>{booking.price}</p>
+              <p className="text-gray-600">&#8377;{booking?.price}</p>
+              <span className={`${booking.status === "pending" ? "text-yellow-600" : "text-green-500"}`}>{booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</span>
             </div>
           ))}
         </div>

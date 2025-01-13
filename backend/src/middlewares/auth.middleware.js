@@ -5,7 +5,7 @@ const Provider = require('../models/provider.model');
 module.exports.userAuth = async (req, res, next) => {
     try {
         const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
-            
+
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized' });
         }

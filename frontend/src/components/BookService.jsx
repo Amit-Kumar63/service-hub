@@ -5,7 +5,7 @@ import AddressSuggestion from "./AddressSuggestion.jsx";
 import GetLocation from "./GetLocation.jsx";
 import DatePickerComponent from "./DatePicker.jsx";
 
-const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user}) => {
+const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user, selectedServicePrice, serviceType}) => {
   const [date, setDate] = useState(new Date());
   const [address, setAddress] = useState('')
   const [getCurrentPosition, setGetCurrentPosition] = useState('')
@@ -27,7 +27,9 @@ const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user})
         {
           serviceDate: date, 
           address,
-          provider: selectedProviderId
+          provider: selectedProviderId,
+          price: selectedServicePrice,
+          serviceType
         }, 
         { 
           withCredentials: true, 
@@ -57,7 +59,7 @@ const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user})
       <div className="bg-gray-100 h-screen flex flex-col">
           <div className="flex items-center justify-between p-4">
               <button
-                  onClick={() => props.setBookServicePanel(false)}
+                  onClick={() => setBookServicePanel(false)}
                   className="text-xl font-bold text-gray-500">
                   <i className="ri-close-fill"></i>
               </button>

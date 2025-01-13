@@ -4,7 +4,9 @@ module.exports.CreateBooking = async ({
     user,
     provider,
     serviceDate,
-    address
+    address,
+    price,
+    serviceType
 }) => {
     try {
         const booking = await bookingModel.create({
@@ -12,8 +14,19 @@ module.exports.CreateBooking = async ({
             provider,
             serviceDate,
             address,
+            price,
+            serviceType
         });
         return booking;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+module.exports.getBookings = async (user) => {
+    try {
+        const bookings = await bookingModel.find({ user });
+        return bookings;
     } catch (error) {
         throw new Error(error.message);
     }

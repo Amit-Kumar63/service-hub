@@ -7,7 +7,7 @@ module.exports.createBooking = async (req, res) => {
     if (!errors.isEmpty) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { serviceDate, address, provider: providerId } = req.body;
+    const { serviceDate, address, provider: providerId, price, serviceType } = req.body;
 
     const provider = await providerModel.findById(providerId)
     if (!provider) {
@@ -23,6 +23,8 @@ module.exports.createBooking = async (req, res) => {
             provider: provider._id,
             serviceDate,
             address,
+            price,
+            serviceType: serviceType
         });
         user.bookings = booking._id;
         provider.bookings = booking._id;
@@ -31,6 +33,20 @@ module.exports.createBooking = async (req, res) => {
         res.status(201).json({ message: 'Booking created successfully' });
     } catch (error) {
         console.error(error);   
+        res.status(400).json({ message: error.message });
+    }
+}
+
+module.exports.getBookings = async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            throw new Error('User not found');
+        }
+        const bookings = await bookingService.getBookings(user._id);
+        res.status(200).json({ bookings });
+    } catch (error) {
+        console.error(error);
         res.status(400).json({ message: error.message });
     }
 }

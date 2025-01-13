@@ -15,6 +15,7 @@ const NearbyServiceProvider = ({user}) => {
     const [coords, setCoords] = useState('')
     const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
     const [selectedProviderId, setSelectedProviderId] = useState('')
+    const [selectedServicePrice, setSelectedServicePrice] = useState(0)
 
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
@@ -26,7 +27,6 @@ const NearbyServiceProvider = ({user}) => {
     const { isLoading, data, isError, isSuccess, isFetching } = useGetNearbyProvidersQuery({ lat, lng, serviceType: serviceType.slice(1)}, {
         skip: !user
     });
-    // console.log(data?.nearbyProviders);
     useGSAP(()=> {
         if (servicePanel) {
             gsap.to(servicePanelRef.current, {
@@ -72,6 +72,13 @@ const NearbyServiceProvider = ({user}) => {
           setError('Geolocation is not supported by this browser.');
       }
   }
+
+  const bookingHandler = (provider, price)=> {
+    setBookServicePanel(true);
+    setSelectedProviderId(provider._id)
+    setSelectedServicePrice(price)
+  }
+
   if (useCurrentLocationToFetch && !data) {
     return <div>No service providers found nearby from your current location. Please use saved location</div>
   }
@@ -94,10 +101,10 @@ const NearbyServiceProvider = ({user}) => {
         {
           isLoading ? 
             (<div className="w-full flex items-center justify-center mt-10"><CircularProgress /></div>) : 
-            (data?.nearbyProviders.map(({provider:provider, distance}, index) => (
+            (data?.nearbyProviders.map(({provider:provider, distance, services}, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-4 bg-white rounded-lg shadow mb-4"
+                className="flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow mb-4"
               >
                 <div className="flex items-center">
                   <img
@@ -108,9 +115,10 @@ const NearbyServiceProvider = ({user}) => {
                   <div>
                     <h3 className="font-bold">{provider.firstName.charAt(0).toUpperCase() + provider.firstName.slice(1) + ' ' + provider.lastName.charAt(0).toUpperCase() + provider.lastName.slice(1) }</h3>
                     <p className="text-sm text-gray-500 font-semibold">{distance + " " + "km away"}</p>
+                    <p className="text-sm text-gray-700 font-semibold">&#x20b9; {services[0].price}</p>
                   </div>
                 </div>
-                <button onClick={()=> { setBookServicePanel(true); setSelectedProviderId(provider._id) }} className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded">
+                <button onClick={()=> bookingHandler(provider, services[0].price)} className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded">
                     Book now  
                 </button>
               </div>
@@ -122,7 +130,7 @@ const NearbyServiceProvider = ({user}) => {
         <ServiceProviderPop setServicePanel={setServicePanel} setBookServicePanel={setBookServicePanel} />
       </div>
       <div ref={bookServicePanelRef} className="fixed translate-y-full h-screen bottom-0 z-10 w-full bg-white"> 
-        <BookService setBookServicePanel={setBookServicePanel} selectedProviderId={selectedProviderId} isLoading={isLoading} user={user}/>
+        <BookService setBookServicePanel={setBookServicePanel} selectedProviderId={selectedProviderId} isLoading={isLoading} user={user} selectedServicePrice={selectedServicePrice} serviceType={serviceType.slice(1)}/>
       </div>
       {
         error && <div className="text-2xl font-bold text-center mt-8">{error}</div>
