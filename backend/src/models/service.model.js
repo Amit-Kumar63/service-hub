@@ -21,6 +21,11 @@ const serviceSchema = new mongoose.Schema({
     description: {
         type: String,
     },
+    status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active'
+    }
 }, { timestamps: true });
 
 serviceSchema.index({ provider: 1, serviceType: 1 }, { unique: true });

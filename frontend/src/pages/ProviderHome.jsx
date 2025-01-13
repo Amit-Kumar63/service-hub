@@ -6,14 +6,18 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useGetProviderProfileQuery } from "../app/api/api";
 import { CircularProgress } from "@mui/material";
+import BookingLists from "../components/BookingLists";
 
 const ProviderHome = () => {
     const [addServicePanel, setAddServicePanel] = useState(false);
+    const [recentBookingsPanel, setRecentBookingsPanel] = useState(true);
     const [value, setValue] = useState(0);
 
     const token = localStorage.getItem("provider-token");
 
     const addServicePanelRef = useRef(null);
+    const recentBookingsPanelRef = useRef(null);
+
     const { data: provider, isLoading } = useGetProviderProfileQuery(
         token,
         {
@@ -33,56 +37,17 @@ const ProviderHome = () => {
         }
     }, [addServicePanel]);
 
-    // Dummy Data
-    const services = [
-        {
-            name: "Plumbing Fix",
-            type: "Plumber",
-            price: 100,
-            bookings: 10,
-            status: "Available",
-            image: "https://via.placeholder.com/150/blue?text=Plumbing+Fix",
-        },
-        {
-            name: "Electrical Setup",
-            type: "Electrician",
-            price: 150,
-            bookings: 5,
-            status: "Unavailable",
-            image: "https://via.placeholder.com/150/yellow?text=Electrical+Setup",
-        },
-    ];
-    console.log(provider);
-    const bookings = [
-        {
-            id: "B123",
-            serviceName: "Plumbing Fix",
-            user: "John Doe",
-            date: "2025-01-15",
-            status: "Pending",
-        },
-        {
-            id: "B124",
-            serviceName: "Electrical Setup",
-            user: "Jane Smith",
-            date: "2025-01-17",
-            status: "Completed",
-        },
-        {
-            id: "B126",
-            serviceName: "Plumbing Fix",
-            user: "John Doe",
-            date: "2025-01-15",
-            status: "Pending",
-        },
-        {
-            id: "B128",
-            serviceName: "Electrical Setup",
-            user: "Jane Smith",
-            date: "2025-01-17",
-            status: "Completed",
-        },
-    ];
+    useGSAP(() => {
+        if (recentBookingsPanel) {
+            gsap.to(recentBookingsPanelRef.current, {
+                transform: "translateY(0)",
+            });
+        } else {
+            gsap.to(recentBookingsPanelRef.current, {
+                transform: "translateY(100%)",
+            });
+        }
+    }, [recentBookingsPanel]);
 
     return (
         <>
@@ -116,7 +81,7 @@ const ProviderHome = () => {
                                 <p className="text-gray-500">
                                     Pending Bookings
                                 </p>
-                                <p className="text-xl font-bold">3</p>
+                                <p className="text-xl font-bold">{provider?.provider.bookings.filter((booking) => booking.status?.toLowerCase() === "Pending"?.toLowerCase()).length}</p>
                             </div>
                             <div className="bg-white p-4 rounded shadow">
                                 <p className="text-gray-500">Earnings</p>
@@ -130,36 +95,36 @@ const ProviderHome = () => {
                         <h2 className="text-xl font-bold text-gray-800">
                             Your Services
                         </h2>
-                        {services.map((service, index) => (
+                        {provider?.provider.services.map((service, index) => (
                             <div
                                 key={index}
-                                className="bg-white p-4 rounded shadow flex items-start space-x-4">
+                                className="bg-white px-4 py-2 rounded shadow flex items-center justify-between space-x-4">
                                 {/* Service Image */}
+                                <div className="flex items-center gap-4">
                                 <img
-                                    src={service.image}
-                                    alt={service.name}
+                                    src={'https://via.placeholder.com/150/blue?text=Plumbing+Fix'}
+                                    alt={service.serviceType}
                                     className="w-16 h-16 object-cover rounded"
                                 />
                                 {/* Service Details */}
                                 <div>
                                     <p className="text-lg font-bold">
-                                        {service.name}
+                                        {service.serviceType?.charAt(0).toUpperCase() + service.serviceType?.slice(1)}
                                     </p>
-                                    <p className="text-gray-500">
-                                        {service.type}
+                                    <p className="text-gray-500 text-sm font-semibold">
+                                        Price: &#8377; {service.price}
                                     </p>
-                                    <p className="text-gray-500">
-                                        Price: ${service.price}
-                                    </p>
-                                    <p
+                                    <span
                                         className={`text-sm ${
-                                            service.status === "Available"
-                                                ? "text-green-500"
-                                                : "text-red-500"
-                                        }`}>
-                                        {service.status}
-                                    </p>
+                                            service.status === "active"
+                                                ? "text-green-600"
+                                                : "text-red-400"
+                                        } font-semibold`}>
+                                        {service.status?.charAt(0).toUpperCase() + service.status?.slice(1)}
+                                    </span>
                                 </div>
+                                </div>
+                                <button className="px-3 py-1 bg-red-500 font-semibold text-white rounded">Delete</button>
                             </div>
                         ))}
                         <button
@@ -173,34 +138,7 @@ const ProviderHome = () => {
                     </div>
 
                     {/* Bookings List */}
-                    <div className="space-y-4 pb-16">
-                        <h2 className="text-xl font-bold text-gray-800">
-                            Recent Bookings
-                        </h2>
-                        {bookings.map((booking) => (
-                            <div
-                                key={booking.id}
-                                className="bg-white p-4 rounded shadow">
-                                <p className="text-lg font-bold">
-                                    {booking.serviceName}
-                                </p>
-                                <p className="text-gray-500">
-                                    Booked by: {booking.user}
-                                </p>
-                                <p className="text-gray-500">
-                                    Date: {booking.date}
-                                </p>
-                                <p
-                                    className={`text-sm ${
-                                        booking.status === "Pending"
-                                            ? "text-yellow-500"
-                                            : "text-green-500"
-                                    }`}>
-                                    {booking.status}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
+                    <BookingLists provider={provider} />
                     <div
                         ref={addServicePanelRef}
                         className="fixed translate-y-full h-fit left-0 right-0 bottom-0 z-10 w-full bg-white">
@@ -209,12 +147,19 @@ const ProviderHome = () => {
                             setValue={setValue}
                         />
                     </div>
+                    <div
+                        ref={recentBookingsPanelRef}
+                        className="absolute translate-y-full px-4 py-2 h-full left-0 right-0 bottom-0 w-full bg-gray-100">
+                        <BookingLists provider={provider} />
+                    </div>  
                     <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300">
                         <ProviderNavigation
                             value={value}
                             setValue={setValue}
                             setAddServicePanel={setAddServicePanel}
                             addServicePanel={addServicePanel}
+                            setRecentBookingsPanel={setRecentBookingsPanel}
+                            recentBookingsPanel={recentBookingsPanel}
                         />
                     </div>
                 </div>

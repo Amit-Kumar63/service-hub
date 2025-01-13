@@ -2,6 +2,7 @@ const providerModel = require('../models/provider.model');
 const { validationResult } = require('express-validator');
 const { fetchLatLng } = require("../services/location.service");
 const { findProviderByCredentials } = require('../services/provider.service');
+const bookingModel = require('../models/booking.model');
 
 module.exports.registerProvider = async (req, res) => {
     const errors = validationResult(req);
@@ -72,7 +73,11 @@ module.exports.logoutProvider = async (req, res) => {
 module.exports.providerProfile = async (req, res) => {
     try {
         const provider = req.provider;
-        res.status(200).json({ provider, message: 'Provider profile fetched successfully' });
+        const populatedProvider = await bookingModel.populate(provider, [
+            { path: 'bookings', populate: { path: 'user' } },
+            { path: 'services' }
+        ]);
+        res.status(200).json({ provider: populatedProvider, message: 'Provider profile fetched successfully' });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
