@@ -13,6 +13,4 @@ router.post('/book-service', [
     body('serviceType').isEmpty().withMessage('service type is required'),
 ] , authMiddleware.userAuth, bookingController.createBooking);
 
-router.get('/get-bookings', authMiddleware.userAuth, bookingController.getBookings);
-
 module.exports = router;

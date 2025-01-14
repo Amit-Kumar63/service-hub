@@ -36,17 +36,3 @@ module.exports.createBooking = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
-
-module.exports.getBookings = async (req, res) => {
-    try {
-        const user = req.user;
-        if (!user) {
-            throw new Error('User not found');
-        }
-        const bookings = await bookingService.getBookings(user._id);
-        res.status(200).json({ bookings });
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ message: error.message });
-    }
-}

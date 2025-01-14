@@ -1,15 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useGetBookingsQuery } from "../app/api/api";
 import { CircularProgress } from "@mui/material";
+import UserBookingsList from "../components/UserBookingsList";
 
-const ProfilePage = ({ user }) => {
+const ProfilePage = ({ user, isLoading, isSuccess }) => {
     const token = localStorage.getItem('token');
-    const { isLoading: isBookingsLoading, isError, isSuccess, data: bookings } = useGetBookingsQuery(token, {
-        skip: !token
-      });
-
     const navigate = useNavigate();
 
   // console.log(bookings);
@@ -30,7 +26,7 @@ const ProfilePage = ({ user }) => {
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4">
       {
-        isBookingsLoading ? (
+        isLoading ? (
           <div className="w-full h-full flex flex-col justify-center items-center">
             <span className="mt-2 font-semibold text-lg">Loading...</span>
             <CircularProgress />  
@@ -53,7 +49,7 @@ const ProfilePage = ({ user }) => {
             <p className="text-sm text-gray-500">
               Joined in {user?.user.createdAt?.split("T")[0]}
             </p>
-            <p className="text-sm text-gray-500 whitespace-nowrap">{user?.user.address}</p>
+            <p className="text-sm text-gray-500 text-ellipsis">{user?.user.address}</p>
           </div>
   
           {/* Edit and Logout Buttons */}
@@ -89,22 +85,7 @@ const ProfilePage = ({ user }) => {
           </div>
   
           {/* Bookings Section */}
-          <div className="mt-6">
-            <h2 className="font-bold text-lg mb-3">Bookings</h2>
-            {bookings?.bookings.map((booking, index) => (
-              <div
-                key={index}
-                className="flex justify-between border-b py-2 font-semibold text-sm"
-              >
-                <div>
-                  <p className="text-gray-800 text-base">{booking?.serviceType?.charAt(0).toUpperCase() + booking?.serviceType?.slice(1)}</p>
-                  <p className="text-gray-500 text-xs mt-1">{booking?.createdAt.split("T")[0]}</p>
-                </div>
-                <p className="text-gray-600">&#8377;{booking?.price}</p>
-                <span className={`${booking.status === "pending" ? "text-yellow-600" : "text-green-500"}`}>{booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</span>
-              </div>
-            ))}
-          </div>
+          <UserBookingsList user={user} />
         </div>
         )
       }

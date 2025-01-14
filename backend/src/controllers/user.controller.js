@@ -2,6 +2,7 @@ const userService = require('../services/user.service');
 const { validationResult } = require('express-validator');
 const bookingService = require('../services/booking.service');
 const { fetchLatLng } = require("../services/location.service");
+const bookingModel = require('../models/booking.model');
 
 module.exports.userRegister = async (req, res) => {
     const errors = validationResult(req);
@@ -75,5 +76,8 @@ module.exports.userLogout = async (req, res) => {
 
 module.exports.userProfile = async (req, res) => {
     const user = req.user;
+    await bookingModel.populate(user, [
+        { path: 'bookings', populate: { path: 'provider', select: '-email -bookings -location -services' } },
+    ])
     res.status(200).json({user, message: 'User profile fetched successfully'});
 }

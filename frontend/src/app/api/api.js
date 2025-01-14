@@ -43,15 +43,6 @@ export const Api = createApi({
                 },
             }),
         }),
-        getBookings: builder.query({
-            query: (token) => ({
-                url: `booking/get-bookings`,
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            }),
-        }),
     }),
 })
 
@@ -61,5 +52,4 @@ export const {
     useGetCurrentLocationQuery,
     useGetProviderProfileQuery,
     useGetServicesQuery,
-    useGetBookingsQuery,
 } = Api
