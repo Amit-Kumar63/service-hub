@@ -43,6 +43,19 @@ export const Api = createApi({
                 },
             }),
         }),
+        getChangeBookingStatus: builder.mutation({
+            query: ({id, status, token}) => ({
+                url: `booking/change-booking-status`,
+                method: 'POST',
+                params: {
+                    id,
+                    status
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+        })
     }),
 })
 
@@ -52,4 +65,5 @@ export const {
     useGetCurrentLocationQuery,
     useGetProviderProfileQuery,
     useGetServicesQuery,
+    useGetChangeBookingStatusMutation
 } = Api

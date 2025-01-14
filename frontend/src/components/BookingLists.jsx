@@ -1,6 +1,24 @@
-import React from "react";
 
-const BookingLists = ({ provider }) => {
+
+const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isBookingStatusLoading, isBookingStatusSuccess }) => {
+    
+    const changeBookingStatusHandler = async (bookingId, status) => {
+        const token = localStorage.getItem("provider-token");
+        await changeBookingStatus({
+            id: bookingId,
+            status,
+            token
+        })
+        if (isBookingStatusError) {
+            console.log(isBookingStatusError);
+        }
+        if (isBookingStatusSuccess) {
+            console.log(isBookingStatusSuccess);
+        }
+        if (isBookingStatusLoading) {
+            console.log(isBookingStatusLoading);
+        }
+    }
     return (
         <div className="space-y-4 pb-16">
             <h2 className="text-xl font-bold text-gray-800">Recent Bookings</h2>
@@ -50,7 +68,9 @@ const BookingLists = ({ provider }) => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2 mt-4">
-                        <button className="w-1/2 bg-green-500 text-white px-1 py-2 rounded-md font-semibold text-sm">
+                        <button 
+                        onClick={() => changeBookingStatusHandler(booking._id, "Accepted")}
+                        className="w-1/2 bg-green-500 text-white px-1 py-2 rounded-md font-semibold text-sm">
                             Accept
                         </button>
                         <button className="w-1/2 bg-red-500 text-white px-1 py-2 rounded-md font-semibold text-sm">

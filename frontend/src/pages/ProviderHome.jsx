@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { CircularProgress } from "@mui/material";
 import BookingLists from "../components/BookingLists";
 import { useOutletContext } from "react-router-dom";
+import { useGetChangeBookingStatusMutation } from "../app/api/api";
 
 const ProviderHome = () => {
     const [addServicePanel, setAddServicePanel] = useState(false);
@@ -14,6 +15,8 @@ const ProviderHome = () => {
     const [value, setValue] = useState(0);
 
     const { provider, isLoading } = useOutletContext()
+    const [changeBookingStatus, { isLoading: isBookingStatusLoading, isSuccess: isBookingStatusSuccess, isError: isBookingStatusError }] = useGetChangeBookingStatusMutation();
+
 
     const addServicePanelRef = useRef(null);
     const recentBookingsPanelRef = useRef(null);
@@ -133,7 +136,7 @@ const ProviderHome = () => {
                     </div>
 
                     {/* Bookings List */}
-                    <BookingLists provider={provider} />
+                    <BookingLists provider={provider} changeBookingStatus={changeBookingStatus} isBookingStatusError={isBookingStatusError} isBookingStatusSuccess={isBookingStatusSuccess}/>
                     <div
                         ref={addServicePanelRef}
                         className="fixed translate-y-full h-fit left-0 right-0 bottom-0 z-10 w-full bg-white">
@@ -146,7 +149,7 @@ const ProviderHome = () => {
                         ref={recentBookingsPanelRef}
                         className="absolute hidden px-4 py-2 h-full bottom-0 left-0 right-0 w-full bg-gray-100">
                             <h4 onClick={()=> {setRecentBookingsPanel(false); setValue(0)}} className="w-full text-center"><i className="text-2xl text-gray-400 ri-arrow-down-wide-fill"></i></h4>
-                        <BookingLists provider={provider} />    
+                        <BookingLists provider={provider} changeBookingStatus={changeBookingStatus} isBookingStatusSuccess={isBookingStatusSuccess} isBookingStatusError={isBookingStatusError}/>    
                     </div>  
                     <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300">
                         <ProviderNavigation

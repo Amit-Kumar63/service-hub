@@ -1,5 +1,5 @@
 const expires = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const bookingController = require('../controllers/booking.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 
@@ -13,4 +13,8 @@ router.post('/book-service', [
     body('serviceType').isEmpty().withMessage('service type is required'),
 ] , authMiddleware.userAuth, bookingController.createBooking);
 
+router.post('/change-booking-status', [
+    query('id').isMongoId().withMessage('Invalid booking id'),
+    query('status').isIn(['completed', 'cancelled', 'rejected', 'accepted']).withMessage('Invalid status'),
+], authMiddleware.providerAuth, bookingController.changeStatus);
 module.exports = router;

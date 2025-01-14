@@ -36,3 +36,20 @@ module.exports.createBooking = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+module.exports.changeStatus = async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+        const { id, status } = req.query;
+        if (!id || !status) {
+            throw new Error('Invalid request');
+        }
+        const provider = req.provider;
+        const booking = await bookingService.changeBookingStatus(id, status.toLowerCase(), provider);
+        res.status(200).json({ message: 'Booking accepted successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
