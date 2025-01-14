@@ -21,7 +21,7 @@ const ProviderLogin = () => {
   
         if(response.status === 200) {
           localStorage.setItem('provider-token', response.data.token);
-          navigate('/provider-home');
+          navigate('/provider/home');
         }
       } catch (error) {
         console.error("Error:", error.response?.data || error.message);

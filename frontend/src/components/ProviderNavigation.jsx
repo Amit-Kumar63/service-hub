@@ -4,7 +4,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ServiceIcon from '@mui/icons-material/HomeRepairService';
 import RecentIcon from '@mui/icons-material/Restore';
 import ProfileIcon from '@mui/icons-material/ManageAccounts';
-
+import { Link } from 'react-router-dom'
 
 export default function ProviderNavigation({setAddServicePanel, addServicePanel, value, setValue, recentBookingsPanel, setRecentBookingsPanel}) {
 
@@ -34,7 +34,7 @@ export default function ProviderNavigation({setAddServicePanel, addServicePanel,
         <BottomNavigationAction label="Dashboard" icon={<DashboardIcon/>} onClick={ dashboardIconHandler }/>
         <BottomNavigationAction label="Add Service" icon={<ServiceIcon />} onClick={ serviceIconHandler }/>
         <BottomNavigationAction label="Recent" icon={<RecentIcon />} onClick={ recentIconHandler }/>
-        <BottomNavigationAction label="Profile" icon={<ProfileIcon />} />
+        <BottomNavigationAction label="Profile" icon={<ProfileIcon />} component={Link} to="/provider/profile"/>
       </BottomNavigation>
     </Box>
   );

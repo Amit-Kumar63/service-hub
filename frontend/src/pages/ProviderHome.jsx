@@ -4,26 +4,19 @@ import { Avatar } from "@mui/material";
 import AddService from "../components/AddService";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useGetProviderProfileQuery } from "../app/api/api";
 import { CircularProgress } from "@mui/material";
 import BookingLists from "../components/BookingLists";
+import { useOutletContext } from "react-router-dom";
 
 const ProviderHome = () => {
     const [addServicePanel, setAddServicePanel] = useState(false);
     const [recentBookingsPanel, setRecentBookingsPanel] = useState(true);
     const [value, setValue] = useState(0);
 
-    const token = localStorage.getItem("provider-token");
+    const { provider, isLoading } = useOutletContext()
 
     const addServicePanelRef = useRef(null);
     const recentBookingsPanelRef = useRef(null);
-
-    const { data: provider, isLoading } = useGetProviderProfileQuery(
-        token,
-        {
-            skip: !token,
-        }
-    );
 
     useGSAP(() => {
         if (addServicePanel) {
@@ -37,7 +30,6 @@ const ProviderHome = () => {
         }
     }, [addServicePanel]);
 
-    console.log(provider);
     useGSAP(() => {
         if (recentBookingsPanel) {
             gsap.to(recentBookingsPanelRef.current, {

@@ -19,7 +19,7 @@ const Start = () => {
       </div>
       <div className='w-full'>
         <p className='text-base text-center font-medium text-black'>Get start as a <span className='text-[#1a80e6] font-semibold'>Service Provider</span></p>
-        <Link to="/login-provider" className='bg-[#0A090D] text-white font-semibold py-3 px-3 flex justify-center items-center mt-3'>Start as a Service Provider</Link>
+        <Link to="/provider/login" className='bg-[#0A090D] text-white font-semibold py-3 px-3 flex justify-center items-center mt-3'>Start as a Service Provider</Link>
       </div>
     </div>
   )

@@ -7,6 +7,8 @@ import Home from './pages/Home'
 import UserProtectWrapper from './pages/UserProtectWrapper'
 import { useGetUserQuery } from './app/api/api'
 
+import ProviderLayout from './pages/ProviderLayout'
+
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
 const Profile = lazy(() => import('./pages/Profile'))
@@ -17,6 +19,7 @@ const ProviderHome = lazy(() => import('./pages/ProviderHome'))
 const BookingFinished = lazy(() => import('./pages/BookingFinished'))
 const PrivateRoute = lazy(() => import('./pages/PrivateRoutes'))
 const UserBookingsSummary = lazy(() => import('./pages/UserBookingsSummary'))
+const ProviderProfile = lazy(() => import('./pages/ProviderProfile'))
 
 const App = () => {
   const token = localStorage.getItem('token');
@@ -49,15 +52,12 @@ const App = () => {
          </UserProtectWrapper>
        } />
        {/* Providers Routes */}
-       <Route path='/login-provider' element={
-        <ProviderLogin />
-       } />
-        <Route path='/signup-provider' element={
-          <ProviderSignup />
-        } />
-        <Route path='/provider-home' element={
-          <ProviderHome />
-        } />
+       <Route path='/provider' element={<ProviderLayout />} >
+       <Route path='login' element={ <ProviderLogin /> }/>
+        <Route path='signup' element={ <ProviderSignup /> }/>
+        <Route path='home' element={ <ProviderHome /> }/>
+        <Route path='profile' element={ <ProviderProfile /> }/>
+        </Route>
     </Routes> 
   )
 }
