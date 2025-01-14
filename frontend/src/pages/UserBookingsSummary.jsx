@@ -7,9 +7,11 @@ const UserBookingsSummary = ({user}) => {
 
   return (
     <>
-    <div className='mt-6 flex items-center'>
-    <h4 className='ml-3 text-center'><i className=" text-2xl text-gray-700 ri-arrow-left-line"></i></h4>
-    <h1>ServiceHub</h1>
+    <div className='mt-6 flex items-center justify-between w-full'>
+    <h4 className='ml-3' onClick={()=> window.history.back()}>
+      <i className="text-2xl text-gray-700 ri-arrow-left-line"></i>
+    </h4>
+    <h1 className='w-full mr-8 text-center font-semibold text-lg'>ServiceHub</h1>
     </div>
     <div className="max-w-2xl mx-auto mt-2 p-6 border rounded-lg shadow-lg bg-white">
       <h2 className="font-bold text-2xl text-gray-800 mb-6">Booking Summary</h2>

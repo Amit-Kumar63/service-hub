@@ -43,7 +43,7 @@ const App = () => {
        <Route path='/booking-finished' element={
         <PrivateRoute isAuthenticated={true} element={<BookingFinished/>} redirectTo='/home' />
        }/>
-       <Route path='/user-booking-summary/:id' element={
+       <Route path='/user-booking-summary' element={
          <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
          <UserBookingsSummary user={user} />
          </UserProtectWrapper>

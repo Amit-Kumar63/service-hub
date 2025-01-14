@@ -37,14 +37,17 @@ const ProviderHome = () => {
         }
     }, [addServicePanel]);
 
+    console.log(provider);
     useGSAP(() => {
         if (recentBookingsPanel) {
             gsap.to(recentBookingsPanelRef.current, {
                 transform: "translateY(0)",
+                display: "block",
             });
         } else {
             gsap.to(recentBookingsPanelRef.current, {
                 transform: "translateY(100%)",
+                display: "none",
             });
         }
     }, [recentBookingsPanel]);
@@ -118,7 +121,7 @@ const ProviderHome = () => {
                                         className={`text-sm ${
                                             service.status === "active"
                                                 ? "text-green-600"
-                                                : "text-red-400"
+                                                : "text-red-500"
                                         } font-semibold`}>
                                         {service.status?.charAt(0).toUpperCase() + service.status?.slice(1)}
                                     </span>
@@ -149,8 +152,9 @@ const ProviderHome = () => {
                     </div>
                     <div
                         ref={recentBookingsPanelRef}
-                        className="absolute translate-y-full px-4 py-2 h-full left-0 right-0 bottom-0 w-full bg-gray-100">
-                        <BookingLists provider={provider} />
+                        className="absolute hidden px-4 py-2 h-full bottom-0 left-0 right-0 w-full bg-gray-100">
+                            <h4 onClick={()=> {setRecentBookingsPanel(false); setValue(0)}} className="w-full text-center"><i className="text-2xl text-gray-400 ri-arrow-down-wide-fill"></i></h4>
+                        <BookingLists provider={provider} />    
                     </div>  
                     <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300">
                         <ProviderNavigation

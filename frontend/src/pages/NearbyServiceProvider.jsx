@@ -85,7 +85,7 @@ const NearbyServiceProvider = ({user}) => {
   // check for error 
   return (
     <div className="bg-gray-100 h-screen flex flex-col pt-4 relative">
-        <div className="wf-full flex items-center justify-between px-4">
+        <div className="w-full flex items-center justify-between px-4">
         <i onClick={()=> navigate(-1)} className="text-2xl ri-arrow-left-line"></i>
         <h1 className="text-2xl font-bold text-center w-full">Services</h1>
         </div>

@@ -7,7 +7,7 @@ const UserBookingsList = ({user}) => {
     <div className="mt-6">
             <h2 className="font-bold text-lg mb-3">Bookings</h2>
             {user?.user.bookings.map((booking, index) => (
-      <Link to={`/user-booking-summary/:${user?.user._id}`} state={{booking}} key={index}>
+      <Link to='/user-booking-summary' state={{booking}} key={index}>
               <div
                 className="flex justify-between border-b py-2 font-semibold text-sm"
               >
