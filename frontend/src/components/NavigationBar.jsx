@@ -13,6 +13,7 @@ const NavigationBar = () => {
               </svg>
             <span className='text-xs font-medium leading-normal tracking-[0.015em]'>Home</span>
             </div>
+            <Link to='/favorites'>
             <div className='flex flex-col gap-1 items-center text-[#4e7397]'>
             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
                 <path
@@ -21,6 +22,8 @@ const NavigationBar = () => {
               </svg>
             <span className='text-xs font-medium leading-normal tracking-[0.015em]'>Favorites</span>
             </div>
+            </Link>
+            <Link to='/message'>
             <div className='flex flex-col gap-1 items-center text-[#4e7397]'>
             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
                 <path
@@ -29,6 +32,7 @@ const NavigationBar = () => {
               </svg>
             <span className='text-xs font-medium leading-normal tracking-[0.015em]'>Messages</span>
             </div>
+            </Link>
             <Link to='/profile'>
             <div className='flex flex-col gap-1 items-center text-[#4e7397]'>
             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">

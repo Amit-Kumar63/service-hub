@@ -63,7 +63,7 @@ const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user, 
                   className="text-xl font-bold text-gray-500">
                   <i className="ri-close-fill"></i>
               </button>
-              <h1 className="text-lg font-bold">Book a service</h1>
+              <h1 className="text-lg font-bold w-full text-center mr-8">Book a service</h1>
           </div>
           {
             isLoading ? (

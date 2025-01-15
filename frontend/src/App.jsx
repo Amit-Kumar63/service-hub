@@ -20,6 +20,8 @@ const BookingFinished = lazy(() => import('./pages/BookingFinished'))
 const PrivateRoute = lazy(() => import('./pages/PrivateRoutes'))
 const UserBookingsSummary = lazy(() => import('./pages/UserBookingsSummary'))
 const ProviderProfile = lazy(() => import('./pages/ProviderProfile'))
+const MessagePage = lazy(() => import('./pages/Message'))
+const Favorites = lazy(() => import('./pages/Favorites'))
 
 const App = () => {
   const token = localStorage.getItem('token');
@@ -49,6 +51,16 @@ const App = () => {
        <Route path='/user-booking-summary' element={
          <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
          <UserBookingsSummary user={user} />
+         </UserProtectWrapper>
+       } />
+       <Route path='/message' element={
+         <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
+         <MessagePage />
+         </UserProtectWrapper>
+       } />
+       <Route path='/favorites' element={
+         <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
+         <Favorites user={user} />
          </UserProtectWrapper>
        } />
        {/* Providers Routes */}

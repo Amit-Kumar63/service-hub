@@ -89,3 +89,18 @@ module.exports.userProfile = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+
+module.exports.addToFavourites = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }   
+    const { serviceId } = req.query;
+    try {
+        const user = req.user;
+        await userService.addToFavourites(user, serviceId);
+        res.status(200).json({ message: 'Service added to favorites successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while adding to favorites', error: error.message });
+    }
+}

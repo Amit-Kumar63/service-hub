@@ -5,9 +5,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { currentDate } from '../utils/currentDate';
+import { CircularProgress } from '@mui/material';
 
 export default function DatePickerComponent({setDate}) {
-  const [value, setValue] = useState(dayjs());
+  const [value, setValue] = useState(null);
   const [currentDateValue, setCurrentDateValue] = useState('')
 
   useEffect(() => {
@@ -18,6 +19,9 @@ export default function DatePickerComponent({setDate}) {
   const onChangeHandler = (newValue) => {
       setValue(newValue);
       setDate(newValue)
+  }
+  if ( !value || !currentDateValue) {
+    return <CircularProgress />
   }
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -5,8 +5,10 @@ import { useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from '@gsap/react'
 import BookService from "../components/BookService";
-import { useGetNearbyProvidersQuery } from "../app/api/api";
+import { useGetAddToFavMutation, useGetNearbyProvidersQuery } from "../app/api/api";
 import { CircularProgress } from '@mui/material';
+import HeartOutlineIcon from '@mui/icons-material/FavoriteBorder';
+import HeartIcon  from '@mui/icons-material/Favorite';
 
 const NearbyServiceProvider = ({user}) => {
     const [servicePanel, setServicePanel] = useState(false);
@@ -16,17 +18,23 @@ const NearbyServiceProvider = ({user}) => {
     const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
     const [selectedProviderId, setSelectedProviderId] = useState('')
     const [selectedServicePrice, setSelectedServicePrice] = useState(0)
+    const [addToFavourites, setAddToFavourites] = useState(false)
 
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
     const navigate = useNavigate();
     const { serviceType  } = useParams() 
 
+    const token = localStorage.getItem('token')
+
     const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location
         
     const { isLoading, data, isError, isSuccess, isFetching } = useGetNearbyProvidersQuery({ lat, lng, serviceType: serviceType.slice(1)}, {
         skip: !user
     });
+
+    const [addToFav, { isLoading: addToFavLoading, isSuccess: addToFavSuccess, isError: addToFavError }] = useGetAddToFavMutation()
+
     useGSAP(()=> {
         if (servicePanel) {
             gsap.to(servicePanelRef.current, {
@@ -79,10 +87,25 @@ const NearbyServiceProvider = ({user}) => {
     setSelectedServicePrice(price)
   }
 
+  const addToFavouritesHandler = async (serviceId)=> {
+    await addToFav({serviceId, token})
+    if ( addToFavLoading ) {
+      return <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto'}}/>
+    }
+    if (addToFavSuccess) {
+      setAddToFavourites(!addToFavourites)
+      return <div className="text-green-600 text-center">Added to favourites</div>
+    }
+    if (addToFavError) {
+      return <div className="text-red-600 text-center">Error adding to favourites</div>
+    }
+  }
+
   if (useCurrentLocationToFetch && !data) {
     return <div>No service providers found nearby from your current location. Please use saved location</div>
   }
   // check for error 
+
   return (
     <div className="bg-gray-100 h-screen flex flex-col pt-4 relative">
         <div className="w-full flex items-center justify-between px-4">
@@ -106,7 +129,7 @@ const NearbyServiceProvider = ({user}) => {
                 key={index}
                 className="flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow mb-4"
               >
-                <div className="flex items-center">
+                <div className="flex items-center pt-3 relative">
                   <img
                     src='https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/35af6a41332353.57a1ce913e889.jpg'
                     alt={provider.name}
@@ -117,6 +140,15 @@ const NearbyServiceProvider = ({user}) => {
                     <p className="text-sm text-gray-500 font-semibold">{distance + " " + "km away"}</p>
                     <p className="text-sm text-gray-700 font-semibold">&#x20b9; {services[0].price}</p>
                   </div>
+                  <h4 onClick={()=> addToFavouritesHandler(services[0]._id)} className="absolute -top-2 -left-2 text-sm text-gray-700 font-semibold">
+                      { 
+                        addToFavourites ? (
+                          <HeartIcon sx={{ color: 'red' }}/>
+                        ) : (
+                          <HeartOutlineIcon />
+                        )
+                      }
+                    </h4>
                 </div>
                 <button onClick={()=> bookingHandler(provider, services[0].price)} className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded">
                     Book now  

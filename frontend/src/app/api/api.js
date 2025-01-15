@@ -55,6 +55,18 @@ export const Api = createApi({
                     'Authorization': `Bearer ${token}`,
                 },
             })
+        }),
+        getAddToFav: builder.mutation({
+            query: ({serviceId, token}) => ({
+                url: `users/add-to-favourites`,
+                method: 'POST',
+                params: {
+                    serviceId
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
         })
     }),
 })
@@ -65,5 +77,6 @@ export const {
     useGetCurrentLocationQuery,
     useGetProviderProfileQuery,
     useGetServicesQuery,
-    useGetChangeBookingStatusMutation
+    useGetChangeBookingStatusMutation,
+    useGetAddToFavMutation
 } = Api

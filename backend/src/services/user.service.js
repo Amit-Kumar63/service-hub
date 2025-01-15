@@ -43,3 +43,19 @@ module.exports.findUserByCredentials = async (email, password) => {
     }
     return user;
 }
+
+module.exports.addToFavourites = async (user, serviceId) => {
+    try {
+        if (user.favourites.includes(serviceId)) {
+            user.favourites.filter((id) => id !== serviceId);
+            await user.save();
+            return user;
+        } else {
+            user.favourites.push(serviceId);
+            await user.save();
+        }
+        return user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
