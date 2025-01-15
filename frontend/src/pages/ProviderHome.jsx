@@ -17,7 +17,7 @@ const ProviderHome = () => {
     const { provider, isLoading } = useOutletContext()
     const [changeBookingStatus, { isLoading: isBookingStatusLoading, isSuccess: isBookingStatusSuccess, isError: isBookingStatusError }] = useGetChangeBookingStatusMutation();
 
-
+    console.log(provider)
     const addServicePanelRef = useRef(null);
     const recentBookingsPanelRef = useRef(null);
 

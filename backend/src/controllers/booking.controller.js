@@ -26,10 +26,11 @@ module.exports.createBooking = async (req, res) => {
             price,
             serviceType: serviceType
         });
-        user.bookings = booking._id;
-        provider.bookings = booking._id;
+        user.bookings.push(booking._id);
+        provider.bookings.push(booking._id);
         await provider.save();
         await user.save();
+        await booking.save();
         res.status(201).json({ message: 'Booking created successfully' });
     } catch (error) {
         console.error(error);   

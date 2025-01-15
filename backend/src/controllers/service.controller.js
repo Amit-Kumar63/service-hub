@@ -18,7 +18,7 @@ module.exports.createServiceController = async (req, res) => {
             price,
             description
         });
-        provider.services = service._id;
+        provider.services.push(service._id);
         await provider.save();
         res.status(201).json({ service });
     } catch (error) {

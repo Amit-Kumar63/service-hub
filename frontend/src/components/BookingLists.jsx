@@ -45,6 +45,9 @@ const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isB
                             <p className="text-gray-500 text-sm font-semibold">
                                 Date: {booking.createdAt?.split("T")[0]}
                             </p>
+                            <p className="text-sm text-gray-500 font-semibold">
+                                Service type: {booking.serviceType?.charAt(0).toUpperCase() + booking.serviceType?.slice(1)}
+                            </p>
                             <p className="text-gray-500 text-sm text-ellipsis">
                             {booking.address}
                         </p>
@@ -58,6 +61,7 @@ const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isB
                                 {booking.status?.charAt(0).toUpperCase() +
                                     booking.status?.slice(1)}
                             </p>
+
                         </div>
                         <div>
                             <img
