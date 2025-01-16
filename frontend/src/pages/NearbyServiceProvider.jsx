@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ServiceProviderPop from "../components/ServiceProviderPop";
 import { useState } from "react";
@@ -18,7 +18,7 @@ const NearbyServiceProvider = ({user}) => {
     const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
     const [selectedProviderId, setSelectedProviderId] = useState('')
     const [selectedServicePrice, setSelectedServicePrice] = useState(0)
-    const [addToFavourites, setAddToFavourites] = useState(false)
+    const [isFavourite, setIsFavourite] = useState([])
 
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
@@ -58,6 +58,7 @@ const NearbyServiceProvider = ({user}) => {
           })
       }
   }, [bookServicePanel])
+
   const userCurrentLocationHandler = (e)=> {
     setUseCurrentLocationToFetch(!useCurrentLocationToFetch)
 
@@ -93,7 +94,7 @@ const NearbyServiceProvider = ({user}) => {
       return <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto'}}/>
     }
     if (addToFavSuccess) {
-      setAddToFavourites(!addToFavourites)
+      // setAddToFavourites(!addToFavourites)
       return <div className="text-green-600 text-center">Added to favourites</div>
     }
     if (addToFavError) {
@@ -101,6 +102,14 @@ const NearbyServiceProvider = ({user}) => {
     }
   }
 
+  const toggleFavouritesHandler = (providerId)=> {
+    setIsFavourite(prevState => prevState.includes(providerId) ? prevState.filter(id => id !== providerId) : [...prevState, providerId])
+    addToFavouritesHandler(providerId)
+  }
+
+  useEffect(() => {
+    
+  }, [data, user, isFavourite])
   if (useCurrentLocationToFetch && !data) {
     return <div>No service providers found nearby from your current location. Please use saved location</div>
   }
@@ -125,6 +134,7 @@ const NearbyServiceProvider = ({user}) => {
           isLoading ? 
             (<div className="w-full flex items-center justify-center mt-10"><CircularProgress /></div>) : 
             (data?.nearbyProviders.map(({provider:provider, distance, services}, index) => (
+              console.log(isFavourite),
               <div
                 key={index}
                 className="flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow mb-4"
@@ -140,9 +150,9 @@ const NearbyServiceProvider = ({user}) => {
                     <p className="text-sm text-gray-500 font-semibold">{distance + " " + "km away"}</p>
                     <p className="text-sm text-gray-700 font-semibold">&#x20b9; {services[0].price}</p>
                   </div>
-                  <h4 onClick={()=> addToFavouritesHandler(services[0]._id)} className="absolute -top-2 -left-2 text-sm text-gray-700 font-semibold">
+                  <h4 onClick={()=> toggleFavouritesHandler(services[0]._id)} className="absolute -top-2 -left-2 text-sm text-gray-700 font-semibold">
                       { 
-                        addToFavourites ? (
+                        isFavourite.includes(services[0]._id) ? (
                           <HeartIcon sx={{ color: 'red' }}/>
                         ) : (
                           <HeartOutlineIcon />

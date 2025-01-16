@@ -12,7 +12,6 @@ const ProviderLogin = () => {
       e.preventDefault();
       try {
         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/providers/login`, { email, password })
-        console.log(response)
         const token = response.data.token;
   
         if(!token) {
@@ -62,7 +61,7 @@ const ProviderLogin = () => {
       
       <p className="text-sm font-bold text-center">
         Dont' have an Provider account?{' '}
-        <Link to="/signup-provider" className="text-blue-500 hover:underline">
+        <Link to="/provider/signup" className="text-blue-500 hover:underline">
           Sign Up
         </Link>
       </p>

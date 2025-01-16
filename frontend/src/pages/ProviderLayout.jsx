@@ -10,9 +10,6 @@ const ProviderLayout = () => {
     {
         skip: !token,
     });
-    if (!token) {
-      window.location.href = "/provider/login";
-    }
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="p-4 bg-gray-800 text-white text-lg font-bold">
