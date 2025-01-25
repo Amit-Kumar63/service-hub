@@ -47,8 +47,8 @@ module.exports.findUserByCredentials = async (email, password) => {
 module.exports.addToFavourites = async (user, serviceId) => {
     try {
         if (user.favourites.includes(serviceId)) {
-            user.favourites.filter((id) => id !== serviceId);
-            await user.save();
+            const favourites = user.favourites.filter((id) => id.toString() !== serviceId.toString());
+            await userModel.findByIdAndUpdate(user._id, { favourites });
             return user;
         } else {
             user.favourites.push(serviceId);

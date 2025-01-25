@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ServiceProviderPop from "../components/ServiceProviderPop";
 import { useState } from "react";
@@ -18,7 +18,7 @@ const NearbyServiceProvider = ({user}) => {
     const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
     const [selectedProviderId, setSelectedProviderId] = useState('')
     const [selectedServicePrice, setSelectedServicePrice] = useState(0)
-    const [isFavourite, setIsFavourite] = useState([])
+    const [isFav, setIsFav] = useState([])
 
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
@@ -89,27 +89,38 @@ const NearbyServiceProvider = ({user}) => {
   }
 
   const addToFavouritesHandler = async (serviceId)=> {
-    await addToFav({serviceId, token})
-    if ( addToFavLoading ) {
-      return <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto'}}/>
-    }
-    if (addToFavSuccess) {
-      // setAddToFavourites(!addToFavourites)
-      return <div className="text-green-600 text-center">Added to favourites</div>
-    }
-    if (addToFavError) {
-      return <div className="text-red-600 text-center">Error adding to favourites</div>
-    }
+   try {
+     await addToFav({serviceId, token})
+     if ( addToFavLoading ) {
+       return <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto'}}/>
+     }
+     if (addToFavSuccess) {
+       return <div className="text-green-600 text-center">Added to favourites</div>
+     }
+     if (addToFavError) {
+       return <div className="text-red-600 text-center">Error adding to favourites</div>
+     }
+   } catch (error) {
+    console.error('Error adding to favourites:', error)
+   }
   }
 
-  const toggleFavouritesHandler = (providerId)=> {
-    setIsFavourite(prevState => prevState.includes(providerId) ? prevState.filter(id => id !== providerId) : [...prevState, providerId])
-    addToFavouritesHandler(providerId)
+  const toggleFavouritesHandler = (serviceId)=> {
+    setIsFav((previousValue) => {
+      if (!Array.isArray(previousValue)) {
+        previousValue = [];
+    }
+      if (previousValue.includes(serviceId)) {
+        return previousValue.filter((id) => id.toString() !== serviceId.toString())
+      }
+      else {
+        return [...previousValue, serviceId]
+      }
+    }
+    );
+    addToFavouritesHandler(serviceId)
   }
 
-  useEffect(() => {
-    
-  }, [data, user, isFavourite])
   if (useCurrentLocationToFetch && !data) {
     return <div>No service providers found nearby from your current location. Please use saved location</div>
   }
@@ -129,12 +140,11 @@ const NearbyServiceProvider = ({user}) => {
           !isLoading && !data && (
             <div className="flex items-center justify-center mt-10 text-2xl font-bold text-center">No service providers found nearby <i className="text-lg ri-emotion-normal-fill"></i></div>
           )
-        }        
+        }
         {
           isLoading ? 
             (<div className="w-full flex items-center justify-center mt-10"><CircularProgress /></div>) : 
             (data?.nearbyProviders.map(({provider:provider, distance, services}, index) => (
-              console.log(isFavourite),
               <div
                 key={index}
                 className="flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow mb-4"
@@ -151,8 +161,8 @@ const NearbyServiceProvider = ({user}) => {
                     <p className="text-sm text-gray-700 font-semibold">&#x20b9; {services[0].price}</p>
                   </div>
                   <h4 onClick={()=> toggleFavouritesHandler(services[0]._id)} className="absolute -top-2 -left-2 text-sm text-gray-700 font-semibold">
-                      { 
-                        isFavourite.includes(services[0]._id) ? (
+                      {
+                        user?.user.favourites.includes(services[0]._id) || isFav.includes(services[0]._id) ? (
                           <HeartIcon sx={{ color: 'red' }}/>
                         ) : (
                           <HeartOutlineIcon />
