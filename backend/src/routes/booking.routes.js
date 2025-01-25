@@ -15,7 +15,7 @@ router.post('/book-service', [
 
 router.post('/change-booking-status', [
     query('id').isMongoId().withMessage('Invalid booking id'),
-    query('status').isIn(['completed', 'cancelled', 'rejected', 'accepted']).withMessage('Invalid status'),
+    query('status').isIn(['completed', 'cancelled', 'declined', 'accepted']).withMessage('Invalid status'),
 ], authMiddleware.providerAuth, bookingController.changeStatus);
 
 module.exports = router;

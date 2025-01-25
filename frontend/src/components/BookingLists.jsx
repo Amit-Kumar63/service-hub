@@ -1,23 +1,31 @@
-
+import { useState } from "react";
 
 const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isBookingStatusLoading, isBookingStatusSuccess }) => {
-    
+    const [accepted, setAccepted] = useState(false);
+    const [declined, setDeclined] = useState(false);
     const changeBookingStatusHandler = async (bookingId, status) => {
+
         const token = localStorage.getItem("provider-token");
-        await changeBookingStatus({
-            id: bookingId,
-            status,
-            token
-        })
-        if (isBookingStatusError) {
-            console.log(isBookingStatusError);
-        }
-        if (isBookingStatusSuccess) {
-            console.log(isBookingStatusSuccess);
-        }
-        if (isBookingStatusLoading) {
-            console.log(isBookingStatusLoading);
-        }
+try {
+            await changeBookingStatus({
+                id: bookingId,
+                status,
+                token
+            })
+            if (isBookingStatusError) {
+                // status.toLowerCase() === "accepted" && setAccepted(true);
+                // status.toLowerCase() === "declined" && setDeclined(true);
+                console.log(isBookingStatusError);
+            }
+            if (isBookingStatusSuccess) {
+                console.log(isBookingStatusSuccess);
+            }
+            if (isBookingStatusLoading) {
+                console.log(isBookingStatusLoading);
+            }
+} catch (error) {
+    console.error(error);
+}
     }
     return (
         <div className="space-y-4 pb-16">
@@ -54,9 +62,11 @@ const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isB
                             <p
                                 className={`text-sm font-semibold ${
                                     booking.status?.toLowerCase() ===
-                                    "Pending"?.toLocaleLowerCase()
-                                        ? "text-yellow-600"
-                                        : "text-green-500"
+                                    "Pending"?.toLowerCase() && "text-yellow-600" ||
+                                    booking.status?.toLowerCase() ===
+                                    'Accepted'.toLowerCase() && "text-green-600" ||
+                                    booking.status?.toLowerCase() ===
+                                    'Declined'.toLowerCase() && "text-red-600"
                                 }`}>
                                 {booking.status?.charAt(0).toUpperCase() +
                                     booking.status?.slice(1)}
@@ -72,13 +82,17 @@ const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isB
                         </div>
                     </div>
                     <div className="flex items-center gap-2 mt-4">
-                        <button 
+                        <button
+                        disabled={booking.status === "accepted".toLocaleLowerCase()}
                         onClick={() => changeBookingStatusHandler(booking._id, "Accepted")}
-                        className="w-1/2 bg-green-500 text-white px-1 py-2 rounded-md font-semibold text-sm">
-                            Accept
+                        className={`w-1/2 ${booking.status === "accepted".toLocaleLowerCase() ? "bg-gray-400" : "bg-green-500"} text-white px-1 py-2 rounded-md font-semibold text-sm`}>
+                            {booking.status === "accepted".toLocaleLowerCase() ? "Accepted" : "Accept"}
                         </button>
-                        <button className="w-1/2 bg-red-500 text-white px-1 py-2 rounded-md font-semibold text-sm">
-                            Decline
+                        <button
+                        disabled={booking.status === "declined".toLocaleLowerCase()}
+                        onClick={() => changeBookingStatusHandler(booking._id, "Declined")}
+                        className={`w-1/2 ${booking.status === "accepted".toLocaleLowerCase() ? "bg-red-500" : "bg-gray-400"} text-white px-1 py-2 rounded-md font-semibold text-sm`}>
+                            {booking.status === "declined".toLocaleLowerCase() ? "Declined" : "Decline"}
                         </button>
                     </div>
                 </div>
