@@ -8,6 +8,7 @@ import UserProtectWrapper from './pages/UserProtectWrapper'
 import { useGetUserQuery } from './app/api/api'
 
 import ProviderLayout from './pages/ProviderLayout'
+import UserLayout from './pages/UserLayout'
 
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
@@ -31,11 +32,11 @@ const App = () => {
   
   return (
     <Routes>
-      <Route path='/' element={<Start />} />
-      <Route path='/home' element={ <Home /> } />
-      <Route path='/login' element={<Login />} />
-      <Route path='/signup' element={<Signup />} />
-      <Route path='/profile' element={
+      <Route path='/user' element={<UserLayout />} >
+      <Route path='home' element={ <Home /> } />
+      <Route path='login' element={<Login />} />
+      <Route path='signup' element={<Signup />} />
+      <Route path='profile' element={
         <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
         <Profile user={user} isLoading={isLoading} isSuccess={isSuccess}/>
         </UserProtectWrapper> 
@@ -45,24 +46,27 @@ const App = () => {
         <NearbyServiceProvider user={user} />
         </UserProtectWrapper>
        } />
-       <Route path='/booking-finished' element={
+       <Route path='booking-finished' element={
         <PrivateRoute isAuthenticated={true} element={<BookingFinished/>} redirectTo='/home' />
        }/>
-       <Route path='/user-booking-summary' element={
+       <Route path='user-booking-summary' element={
          <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
          <UserBookingsSummary user={user} />
          </UserProtectWrapper>
        } />
-       <Route path='/message' element={
+       <Route path='message' element={
          <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
          <MessagePage />
          </UserProtectWrapper>
        } />
-       <Route path='/favorites' element={
+       <Route path='favorites' element={
          <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
          <Favorites user={user} />
          </UserProtectWrapper>
        } />
+      </Route>
+      <Route path='/' element={<Start />} />
+      
        {/* Providers Routes */}
        <Route path='/provider' element={<ProviderLayout />} >
        <Route path='login' element={ <ProviderLogin /> }/>

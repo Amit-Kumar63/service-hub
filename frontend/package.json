@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^2.5.0",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
+    "firebase": "^11.2.0",
     "gsap": "^3.12.5",
     "leaflet": "^1.9.4",
     "react": "^19.0.0",

@@ -147,7 +147,7 @@ const ProviderHome = () => {
                     </div>
                     <div
                         ref={recentBookingsPanelRef}
-                        className="absolute hidden px-4 py-2 h-full bottom-0 left-0 right-0 w-full bg-gray-100">
+                        className="absolute hidden px-4 py-2 h-full z-10 bottom-0 left-0 right-0 w-full bg-gray-100">
                             <h4 onClick={()=> {setRecentBookingsPanel(false); setValue(0)}} className="w-full text-center"><i className="text-2xl text-gray-400 ri-arrow-down-wide-fill"></i></h4>
                         <BookingLists provider={provider} changeBookingStatus={changeBookingStatus} isBookingStatusSuccess={isBookingStatusSuccess} isBookingStatusError={isBookingStatusError}/>    
                     </div>  

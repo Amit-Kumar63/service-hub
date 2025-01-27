@@ -14,7 +14,7 @@ const Start = () => {
         <img className='w-full h-full object-cover' src="start.png" alt="" />
       </div>
       <div className='w-full flex flex-col justify-center items-center gap-3 pb-5 px-5'>
-        <Link to="/home" className='rounded-lg w-full py-3 bg-[#1a80e6] text-white text-center font-bold'>Continue</Link>
+        <Link to="/user/home" className='rounded-lg w-full py-3 bg-[#1a80e6] text-white text-center font-bold'>Continue</Link>
         <p className='text-xs font-medium text-gray-500'>By continuing, you agree to our terms</p>
       </div>
       <div className='w-full'>

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import AddressSuggestion from '../components/AddressSuggestion.jsx';
+import auth from '../firebase-config.js';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 
 const Signup = () => {
     const [firstName, setFirstName] = useState('');
@@ -13,6 +15,23 @@ const Signup = () => {
     const [address, setAddress] = useState('')
 
     const navigate = useNavigate();
+
+    const handleGoogleSignIn = async () => {
+      signInWithPopup(auth, new GoogleAuthProvider())
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        console.log(user);
+        console.log('token',token);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData.email;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+      });
+    }
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -39,6 +58,7 @@ const Signup = () => {
     <div className="flex flex-col items-center h-screen bg-gray-100 p-4">
       <h1 className="text-lg font-bold text-gray-800 mb-6">ServiceHub</h1>
       <h2 className="text-2xl font-semibold mb-6">Create a ServiceHub account</h2>
+      <div id='recaptcha-container'></div>
       <form onSubmit={submitHandler}>
         <div className='flex gap-2'>
       <input
@@ -93,8 +113,14 @@ const Signup = () => {
         </Link>
         .
       </p>
-      <button className="w-full py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600">
+      <button className="w-full py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg">
         Continue
+      </button>
+      <button 
+      type='button'
+      onClick={handleGoogleSignIn}
+      className="w-full py-3 mt-5 bg-teal-600 text-white text-lg font-semibold rounded-lg">
+        signInWithPopup
       </button>
       </form>
     </div>

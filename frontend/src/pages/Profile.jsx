@@ -5,10 +5,9 @@ import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
 
 const ProfilePage = ({ user, isLoading, isSuccess }) => {
+
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
-
-  // console.log(bookings);
   const handleLogout = async () => {
     try {
      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`, {
