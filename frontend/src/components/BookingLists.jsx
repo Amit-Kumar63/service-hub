@@ -1,9 +1,13 @@
 import { useState } from "react";
 
 const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isBookingStatusLoading, isBookingStatusSuccess }) => {
-    const [accepted, setAccepted] = useState(false);
-    const [declined, setDeclined] = useState(false);
+    const [bookings, setBookings] = useState(provider?.provider.bookings || []);
+
     const changeBookingStatusHandler = async (bookingId, status) => {
+        const updateBookings = bookings.map((booking) => 
+            booking._id === bookingId ? { ...booking, status } : booking
+        );
+        setBookings(updateBookings);
 
         const token = localStorage.getItem("provider-token");
 try {
@@ -13,8 +17,6 @@ try {
                 token
             })
             if (isBookingStatusError) {
-                // status.toLowerCase() === "accepted" && setAccepted(true);
-                // status.toLowerCase() === "declined" && setDeclined(true);
                 console.log(isBookingStatusError);
             }
             if (isBookingStatusSuccess) {
@@ -25,12 +27,16 @@ try {
             }
 } catch (error) {
     console.error(error);
+    const revertBookings = bookings.map((booking) => 
+        booking._id === bookingId ? { ...booking, status: status === "accepted" ? "pending" : "accepted" } : booking
+    );
+    setBookings(revertBookings);
 }
     }
     return (
         <div className="space-y-4 pb-16">
             <h2 className="text-xl font-bold text-gray-800">Recent Bookings</h2>
-            {provider?.provider.bookings.map((booking, index) => (
+            {bookings.map((booking, index) => (
                 <div
                     key={index}
                     className="bg-white px-4 py-3 rounded shadow">
@@ -83,16 +89,16 @@ try {
                     </div>
                     <div className="flex items-center gap-2 mt-4">
                         <button
-                        disabled={booking.status === "accepted".toLocaleLowerCase()}
+                        disabled={booking.status.toLowerCase() === "accepted"}
                         onClick={() => changeBookingStatusHandler(booking._id, "Accepted")}
-                        className={`w-1/2 ${booking.status === "accepted".toLocaleLowerCase() ? "bg-gray-400" : "bg-green-500"} text-white px-1 py-2 rounded-md font-semibold text-sm`}>
-                            {booking.status === "accepted".toLocaleLowerCase() ? "Accepted" : "Accept"}
+                        className={`w-1/2 ${booking.status.toLowerCase() === "accepted" ? "bg-gray-400" : "bg-green-500"} text-white px-1 py-2 rounded-md font-semibold text-sm`}>
+                            {booking.status.toLowerCase() === "accepted" ? "Accepted" : "Accept"}
                         </button>
                         <button
-                        disabled={booking.status === "declined".toLocaleLowerCase()}
+                        disabled={booking.status.toLowerCase() === "declined"}
                         onClick={() => changeBookingStatusHandler(booking._id, "Declined")}
-                        className={`w-1/2 ${booking.status === "accepted".toLocaleLowerCase() ? "bg-red-500" : "bg-gray-400"} text-white px-1 py-2 rounded-md font-semibold text-sm`}>
-                            {booking.status === "declined".toLocaleLowerCase() ? "Declined" : "Decline"}
+                        className={`w-1/2 ${booking.status.toLowerCase() === "accepted" ? "bg-red-500" : "bg-gray-400"} text-white px-1 py-2 rounded-md font-semibold text-sm`}>
+                            {booking.status.toLowerCase() === "declined" ? "Declined" : "Decline"}
                         </button>
                     </div>
                 </div>
