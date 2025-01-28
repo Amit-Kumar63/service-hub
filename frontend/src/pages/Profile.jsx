@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
@@ -23,7 +23,7 @@ const ProfilePage = ({ user, isLoading, isSuccess }) => {
      console.error({message: error.message});
   }}
   return (
-    <div className="bg-white min-h-screen flex justify-center items-center p-4">
+    <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
       {
         isLoading ? (
           <div className="w-full h-full flex flex-col justify-center items-center">
@@ -31,9 +31,9 @@ const ProfilePage = ({ user, isLoading, isSuccess }) => {
             <CircularProgress />  
           </div>
         )  : isSuccess && (
-          <div className="p-6 w-full">
+          <div className="p-2 w-full">
           {/* Back Button */}
-          <div onClick={()=> window.history.back() } className="text-gray-500 text-2xl mb-4">&larr;</div>
+          <div onClick={()=> navigate(-1) } className="text-gray-500 text-2xl mb-4">&larr;</div>
   
           {/* Profile Section */}
           <div className="text-center">
@@ -84,7 +84,14 @@ const ProfilePage = ({ user, isLoading, isSuccess }) => {
           </div>
   
           {/* Bookings Section */}
+          <div>
           <UserBookingsList user={user} />
+          <Link 
+          className={`${user?.user.bookings.length <= 3 ? "hidden" : 'flex'} justify-center py-2 mt-5 mx-auto px-3 text-sm text-slate-700 border border-solid border-slate-200 font-semibold w-fit rounded-md `} 
+          to='/user/all-bookings'>
+            View all bookings
+          </Link>
+          </div>
         </div>
         )
       }

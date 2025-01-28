@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Toast from '../components/Toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginStatus, setLoginStatus] = useState({  message: '', severity: '' });
+  const [isToastOpen, setIsToastOpen] = useState(false)
 
   const navigate = useNavigate();
 
@@ -19,7 +22,12 @@ const Login = () => {
 
       if(response.status === 200) {
         localStorage.setItem('token', response.data.token);
-        navigate('/user/home');
+        setLoginStatus({ message: 'Login successful', severity: 'success' });
+        setIsToastOpen(true);
+        setTimeout(() => {
+          setIsToastOpen(false);
+          navigate('/user/home');
+        }, 1500);
       }
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
@@ -65,6 +73,7 @@ const Login = () => {
         </Link>
       </p>
       </div>
+      <Toast message={loginStatus.message} severity={loginStatus.severity} isOpen={isToastOpen} />
     </div>
   );
 };
