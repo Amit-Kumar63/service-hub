@@ -8,7 +8,7 @@ const UserProtectWrapper = ({ children, isLoading, isError, isSuccess }) => {
     const navigate = useNavigate();
     useEffect(() => {
         if (!isLoading && (!token || isError)) {
-            navigate('/login');
+            navigate('/user/login');
         }
     }, [token, isError]);   
 
