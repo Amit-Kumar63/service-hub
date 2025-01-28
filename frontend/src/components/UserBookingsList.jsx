@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const UserBookingsList = ({user}) => {
+const UserBookingsList = ({user, viewAllBookings}) => {
+  const bookings = viewAllBookings ? user?.user.bookings : user?.user.bookings.slice(0, 3);
   return (
     <div className="mt-6">
             <h2 className="font-bold text-lg mb-3">Bookings</h2>
-            {user?.user.bookings.slice(0, 3).reverse().map((booking, index) => (
+            {bookings.map((booking, index) => (
       <Link to='/user/user-booking-summary' state={{booking}} key={index}>
               <div
                 className="flex justify-between border-b py-2 font-semibold text-sm"
