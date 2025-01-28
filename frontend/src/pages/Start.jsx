@@ -13,13 +13,13 @@ const Start = () => {
       <div className='w-full h-full bg-black absolute opacity-[30%]'></div>
         <img className='w-full h-full object-cover' src="start.png" alt="" />
       </div>
-      <div className='w-full flex flex-col justify-center items-center gap-3 pb-5 px-5'>
+      <div className='w-full flex flex-col justify-center items-center gap-3 px-5'>
         <Link to="/user/home" className='rounded-lg w-full py-3 bg-[#1a80e6] text-white text-center font-bold'>Continue</Link>
         <p className='text-xs font-medium text-gray-500'>By continuing, you agree to our terms</p>
       </div>
-      <div className='w-full'>
+      <div className='w-full mb-5'>
         <p className='text-base text-center font-medium text-black'>Get start as a <span className='text-[#1a80e6] font-semibold'>Service Provider</span></p>
-        <Link to="/provider/login" className='bg-[#0A090D] text-white font-semibold py-3 px-3 flex justify-center items-center mt-3'>Start as a Service Provider</Link>
+        <Link to="/provider/login" className='bg-[#0A090D] text-white font-semibold py-3 px-3 mx-5 rounded-md flex justify-center items-center mt-3'>Start as a Service Provider</Link>
       </div>
     </div>
   )

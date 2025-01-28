@@ -28,7 +28,7 @@ const ProviderLogin = () => {
     }
   return (
     <div className=" h-screen bg-gray-100 p-4">
-        <Link to="/home" className="absolute top-4 left-4 text-2xl font-bold text-gray-600">&larr;</Link>
+        <Link to="/provider/home" className="absolute top-4 left-4 text-2xl font-bold text-gray-600">&larr;</Link>
       <div className='flex flex-col mt-20'>
       <h1 className="text-2xl font-bold mb-8 text-center">Welcome back provider</h1>
       
