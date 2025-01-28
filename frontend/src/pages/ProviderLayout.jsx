@@ -15,7 +15,7 @@ const ProviderLayout = () => {
       <header className="p-4 bg-gray-800 text-white text-lg font-bold">
         Provider Dashboard
       </header>
-      <main className="py-4">
+      <main>
         <Outlet context={{provider, isLoading}}/>
       </main>
     </div>
