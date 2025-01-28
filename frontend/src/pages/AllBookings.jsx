@@ -5,7 +5,7 @@ const AllBookings = ({user}) => {
   const [userData, setUserData] = useState(user || {})
   return (
     <div className='bg-white w-full h-full px-4'>
-      <UserBookingsList user={userData}/>
+      <UserBookingsList user={userData} viewAllBookings={true}/>
     </div>
   )
 }

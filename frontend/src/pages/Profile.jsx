@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
 
 const ProfilePage = ({ user, isLoading, isSuccess }) => {
-
+  const [viewAllBookings, setViewAllBookings] = useState(user?.user.bookings.length <= 3 ? true : false);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
   const handleLogout = async () => {
@@ -85,7 +85,7 @@ const ProfilePage = ({ user, isLoading, isSuccess }) => {
   
           {/* Bookings Section */}
           <div>
-          <UserBookingsList user={user} />
+          <UserBookingsList user={user} viewAllBookings={viewAllBookings}/>
           <Link 
           className={`${user?.user.bookings.length <= 3 ? "hidden" : 'flex'} justify-center py-2 mt-5 mx-auto px-3 text-sm text-slate-700 border border-solid border-slate-200 font-semibold w-fit rounded-md `} 
           to='/user/all-bookings'>
