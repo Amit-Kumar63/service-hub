@@ -31,7 +31,7 @@ const BookingFinished = () => {
 
         <div className="flex justify-center mt-6">
           <button
-            onClick={() => navigate('/home')}
+            onClick={() => navigate('/user/home')}
             className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold transform transition-transform focus:outline-none">
             Go to Home
           </button>

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ServiceProviderPop from "../components/ServiceProviderPop";
 import { useState } from "react";
 import gsap from "gsap";
@@ -22,7 +22,7 @@ const NearbyServiceProvider = ({user}) => {
 
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
-    const navigate = useNavigate();
+  
     const { serviceType  } = useParams() 
 
     const token = localStorage.getItem('token')
@@ -129,7 +129,7 @@ const NearbyServiceProvider = ({user}) => {
   return (
     <div className="bg-gray-100 h-screen flex flex-col pt-4 relative">
         <div className="w-full flex items-center justify-between px-4">
-        <i onClick={()=> navigate(-1)} className="text-2xl ri-arrow-left-line"></i>
+        <i onClick={()=> window.history.back()} className="text-2xl ri-arrow-left-line"></i>
         <h1 className="text-2xl font-bold text-center w-full">Services</h1>
         </div>
       <div className="p-4">

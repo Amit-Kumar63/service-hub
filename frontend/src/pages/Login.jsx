@@ -19,7 +19,7 @@ const Login = () => {
 
       if(response.status === 200) {
         localStorage.setItem('token', response.data.token);
-        navigate('/home');
+        navigate('/user/home');
       }
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
@@ -27,7 +27,7 @@ const Login = () => {
   }
   return (
     <div className=" h-screen bg-gray-100 p-4">
-        <Link to="/home" className="absolute top-4 left-4 text-2xl font-bold text-gray-600">&larr;</Link>
+        <Link to="/user/home" className="absolute top-4 left-4 text-2xl font-bold text-gray-600">&larr;</Link>
       <div className='flex flex-col mt-20'>
       <h1 className="text-2xl font-bold mb-8 text-center">Welcome back</h1>
       
@@ -60,7 +60,7 @@ const Login = () => {
       
       <p className="text-sm font-bold text-center">
         New user?{' '}
-        <Link to="/signup" className="text-blue-500 hover:underline">
+        <Link to="/user/signup" className="text-blue-500 hover:underline">
           Sign Up
         </Link>
       </p>

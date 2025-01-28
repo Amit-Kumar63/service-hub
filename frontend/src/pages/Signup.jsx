@@ -48,7 +48,7 @@ const Signup = () => {
 
           if (response.status === 201) {
             localStorage.setItem('token', token);
-            navigate('/home');
+            navigate('/user/home');
           }
         } catch (error) { 
           console.error("Error:", error.response?.data || error.message);

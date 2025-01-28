@@ -17,7 +17,7 @@ const ProfilePage = ({ user, isLoading, isSuccess }) => {
       });
       if (response.status === 200){
         localStorage.removeItem("token");
-        navigate("/home");
+        navigate("/user/home");
       }
     } catch (error) {
      console.error({message: error.message});
@@ -33,7 +33,7 @@ const ProfilePage = ({ user, isLoading, isSuccess }) => {
         )  : isSuccess && (
           <div className="p-6 w-full">
           {/* Back Button */}
-          <div onClick={()=> navigate(-1) } className="text-gray-500 text-2xl mb-4">&larr;</div>
+          <div onClick={()=> window.history.back() } className="text-gray-500 text-2xl mb-4">&larr;</div>
   
           {/* Profile Section */}
           <div className="text-center">
