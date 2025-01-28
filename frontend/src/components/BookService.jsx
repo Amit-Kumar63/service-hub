@@ -37,7 +37,7 @@ const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user, 
           'Authorization': `Bearer ${token}`
         } });
     if (response.status === 201) {
-      navigate("/booking-finished");
+      navigate("/user/booking-finished");
     }
     } catch (error) {
       console.error("error while creating booking :", error)
