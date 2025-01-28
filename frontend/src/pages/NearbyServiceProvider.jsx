@@ -23,7 +23,7 @@ const NearbyServiceProvider = ({user}) => {
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
   
-    const { serviceType  } = useParams() 
+    const { serviceType  } = useParams()
 
     const token = localStorage.getItem('token')
 
