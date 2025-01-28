@@ -12,12 +12,12 @@ const UserLayout = () => {
         skip: !token,
     });
   return (
-    <div className="min-h-screen bg-gray-100 w-full">
+    <>
       <main>
         <Outlet context={{user, isLoading}}/>
       </main>
       <NavigationBar />
-    </div>
+    </>
   );
 };
 
