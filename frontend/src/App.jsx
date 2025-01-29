@@ -5,7 +5,6 @@ import { lazy } from 'react'
 import Start from './pages/Start'
 import Home from './pages/Home'
 import UserProtectWrapper from './pages/UserProtectWrapper'
-import { useGetUserQuery } from './app/api/api'
 
 import ProviderLayout from './pages/ProviderLayout'
 import UserLayout from './pages/UserLayout'
@@ -25,11 +24,6 @@ const MessagePage = lazy(() => import('./pages/Message'))
 const AllBookings = lazy(() => import('./pages/AllBookings'))
 
 const App = () => {
-  const token = localStorage.getItem('token');
-      const { isLoading, isError, isSuccess, data: user } = useGetUserQuery(token, {
-          skip: !token
-    });
-  
   return (
     <Routes>
       <Route path='/user' element={<UserLayout />} >
@@ -37,31 +31,31 @@ const App = () => {
       <Route path='login' element={<Login />} />
       <Route path='signup' element={<Signup />} />
       <Route path='profile' element={
-        <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
-        <Profile user={user} isLoading={isLoading} isSuccess={isSuccess}/>
-        </UserProtectWrapper> 
+        <UserProtectWrapper>
+        <Profile />
+        </UserProtectWrapper>
       } />
       <Route path='service-provider/:serviceType' element={ 
-        <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess} >
-        <NearbyServiceProvider user={user} />
+        <UserProtectWrapper >
+        <NearbyServiceProvider />
         </UserProtectWrapper>
        } />
        <Route path='booking-finished' element={
-        <PrivateRoute isAuthenticated={true} element={<BookingFinished/>} redirectTo='/user/home' />
+        <PrivateRoute element={<BookingFinished/>} redirectTo='/user/home' />
        }/>
        <Route path='user-booking-summary' element={
-         <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
-         <UserBookingsSummary user={user} />
+         <UserProtectWrapper>
+         <UserBookingsSummary />
          </UserProtectWrapper>
        } />
        <Route path='message' element={
-         <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
+         <UserProtectWrapper>
          <MessagePage />
          </UserProtectWrapper>
        } />
        <Route path='all-bookings' element={
-         <UserProtectWrapper isLoading={isLoading} isError={isError} isSuccess={isSuccess}>
-         <AllBookings user={user} />
+         <UserProtectWrapper>
+         <AllBookings />
          </UserProtectWrapper>
        } />
       </Route>
