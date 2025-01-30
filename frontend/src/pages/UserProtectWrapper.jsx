@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useGetUserQuery } from '../app/api/api';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
 
-const UserProtectWrapper = ({ children, isLoading, isError, isSuccess }) => {
-    const token = localStorage.getItem('token');
+const UserProtectWrapper = ({ children }) => {
+    const { isLoading, isError, isSuccess, token } = useOutletContext()
+
     const navigate = useNavigate();
     useEffect(() => {
         if (!isLoading && (!token || isError)) {

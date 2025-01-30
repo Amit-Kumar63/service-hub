@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Toast from '../components/Toast';
 
@@ -8,8 +8,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState({  message: '', severity: '' });
   const [isToastOpen, setIsToastOpen] = useState(false)
-
-  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -26,7 +24,7 @@ const Login = () => {
         setIsToastOpen(true);
         setTimeout(() => {
           setIsToastOpen(false);
-          navigate('/user/home');
+          window.location.href = '/user/home';
         }, 1500);
       }
     } catch (error) {
@@ -46,6 +44,7 @@ const Login = () => {
         type="email"
         placeholder="email"
         name='email'
+        required
         className="w-full px-4 py-3 mb-6 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
@@ -54,6 +53,7 @@ const Login = () => {
         type="password"
         placeholder="Password"
         name='password'
+        required
         className="w-full px-4 py-3 mb-3 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       

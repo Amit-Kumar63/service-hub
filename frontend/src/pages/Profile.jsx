@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
 
-const ProfilePage = ({ user, isLoading, isSuccess }) => {
+const ProfilePage = () => {
+  const { user, isLoading, isSuccess,token } = useOutletContext()
   const [viewAllBookings, setViewAllBookings] = useState(user?.user.bookings.length <= 3 ? true : false);
-    const token = localStorage.getItem('token');
+    
     const navigate = useNavigate();
   const handleLogout = async () => {
     try {
@@ -17,7 +18,7 @@ const ProfilePage = ({ user, isLoading, isSuccess }) => {
       });
       if (response.status === 200){
         localStorage.removeItem("token");
-        navigate("/user/home");
+        window.location.href = "/user/home"
       }
     } catch (error) {
      console.error({message: error.message});

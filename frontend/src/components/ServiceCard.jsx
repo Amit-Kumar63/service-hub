@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom';
 
-const ServiceCard = ({serviceType}) => {
-
+const ServiceCard = ({serviceType, image}) => {
   return (
     <div className="">
       <div
         className="bg-cover bg-center flex flex-col items-stretch justify-end rounded-xl pt-[132px]"
         style={{
-          backgroundImage: 'linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%), url("https://cdn.usegalileo.ai/sdxl10/d3227baf-140f-42de-8adf-4f75a9aeeda9.png")'
+          backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%), url(${image})`,
         }}
       >
         <div className="flex w-full items-end justify-between gap-4 p-4">

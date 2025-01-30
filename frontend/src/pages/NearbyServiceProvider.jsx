@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import ServiceProviderPop from "../components/ServiceProviderPop";
 import { useState } from "react";
 import gsap from "gsap";
@@ -10,7 +10,8 @@ import { CircularProgress } from '@mui/material';
 import HeartOutlineIcon from '@mui/icons-material/FavoriteBorder';
 import HeartIcon  from '@mui/icons-material/Favorite';
 
-const NearbyServiceProvider = ({user}) => {
+const NearbyServiceProvider = () => {
+  const { user } = useOutletContext()
     const [servicePanel, setServicePanel] = useState(false);
     const [bookServicePanel, setBookServicePanel] = useState(false);
     const [error, setError] = useState('')
