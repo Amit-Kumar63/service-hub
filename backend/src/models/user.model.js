@@ -3,13 +3,10 @@ const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-    firstName: {
+    name: {
         type: String,
         required: [true, 'First name is required'],
         length: [3, 'First name must be at least 3 characters long']
-    },
-    lastName: {
-        type: String,
     },
     email: {
         type: String,
@@ -17,28 +14,22 @@ const userSchema = new mongoose.Schema({
         unique: true,
         match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Invalid email']
     },
-    password: {
+    image: {
         type: String,
-        required: [true, 'Password is required'],
-        length: [6, 'Password must be at least 6 characters long'],
-        select: false
+        default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
     },
     phone: {
         type: String,
-        required: [true, 'Phone number is required'],
     },
     address: {
         type: String,
-        required: [true, 'Address is required'],
     },
     location: {
         lat: {
             type: Number,
-            required: [true, 'Latitude is required'],
         },
         lng: {
             type: Number,
-            required: [true, 'Longitude is required'],
         }
     },
     bookings: [
@@ -51,8 +42,16 @@ const userSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Service'
+    },
+    ],
+    token: {
+        type: String,
+        required: [true, 'Token is required']
+    },
+    uid: {
+        type: String,
+        required: [true, 'UID is required']
     }
-    ]
 }, { timestamps: true });
 
 userSchema.pre('save', async function(next) {

@@ -1,43 +1,48 @@
 const userService = require('../services/user.service');
 const { validationResult } = require('express-validator');
 const { fetchLatLng } = require("../services/location.service");
+const userModel = require('../models/user.model');
+const admin = require('../firebase-admin');
 
 module.exports.userRegister = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { firstName, lastName, email, password, address, phone } = req.body;
+    const { name, email, token } = req.body;
     
-    let lat;
-    let lng;
-    await fetchLatLng(address)
-    .then((response) => {
-        lat = response.lat;
-        lng = response.lng;
-    }).catch((error) => {
-        if (error.message === "Address not found.") {
-            throw new Error("Error fetching location. Please enter valid address");
-        }
-    })
+    // let lat;
+    // let lng;
+    // await fetchLatLng(address)
+    // .then((response) => {
+    //     lat = response.lat;
+    //     lng = response.lng;
+    // }).catch((error) => {
+    //     if (error.message === "Address not found.") {
+    //         throw new Error("Error fetching location. Please enter valid address");
+    //     }
+    // })
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'User already exists' });
+
+    const decodedToken = await admin.auth().verifyIdToken(token)
+    if (!decodedToken) return res.status(400).json({ message: 'Invalid token' });
+
+    const uid = decodedToken.uid;
+    const image = decodedToken.picture
     try {
         const user = await userService.createUser({
-            firstName,
-            lastName,
+            name,
             email,
-            password,
-            address,
-            phone,
-            location: {
-                lat,
-                lng
-            }
+            token,
+            uid,
+            image
         });
         const cookieOptions = {
             expires: new Date(Date.now() + 24 * 3600000),
             httpOnly: true
         }
-        const token = await user.generateToken();
+        // const token = await user.generateToken();
         res.cookie('token', token, cookieOptions);
         res.status(201).json({user, token});
 

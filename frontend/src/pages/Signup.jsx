@@ -1,55 +1,31 @@
-import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import AddressSuggestion from '../components/AddressSuggestion.jsx';
-import auth from '../firebase-config.js';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { auth, signInWithPopup, provider } from '../firebase-config.js';
+import { useState } from 'react';
+import Toast from '../components/Toast.jsx';
 
 const Signup = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
-    const [address, setAddress] = useState('')
+  const [loginStatus, setLoginStatus] = useState({ message: '', severity: '' });
+  const [isToastOpen, setIsToastOpen] = useState(false);
 
-    const navigate = useNavigate();
-
-    const handleGoogleSignIn = async () => {
-      signInWithPopup(auth, new GoogleAuthProvider())
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
+    const submitHandler = async () => {
+    try {
+        const result = await signInWithPopup(auth, provider)
         const user = result.user;
-        console.log(user);
-        console.log('token',token);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.customData.email;
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      });
-    }
+        const token = await user.getIdToken();
+        if (!token) throw new Error('Token not return from firebase')
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        try {
-          console.log(address);
-          
-          const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, { firstName, lastName, email, password, phone, address },
-          { headers: { 'Content-Type': 'application/json' } });
-          const token = response.data.token;
-
-          if (!token) {
-            throw new Error('Token not return from server');
-          }
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, { name: user.displayName, email: user.email, token }, { headers: { 'Content-Type': 'application/json' } });    
 
           if (response.status === 201) {
             localStorage.setItem('token', token);
-            navigate('/user/home');
-          }
+            setLoginStatus({ message: 'Signup successful', severity: 'success' });
+            setIsToastOpen(true);
+            setTimeout(() => {
+            setIsToastOpen(false);
+              window.location.href = '/user/home';
+            }, 1000);
+          } 
         } catch (error) { 
           console.error("Error:", error.response?.data || error.message);
         }
@@ -58,50 +34,14 @@ const Signup = () => {
     <div className="flex flex-col items-center h-screen bg-gray-100 p-4">
       <h1 className="text-lg font-bold text-gray-800 mb-6">ServiceHub</h1>
       <h2 className="text-2xl font-semibold mb-6">Create a ServiceHub account</h2>
-      <div id='recaptcha-container'></div>
-      <form onSubmit={submitHandler}>
-        <div className='flex gap-2'>
-      <input
-      onChange={(e) => setFirstName(e.target.value)}
-        value={firstName}
-        type="text"
-        placeholder="First name"
-        required
-        className="w-1/2 px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        onChange={(e) => setLastName(e.target.value)}
-        value={lastName}
-        type="text"
-        placeholder="Last name"
-        className="w-1/2 px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-        </div>
-      <input
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
-        type="email"
-        placeholder="Email address"
-        required
-        className="w-full px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        onChange={(e) => setPhone(e.target.value)}
-        value={phone}
-        type="number"
-        placeholder="Phone number"
-        required
-        className="w-full px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        onChange={(e) => setPassword(e.target.value)}
-        value={password}
-        type="password"
-        placeholder="Password"
-        required
-        className="w-full px-4 py-3 mb-5 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <AddressSuggestion address={address} setAddress={setAddress} />
+      <button onClick={submitHandler} className="w-full flex items-center justify-center mb-4 py-1 border border-solid border-blue-600 text-blue-600 text-lg font-semibold rounded-3xl">
+        <img 
+        src="/google.png" 
+        alt="google-icon-png" 
+        className='w-12 h-12 object-cover'
+        /> 
+        Sign up with Google
+      </button>
       <p className="text-sm text-gray-600 mb-6 text-center">
         By continuing, you agree to the{' '}
         <Link to="/terms" className="text-blue-500 hover:underline">
@@ -113,16 +53,8 @@ const Signup = () => {
         </Link>
         .
       </p>
-      <button className="w-full py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg">
-        Continue
-      </button>
-      <button 
-      type='button'
-      onClick={handleGoogleSignIn}
-      className="w-full py-3 mt-5 bg-teal-600 text-white text-lg font-semibold rounded-lg">
-        signInWithPopup
-      </button>
-      </form>
+            <Toast message={loginStatus.message} severity={loginStatus.severity} isOpen={isToastOpen} />
+      
     </div>
   );
 };

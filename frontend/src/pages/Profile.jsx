@@ -23,6 +23,7 @@ const ProfilePage = () => {
     } catch (error) {
      console.error({message: error.message});
   }}
+  console.log(user?.user.image)
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
       {
@@ -39,12 +40,12 @@ const ProfilePage = () => {
           {/* Profile Section */}
           <div className="text-center">
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD7c15mqbUC9Ube6XGhKYSsY9KC2v76CwEJA&s"
+              src={`${user?.user.image}`}
               alt="Profile"
               className="w-24 h-24 rounded-full mx-auto object-cover"
             />
             <h1 className="text-lg font-bold mt-4">
-              {user?.user.firstName.charAt(0).toUpperCase() + user?.user.firstName.slice(1)} {user?.user.lastName.charAt(0).toUpperCase() + user?.user.lastName.slice(1)}
+              {user?.user.name.charAt(0).toUpperCase() + user?.user.name.slice(1)}
             </h1>
             <p className="text-sm text-gray-500">
               Joined in {user?.user.createdAt?.split("T")[0]}

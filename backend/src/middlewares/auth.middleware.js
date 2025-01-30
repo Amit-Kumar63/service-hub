@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const Provider = require('../models/provider.model');
+const admin = require('../firebase-admin');
 
 module.exports.userAuth = async (req, res, next) => {
     try {
@@ -9,9 +10,10 @@ module.exports.userAuth = async (req, res, next) => {
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decodedToken = await admin.auth().verifyIdToken(token)
+        if (!decodedToken) return res.status(400).json({ message: 'Invalid token' });
         
-        const user = await User.findOne({ _id: decoded.id});
+        const user = await User.findOne({ uid: decodedToken.uid });
         if (!user) {
             throw new Error('Unauthorized');
         }

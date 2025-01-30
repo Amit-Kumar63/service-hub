@@ -1,17 +1,42 @@
 import ServiceCard from '../components/ServiceCard'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useGetServicesQuery} from '../app/api/api'
 import { CircularProgress } from "@mui/material";
+import AddAddressPopup from '../components/AddAddressPopup';
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { useEffect, useRef, useState } from 'react';
 
 const Home = () => {
-  const token = localStorage.getItem('token')
+  const [addAddressPanel, setAddAddressPanel] = useState(false)
+  const { user } = useOutletContext()
+  const token = user?.user.token
+  const addAddressPopupRef = useRef()
 
   const { data: services, isLoading: isServicesLoading, isError } = useGetServicesQuery(undefined, {
     skip: !token
   })
-
+  
   const navigate = useNavigate()
 
+    useGSAP(() => {
+      if (addAddressPanel) {
+         gsap.to(addAddressPopupRef.current, {
+          transform: 'translateY(0)',
+          delay: 0.3
+        })
+      }
+      else {
+        gsap.to(addAddressPopupRef.current, {
+          transform: 'translateY(100%)'
+        })
+      }
+    }, [token])
+
+    useEffect(()=> {
+      if (token || user?.user.address !== '' ) setAddAddressPanel(true)
+    }, [token])
+  console.log(addAddressPanel); // close not working
   // static data
   const popularServices = [
     {
@@ -93,6 +118,14 @@ const Home = () => {
               </div>
             )
           }
+          {
+            services?.uniqueServiceType.length === 0 && (
+              <h4 className='text-base text-gray-600 font-semibold text-center leading-5'>No services found in your location</h4>
+            )
+          }
+        </div>
+        <div ref={addAddressPopupRef} className='relative translate-y-full h-[450px] w-full'>
+        <AddAddressPopup setAddAddressPanel={setAddAddressPanel}/>
         </div>
     </div>
   )
