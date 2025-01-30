@@ -18,7 +18,7 @@ const ProfilePage = () => {
       });
       if (response.status === 200){
         localStorage.removeItem("token");
-        navigate("/user/home");
+        window.location.href = "/user/home"
       }
     } catch (error) {
      console.error({message: error.message});
