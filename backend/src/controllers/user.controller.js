@@ -25,10 +25,7 @@ module.exports.userRegister = async (req, res) => {
     const decodedToken = await admin.auth().verifyIdToken(token)
     if (!decodedToken) return res.status(400).json({ message: 'Invalid user credentials' });
 
-    const uid = decodedToken.uid;
-    const image = decodedToken.picture
-    const email = decodedToken.email;
-    const name = decodedToken.name;
+    const { uid, email, name, picture:image } = decodedToken
 
     const existingUser = await userModel.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
@@ -41,7 +38,9 @@ module.exports.userRegister = async (req, res) => {
             image
         });
         const cookieOptions = {
-            httpOnly: true
+            expires: new Date(Date.now() + 24 * 3600000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production'
         }
         res.cookie('token', token, cookieOptions);
         res.status(201).json({user, token});
@@ -58,18 +57,18 @@ module.exports.userLogin = async (req, res) => {
     }
     const { token } = req.body;
 
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    if (!decodedToken) return res.status(400).json({ message: 'User not found. Please signup' });
-
-    const uid = decodedToken.uid;
-    const email = decodedToken.email;
     try {
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        if (!decodedToken) return res.status(400).json({ message: 'User not found. Please signup' });
+        const { uid, email } = decodedToken 
+
         const user = await userService.findUserByCredentials(email, uid);
+        await user.updateOne({email}, { token, loggedIn: uid });
         const cookieOptions = {
             expires: new Date(Date.now() + 24 * 3600000),
-            httpOnly: true
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production'
         }
-
         res.cookie('token', user.token, cookieOptions);
         res.status(200).json({ user, token: user.token });
     } catch (error) {
@@ -78,6 +77,9 @@ module.exports.userLogin = async (req, res) => {
 }
 
 module.exports.userLogout = async (req, res) => {
+    const user = req.user;
+    const result = await userModel.updateOne({email: user.email}, { loggedIn: null });
+    if (!result) return res.status(400).json({ message: 'User logged in failed' });
     res.clearCookie('token');
     res.status(200).json({ message: 'User logged out successfully' });
 }

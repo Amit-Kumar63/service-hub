@@ -8,7 +8,7 @@ const ProfilePage = () => {
   const { user, isLoading, isSuccess,token } = useOutletContext()
   const [viewAllBookings, setViewAllBookings] = useState(user?.user.bookings.length <= 3 ? true : false);
     
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
   const handleLogout = async () => {
     try {
      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`, {
@@ -23,7 +23,7 @@ const ProfilePage = () => {
     } catch (error) {
      console.error({message: error.message});
   }}
-  console.log(user?.user.image)
+  
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
       {

@@ -10,7 +10,7 @@ const UserLayout = () => {
     {
         skip: !token,
     });
-
+    
   return (
     <>
       <main>

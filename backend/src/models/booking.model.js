@@ -32,7 +32,7 @@ const bookingSchema = new mongoose.Schema({
     serviceType: {
         type: String,
         required: [true, 'Service type is required']
-    }
+    },
 }, { timestamps: true });
 
 const bookingModel = mongoose.model('Booking', bookingSchema);

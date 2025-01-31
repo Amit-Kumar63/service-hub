@@ -37,7 +37,7 @@ const Home = () => {
     }, [addAddressPanel])
 
     useEffect(()=> {
-      if (token || user?.user.address !== '' ) setAddAddressPanel(true)
+      if (token && user?.user.address !== '' ) setAddAddressPanel(true)
     }, [token])
   
   // static data
