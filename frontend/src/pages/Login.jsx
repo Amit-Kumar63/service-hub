@@ -2,21 +2,19 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Toast from '../components/Toast';
+import { signInWithPopup, auth, provider } from '../firebase-config';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState({  message: '', severity: '' });
   const [isToastOpen, setIsToastOpen] = useState(false)
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  const submitHandler = async () => {
+    const result = await signInWithPopup(auth, provider)
+        const user = result.user;
+        const token = await user.getIdToken();  
+        if (!token) throw new Error('Token not return from firebase')
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, { email, password })
-      const token = response.data.token;
-      if(!token) {
-        throw new Error('Token not return from server');
-      }
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, { token })
 
       if(response.status === 200) {
         localStorage.setItem('token', response.data.token);
@@ -25,7 +23,15 @@ const Login = () => {
         setTimeout(() => {
           setIsToastOpen(false);
           window.location.href = '/user/home';
-        }, 1500);
+        }, 1000);
+      }
+
+      if (response.status === 400) {
+        setLoginStatus({ message: 'Khatam', severity: 'error' });
+        setIsToastOpen(true);
+        setTimeout(() => {
+          setIsToastOpen(false);
+        }, 1000);
       }
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
@@ -36,36 +42,14 @@ const Login = () => {
         <Link to="/user/home" className="absolute top-4 left-4 text-2xl font-bold text-gray-600">&larr;</Link>
       <div className='flex flex-col mt-20'>
       <h1 className="text-2xl font-bold mb-8 text-center">Welcome back</h1>
-      
-      <form onSubmit={submitHandler} >
-      <input
-      onChange={(e) => setEmail(e.target.value)}
-      value={email}
-        type="email"
-        placeholder="email"
-        name='email'
-        required
-        className="w-full px-4 py-3 mb-6 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-      onChange={(e) => setPassword(e.target.value)}
-      value={password}
-        type="password"
-        placeholder="Password"
-        name='password'
-        required
-        className="w-full px-4 py-3 mb-3 text-lg bg-[#E8EEF2] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      
-      <Link to="/forgot-password" className="text-sm text-[#69859B] hover:underline mb-6">
-        Forgot password?
-      </Link>
-      
-      <button className="w-full py-2 mb-4 mt-4 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600">
-        Log in
+      <button onClick={submitHandler} className="w-full flex items-center justify-center mb-4 py-1 border border-solid border-blue-600 text-blue-600 text-lg font-semibold rounded-3xl">
+        <img 
+        src="/google.png" 
+        alt="google-icon-png" 
+        className='w-12 h-12 object-cover'
+        /> 
+        Sign in with Google
       </button>
-      </form>
-      
       <p className="text-sm font-bold text-center">
         New user?{' '}
         <Link to="/user/signup" className="text-blue-500 hover:underline">

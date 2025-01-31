@@ -1,5 +1,5 @@
 const userService = require('../services/user.service');
-const { validationResult } = require('express-validator');
+const { validationResult, cookie } = require('express-validator');
 const { fetchLatLng } = require("../services/location.service");
 const userModel = require('../models/user.model');
 const admin = require('../firebase-admin');
@@ -9,7 +9,7 @@ module.exports.userRegister = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, token } = req.body;
+    const { token } = req.body;
     
     // let lat;
     // let lng;
@@ -22,14 +22,16 @@ module.exports.userRegister = async (req, res) => {
     //         throw new Error("Error fetching location. Please enter valid address");
     //     }
     // })
-    const existingUser = await userModel.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'User already exists' });
-
     const decodedToken = await admin.auth().verifyIdToken(token)
-    if (!decodedToken) return res.status(400).json({ message: 'Invalid token' });
+    if (!decodedToken) return res.status(400).json({ message: 'Invalid user credentials' });
 
     const uid = decodedToken.uid;
     const image = decodedToken.picture
+    const email = decodedToken.email;
+    const name = decodedToken.name;
+
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'User already exists' });
     try {
         const user = await userService.createUser({
             name,
@@ -39,10 +41,8 @@ module.exports.userRegister = async (req, res) => {
             image
         });
         const cookieOptions = {
-            expires: new Date(Date.now() + 24 * 3600000),
             httpOnly: true
         }
-        // const token = await user.generateToken();
         res.cookie('token', token, cookieOptions);
         res.status(201).json({user, token});
 
@@ -56,17 +56,22 @@ module.exports.userLogin = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password } = req.body;
+    const { token } = req.body;
 
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    if (!decodedToken) return res.status(400).json({ message: 'User not found. Please signup' });
+
+    const uid = decodedToken.uid;
+    const email = decodedToken.email;
     try {
-        const user = await userService.findUserByCredentials(email, password);
-        const token = await user.generateToken();
+        const user = await userService.findUserByCredentials(email, uid);
         const cookieOptions = {
             expires: new Date(Date.now() + 24 * 3600000),
             httpOnly: true
         }
-        res.cookie('token', token, cookieOptions);
-        res.status(200).json({ user, token });
+
+        res.cookie('token', user.token, cookieOptions);
+        res.status(200).json({ user, token: user.token });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

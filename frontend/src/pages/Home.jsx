@@ -22,21 +22,23 @@ const Home = () => {
     useGSAP(() => {
       if (addAddressPanel) {
          gsap.to(addAddressPopupRef.current, {
+          display: 'block',
           transform: 'translateY(0)',
           delay: 0.3
         })
       }
       else {
         gsap.to(addAddressPopupRef.current, {
+          display: 'none',
           transform: 'translateY(100%)'
         })
       }
-    }, [token])
+    }, [addAddressPanel])
 
     useEffect(()=> {
       if (token || user?.user.address !== '' ) setAddAddressPanel(true)
     }, [token])
-  console.log(addAddressPanel); // close not working
+  
   // static data
   const popularServices = [
     {

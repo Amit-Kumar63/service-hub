@@ -15,7 +15,7 @@ const Signup = () => {
         const token = await user.getIdToken();
         if (!token) throw new Error('Token not return from firebase')
 
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, { name: user.displayName, email: user.email, token }, { headers: { 'Content-Type': 'application/json' } });    
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, { token }, { headers: { 'Content-Type': 'application/json' } });    
 
           if (response.status === 201) {
             localStorage.setItem('token', token);

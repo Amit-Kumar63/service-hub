@@ -21,16 +21,10 @@ module.exports.createUser = async ({
 
     return user;
 }
-module.exports.findUserByCredentials = async (email, password) => {
-    const user = await userModel.findOne({ email }).select('+password');
-    if (!user) {
-        throw new Error('Invalid email or password');
-    }
-    const isMatch = await user.comparePassword(password);
+module.exports.findUserByCredentials = async (email, uid) => {
+    const user = await userModel.findOne({ email, uid })
+    if (!user) return new Error('Invalid credentials');
     
-    if (!isMatch) {
-        throw new Error('Invalid email or password');
-    }
     return user;
 }
 

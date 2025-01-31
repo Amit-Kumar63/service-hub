@@ -6,14 +6,11 @@ const authMiddleware = require('../middlewares/auth.middleware');
 const router = express.Router();
 
 router.post('/register', [
-    body('name').isLength({ min: 3 }).withMessage('Name must be at least 3 characters long'),
-    body('email').isEmail().withMessage('Invalid email'),
-    body('token').isString().withMessage('Invalid token'),
+    body('token').isString().withMessage('firebase token is required'),
 ], userController.userRegister);
 
 router.post('/login', [
-    body('email').isEmail().withMessage('Invalid email'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+    body('token').isString().withMessage('firebase token is required'),
 ], userController.userLogin);
 
 router.get('/profile', authMiddleware.userAuth , userController.userProfile);
