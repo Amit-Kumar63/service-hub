@@ -22,14 +22,15 @@ const Home = () => {
     useGSAP(() => {
       if (addAddressPanel) {
          gsap.to(addAddressPopupRef.current, {
-          display: 'block',
+          bottom: 80,
           transform: 'translateY(0)',
           delay: 0.3
         })
       }
       else {
         gsap.to(addAddressPopupRef.current, {
-          display: 'none',
+          bottom: 0,
+          duration: 0.3,
           transform: 'translateY(100%)'
         })
       }
@@ -68,7 +69,7 @@ const Home = () => {
     }
   ]
   return (
-    <div className='w-full h-screen font-montserrat py-5 px-4'>
+    <div className='w-full h-screen font-montserrat py-5 px-4 relative'>
         <div className='flex items-center justify-between w-full'>
         <h2 className='text-lg font-bold w-full text-center ml-6'>Services</h2>
         {
@@ -126,7 +127,7 @@ const Home = () => {
             )
           }
         </div>
-        <div ref={addAddressPopupRef} className='relative translate-y-full h-[450px] w-full'>
+        <div ref={addAddressPopupRef} className='fixed z-10 left-0 right-0 bottom-0 translate-y-full h-fit w-full'>
         <AddAddressPopup setAddAddressPanel={setAddAddressPanel}/>
         </div>
     </div>
