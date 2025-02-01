@@ -9,8 +9,8 @@ import { useEffect, useRef, useState } from 'react';
 
 const Home = () => {
   const [addAddressPanel, setAddAddressPanel] = useState(false)
-  const { user } = useOutletContext()
-  const token = user?.user.token
+  const { user, token } = useOutletContext()
+
   const addAddressPopupRef = useRef()
 
   const { data: services, isLoading: isServicesLoading, isError } = useGetServicesQuery(undefined, {
@@ -37,7 +37,12 @@ const Home = () => {
     }, [addAddressPanel])
 
     useEffect(()=> {
-      if (token && user?.user.address !== '' ) setAddAddressPanel(true)
+      if (user?.user.address) {
+        setAddAddressPanel(true)
+      }
+      else {
+        setAddAddressPanel(false)
+      }
     }, [token])
   
   // static data

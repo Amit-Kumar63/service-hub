@@ -10,18 +10,7 @@ module.exports.userRegister = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { token } = req.body;
-    
-    // let lat;
-    // let lng;
-    // await fetchLatLng(address)
-    // .then((response) => {
-    //     lat = response.lat;
-    //     lng = response.lng;
-    // }).catch((error) => {
-    //     if (error.message === "Address not found.") {
-    //         throw new Error("Error fetching location. Please enter valid address");
-    //     }
-    // })
+
     const decodedToken = await admin.auth().verifyIdToken(token)
     if (!decodedToken) return res.status(400).json({ message: 'Invalid user credentials' });
 
@@ -114,5 +103,35 @@ module.exports.addToFavourites = async (req, res) => {
         res.status(200).json({ message: 'Service added to favorites successfully' });
     } catch (error) {
         res.status(500).json({ message: 'An error occurred while adding to favorites', error: error.message });
+    }
+}
+
+module.exports.addAddress = async (req, res)=> {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { address, phone } = req.body;
+    const user = req.user;
+
+    try {
+            
+    let lat;
+    let lng;
+    await fetchLatLng(address)
+    .then((response) => {
+        lat = response.lat;
+        lng = response.lng;
+    }).catch((error) => {
+        if (error.message === "Address not found.") {
+            throw new Error("Error fetching location. Please enter valid address");
+        }
+    })
+
+        const result = await userModel.findByIdAndUpdate(user._id, { address, phone, location: { lat, lng } });
+        if (!result) return res.status(400).json({ message: 'address not added' });
+        res.status(200).json({ message: 'Address added successfully' });
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
     }
 }

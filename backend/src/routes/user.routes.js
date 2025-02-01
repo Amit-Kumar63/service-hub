@@ -21,4 +21,5 @@ router.post('/add-to-favourites', [
     query('serviceId').isMongoId().withMessage('Invalid service id'),
 ], authMiddleware.userAuth, userController.addToFavourites);
 
+router.post('/add-address', authMiddleware.userAuth,userController.addAddress)
 module.exports = router;
