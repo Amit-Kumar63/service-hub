@@ -3,12 +3,13 @@ import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
+import { signOut, auth } from "../firebase-config";
 
 const ProfilePage = () => {
   const { user, isLoading, isSuccess,token } = useOutletContext()
   const [viewAllBookings, setViewAllBookings] = useState(user?.user.bookings.length <= 3 ? true : false);
     
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
   const handleLogout = async () => {
     try {
      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`, {
@@ -17,13 +18,14 @@ const ProfilePage = () => {
             }
       });
       if (response.status === 200){
+        await signOut(auth);
         localStorage.removeItem("token");
         window.location.href = "/user/home"
       }
     } catch (error) {
      console.error({message: error.message});
   }}
-  console.log(user?.user.image)
+  
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
       {
@@ -38,7 +40,7 @@ const ProfilePage = () => {
           <div onClick={()=> navigate(-1) } className="text-gray-500 text-2xl mb-4">&larr;</div>
   
           {/* Profile Section */}
-          <div className="text-center">
+          <div className="text-center mx-2">
             <img
               src={`${user?.user.image}`}
               alt="Profile"
@@ -50,7 +52,7 @@ const ProfilePage = () => {
             <p className="text-sm text-gray-500">
               Joined in {user?.user.createdAt?.split("T")[0]}
             </p>
-            <p className="text-sm text-gray-500 text-ellipsis">{user?.user.address}</p>
+            <p className="text-sm text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">{user?.user.address}</p>
           </div>
   
           {/* Edit and Logout Buttons */}

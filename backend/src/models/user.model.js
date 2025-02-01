@@ -48,21 +48,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Token is required']
     },
+    loggedIn: {
+        type: String,   
+    },
     uid: {
         type: String,
         required: [true, 'UID is required']
     }
 }, { timestamps: true });
 
-// userSchema.pre('save', async function(next) {
-//     if(!this.isModified("password")) return next();
-//     this.password = await bcrypt.hash(this.password, 12);
-//     next();
-// });
-
-// userSchema.methods.comparePassword = async function(password) {
-//     return await bcrypt.compare(password, this.password);
-// }
 userSchema.methods.generateToken = function() {
     const token = jsonwebtoken.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     return token;   
