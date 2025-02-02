@@ -52,7 +52,8 @@ module.exports.userLogin = async (req, res) => {
         const { uid, email } = decodedToken 
 
         const user = await userService.findUserByCredentials(email, uid);
-        await user.updateOne({email}, { token, loggedIn: uid });
+        if (!user) return res.status(400).json({ message: 'User not found. Please signup' });
+        await userModel.updateOne({ email }, { loggedIn: uid, token });
         const cookieOptions = {
             expires: new Date(Date.now() + 24 * 3600000),
             httpOnly: true,

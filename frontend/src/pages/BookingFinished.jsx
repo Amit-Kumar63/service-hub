@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
+import { SetTitle } from '../components/SetTitle';
 
 const BookingFinished = () => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const BookingFinished = () => {
       <p className='text-center text-base font-semibold text-green-700'>You will be redirected to Home page in 5 seconds</p>
       <p className='text-center text-sm font-semibold text-gray-700'>Thank you for using ServiceHub</p>
       </div>
+      <SetTitle title="Booking Finished" />
     </div>
   );
 };

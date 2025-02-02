@@ -6,10 +6,11 @@ import AddAddressPopup from '../components/AddAddressPopup';
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useEffect, useRef, useState } from 'react';
+import { SetTitle } from '../components/SetTitle';
 
 const Home = () => {
   const [addAddressPanel, setAddAddressPanel] = useState(false)
-  const { user, token } = useOutletContext()
+  const { user, token, isSuccess } = useOutletContext()
 
   const addAddressPopupRef = useRef()
 
@@ -37,7 +38,7 @@ const Home = () => {
     }, [addAddressPanel])
 
     useEffect(()=> {
-      if (user?.user.address) {
+      if (user && !user?.user.address) {
         setAddAddressPanel(true)
       }
       else {
@@ -45,6 +46,9 @@ const Home = () => {
       }
     }, [token])
   
+    if (isServicesLoading) {
+      return <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto', marginTop: '20px'}}/>
+    }
   // static data
   const popularServices = [
     {
@@ -85,25 +89,10 @@ const Home = () => {
         <i className="text-gray-600 text-2xl absolute top-[18%] left-4 ri-search-line"></i>
             <input className='w-full py-3 px-4 pl-12 placeholder:text-base placeholder:text-gray-500 rounded-lg bg-[#E8EEF2]' type="search" placeholder='Search for service' />
         </div>
-        {/* error if user not logged in and no services found */}
-        {
-        !token && (
-          <div className='w-full mt-5'>
-            <h4 className='text-base text-gray-600 font-semibold text-center leading-5'>Logged in to see all services</h4>
-          </div>
-        )
-      }
         <div className='mt-6 w-full'>
-          <h1 className='text-2xl font-bold'>{services ? 'All Services' : 'Popular Services'}</h1>
           {
-            isServicesLoading && (
-              <div className='w-full h-full flex justify-center items-center mt-16'>
-                <CircularProgress />
-              </div>
-            )
-          }
-          {
-            services && (
+            isSuccess ? (
+          <h1 className='text-2xl font-bold'>{services?.uniqueServiceType.length > 0 ? 'All Services' : 'Popular Services'}</h1>,
               <div className='mt-6 space-y-7 pb-24'>
             {
               services?.uniqueServiceType.map((service, key) => (
@@ -111,13 +100,9 @@ const Home = () => {
               ))
             }
           </div>
-            )
-          }
-
-          {/* load popular services */}
-          {
-            !services && (
+            ) : (
               <div className='mt-5 space-y-7 pb-24'>
+                <p className='text-xs text-gray-600'><b><i className="ri-information-line"></i> Note: </b>This is a sample list of services ,for testing purpose only. You can add your own services or login for actual services from backend </p>
                 {
                   popularServices.map((service, key) => (
                     <ServiceCard key={key} serviceType={service.name} image={service.image}/>
@@ -135,6 +120,7 @@ const Home = () => {
         <div ref={addAddressPopupRef} className='fixed z-10 left-0 right-0 bottom-0 translate-y-full h-fit w-full'>
         <AddAddressPopup setAddAddressPanel={setAddAddressPanel}/>
         </div>
+        <SetTitle title='Home'/>
     </div>
   )
 }

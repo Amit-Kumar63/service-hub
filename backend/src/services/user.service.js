@@ -23,9 +23,12 @@ module.exports.createUser = async ({
 }
 module.exports.findUserByCredentials = async (email, uid) => {
     const user = await userModel.findOne({ email, uid })
-    if (!user) return new Error('Invalid credentials');
-    
-    return user;
+    if (!user) {
+        throw new Error('User not found. Please signup');
+    }
+    else {
+        return user;
+    }
 }
 
 module.exports.addToFavourites = async (user, serviceId) => {

@@ -27,7 +27,7 @@ const UserLayout = () => {
           skip: !token,
       });
 
-      if (isTokenLoading) {
+      if (token && !user) {
         return <div className="w-full h-screen flex justify-center items-center text-gray-600">Loading user data....</div>
       }
 
