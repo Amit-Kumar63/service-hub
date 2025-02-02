@@ -4,6 +4,7 @@ import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
 import { signOut, auth } from "../firebase-config";
+import { SetTitle } from "../components/SetTitle";
 
 const ProfilePage = () => {
   const { user, isLoading, isSuccess,token } = useOutletContext()
@@ -99,6 +100,7 @@ const ProfilePage = () => {
         </div>
         )
       }
+      <SetTitle title="Profile" />
     </div>
   );
 };

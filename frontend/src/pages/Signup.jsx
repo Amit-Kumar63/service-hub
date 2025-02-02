@@ -3,6 +3,7 @@ import axios from 'axios';
 import { auth, signInWithPopup, provider } from '../firebase-config.js';
 import { useState } from 'react';
 import Toast from '../components/Toast.jsx';
+import { SetTitle } from '../components/SetTitle.jsx';
 
 const Signup = () => {
   const [loginStatus, setLoginStatus] = useState({ message: '', severity: '' });
@@ -27,6 +28,12 @@ const Signup = () => {
             }, 1000);
           } 
         } catch (error) { 
+          setLoginStatus({ message: `${error.response?.data.message || error.message}`, severity: 'error' });
+          setIsToastOpen(true);
+          setTimeout(() => {
+            setIsToastOpen(false);
+          }, 2000);
+          localStorage.removeItem('token');
           console.error("Error:", error.response?.data || error.message);
         }
     }
@@ -54,7 +61,7 @@ const Signup = () => {
         .
       </p>
             <Toast message={loginStatus.message} severity={loginStatus.severity} isOpen={isToastOpen} />
-      
+      <SetTitle title="Signup" />
     </div>
   );
 };

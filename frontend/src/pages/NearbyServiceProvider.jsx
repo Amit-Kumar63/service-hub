@@ -9,6 +9,7 @@ import { useGetAddToFavMutation, useGetNearbyProvidersQuery } from "../app/api/a
 import { CircularProgress } from '@mui/material';
 import HeartOutlineIcon from '@mui/icons-material/FavoriteBorder';
 import HeartIcon  from '@mui/icons-material/Favorite';
+import { SetTitle } from "../components/SetTitle";
 
 const NearbyServiceProvider = () => {
   const { user } = useOutletContext()
@@ -188,6 +189,7 @@ const NearbyServiceProvider = () => {
       {
         error && <div className="text-2xl font-bold text-center mt-8">{error}</div>
       }
+      <SetTitle title="Nearby Service Providers" />
     </div>
   );
 };
