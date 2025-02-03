@@ -15,7 +15,7 @@ router.post('/login', [
 
 router.get('/profile', authMiddleware.userAuth , userController.userProfile);
 
-router.get('/logout', authMiddleware.userAuth, userController.userLogout);
+router.post('/logout', authMiddleware.userAuth, userController.userLogout);
 
 router.post('/add-to-favourites', [
     query('serviceId').isMongoId().withMessage('Invalid service id'),

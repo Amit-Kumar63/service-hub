@@ -8,6 +8,7 @@ import UserProtectWrapper from './pages/UserProtectWrapper'
 
 import ProviderLayout from './pages/ProviderLayout'
 import UserLayout from './pages/UserLayout'
+import { ToastContainer } from 'react-toastify'
 
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
@@ -25,6 +26,7 @@ const AllBookings = lazy(() => import('./pages/AllBookings'))
 
 const App = () => {
   return (
+    <>
     <Routes>
       <Route path='/user' element={<UserLayout />} >
       <Route path='home' element={ <Home /> } />
@@ -69,6 +71,8 @@ const App = () => {
         <Route path='profile' element={ <ProviderProfile /> }/>
         </Route>
     </Routes> 
+  <ToastContainer position='bottom-center' limit={1} style={{width: '80%', marginBottom: '100px', transform: 'translateX(12%)'}}/>
+    </>
   )
 }
 
