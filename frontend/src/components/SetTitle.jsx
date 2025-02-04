@@ -10,7 +10,6 @@ export function SetTitle({path}) {
                 title = 'Profile';
                 break;
             case '/user/login':
-                console.log('login')
                 title = 'Login';
                 break;
             case '/user/signup':

@@ -23,7 +23,7 @@ const Signup = () => {
           if (response.status === 201) {
             localStorage.setItem('token', token);
             navigate('/user/home', {state: { showToast: true, message: `Welcome ${response.data.user.name}`, severity: "success"}});
-          } 
+          }
         } catch (error) { 
           toast.error(error.response?.data.message || 'Something went wrong, please try again')
           localStorage.removeItem('token');

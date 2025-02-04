@@ -3,6 +3,7 @@ import { useGetUserQuery } from "../app/api/api";
 import NavigationBar from "../components/NavigationBar";
 import { auth } from '../firebase-config'
 import { useEffect, useState } from "react";
+import checkUserInDB from "../utils/checkUserInDB";
 
 const UserLayout = () => {
   const [token, setToken] = useState(null)
@@ -11,8 +12,18 @@ const UserLayout = () => {
     useEffect(()=> {
       const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
         if (currentUser) {
-          setToken(currentUser.accessToken)
-          setIsTokenLoading(false)
+          checkUserInDB(currentUser.uid)
+          .then((isUserInDB)=> {
+            if (isUserInDB) {
+              setToken(currentUser.accessToken)
+              setIsTokenLoading(false)
+            } else {
+              auth.signOut()
+            }
+          })
+          .catch((error)=> {
+            auth.signOut()
+          })
         }
         else {
           setToken(null)
