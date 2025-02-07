@@ -3,14 +3,22 @@ import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
 import { signOut, auth } from "../firebase-config";
-import { useLogoutUserMutation } from "../app/api/api";
+import { useLogoutUserMutation, useUpdateUserProfileMutation } from "../app/api/api";
 import { toast } from "react-toastify";
+import AddressSuggestion from "../components/AddressSuggestion";
 
 const ProfilePage = () => {
   const { user, isLoading, isSuccess,token } = useOutletContext()
   const [viewAllBookings, setViewAllBookings] = useState(user?.user.bookings.length <= 3 ? true : false);
+  const [editedProfileData, setEditedProfileData] = useState({
+    phone: user?.user.phone || "",
+    name: user?.user.name || "",
+  });
+  const [address, setAddress] = useState(user?.user.address || "")
+  const [isEdit, setIsEdit] = useState(false)
 
   const [logoutUser, { isLoading: isLogoutLoading, isSuccess: isLogoutSuccess, isError: isLogoutError, error: logoutError }] = useLogoutUserMutation()
+  const [updateProfile, { isLoading: isUpdateLoading, isSuccess: isUpdateSuccess, isError: isUpdateError, error: updateError }] = useUpdateUserProfileMutation()
   const navigate = useNavigate(); 
   const handleLogout = async () => {
     try {
@@ -31,7 +39,16 @@ const ProfilePage = () => {
     onLogoutSuccess();
     return ()=> {}
   }, [isLogoutSuccess, handleLogout ]);
-  
+  const updateProfileHandler = async () => {
+    await updateProfile({name: editedProfileData.name, address, phone: editedProfileData.phone, token})
+    if (isUpdateLoading) {
+      toast.loading("Updating...", {toastId: "loading"})
+    }
+    if (isUpdateSuccess) {
+      toast.dismiss("loading")
+      toast.success("Profile updated successfully")
+    }
+  }
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
       {
@@ -105,6 +122,42 @@ const ProfilePage = () => {
         </div>
         )
       }
+      <section className="fixed h-fit bottom-20 z-10 w-full bg-white">
+        <div className="pt-7 pb-5 px-2 border-t border-b border-gray-200 border-solid">
+          <button 
+          onClick={() => setIsEdit(!isEdit)}
+          className={`bg-gray-200 font-bold ${isEdit ? 'text-red-500' : 'text-gray-700'} text-sm py-1 px-3 rounded-lg mb-3 float-right`}>
+            {isEdit ? "Cancel" : "Edit"}
+          </button>
+          <input 
+          className={`w-full px-4 py-3 mb-5 text-wrap text-lg bg-[#E8EEF2] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 ${isEdit ? 'text-gray-700' : 'text-gray-400'} ${isEdit ? 'focus:ring-blue-500' : 'focus:ring-transparent'}`}
+          type="text" 
+          placeholder="Name"
+          required
+          value={editedProfileData.name}
+          readOnly={!isEdit}
+          onChange={(e) => setEditedProfileData({...editedProfileData, name: e.target.value})}
+          />
+          <input 
+          required
+          className={`w-full px-4 py-3 mb-5 text-wrap text-lg bg-[#E8EEF2] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 ${isEdit ? 'text-gray-700' : 'text-gray-400'} ${isEdit ? 'focus:ring-blue-500' : 'focus:ring-transparent'}`}
+          type="number" 
+          placeholder="Phone"
+          value={editedProfileData.phone}
+          readOnly={!isEdit}
+          onChange={(e) => setEditedProfileData({...editedProfileData, phone: e.target.value})}
+          />
+          <AddressSuggestion address={address} setAddress={setAddress} readOnly={!isEdit}/>
+          <button 
+          disabled={!isEdit}
+          className={`w-full ${isEdit ? 'bg-blue-500' : 'bg-gray-400'} font-bold text-white py-3 px-4 rounded-lg mb-3`}
+          onClick={updateProfileHandler}
+          >
+            Confirm changes
+          </button>
+          <button className="w-full bg-gray-400 font-bold text-white py-3 px-4 rounded-lg mb-2">Cancel</button>
+        </div>
+      </section>
     </div>
   );
 };

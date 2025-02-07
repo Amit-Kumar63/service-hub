@@ -137,10 +137,29 @@ module.exports.addAddress = async (req, res)=> {
     }
 }
 
-module.exports.checkUserInDB = async (req, res) => {
-    const uid = req.body
-    if (!uid) return res.status(400).json({ message: 'Uid is required' });
-    const user = await userModel.findOne({uid})
-    if (!user) return res.status(404).json({message: 'User not found, please signup'});
-    return res.status(200).json({message: 'User found', user});
+module.exports.editUserProfile = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { name, address, phone } = req.body;
+    const user = req.user;
+    try {
+        if (user.address !== address) {
+            user.address = address;
+        }
+        else if (user.phone !== phone) {
+            user.phone = phone;
+        }
+        else if (user.name !== name) {
+            user.name = name;    
+        }
+        else {
+            return res.status(400).json({ message: 'No changes detected, nothing to update' });
+        }
+        const result = await user.save();
+        res.status(200).json({ message: 'User profile updated successfully', user: result });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 }
