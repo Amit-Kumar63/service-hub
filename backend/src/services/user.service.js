@@ -22,12 +22,19 @@ module.exports.createUser = async ({
     return user;
 }
 module.exports.findUserByCredentials = async (email, uid) => {
-    const user = await userModel.findOne({ email, uid })
-    if (!user) {
-        throw new Error('User not found. Please signup');
-    }
-    else {
-        return user;
+    try {
+        if (!email || !uid) {
+            throw new Error('Missing required fields! please fill all fields');
+        }
+        const user = await userModel.findOne({ email, uid });
+        if (!user) {
+            return null;
+        }
+        else {
+            return user;
+        }
+    } catch (error) {
+        throw new Error(error.message);
     }
 }
 

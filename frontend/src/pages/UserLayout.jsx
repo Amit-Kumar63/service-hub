@@ -3,7 +3,6 @@ import { useGetUserQuery } from "../app/api/api";
 import NavigationBar from "../components/NavigationBar";
 import { auth } from '../firebase-config'
 import { useEffect, useState } from "react";
-import checkUserInDB from "../utils/checkUserInDB";
 
 const UserLayout = () => {
   const [token, setToken] = useState(null)
@@ -12,22 +11,13 @@ const UserLayout = () => {
     useEffect(()=> {
       const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
         if (currentUser) {
-          checkUserInDB(currentUser.uid)
-          .then((isUserInDB)=> {
-            if (isUserInDB) {
-              setToken(currentUser.accessToken)
-              setIsTokenLoading(false)
-            } else {
-              auth.signOut()
-            }
-          })
-          .catch((error)=> {
-            auth.signOut()
-          })
+          console.log(currentUser);
+          setToken(currentUser.accessToken)
+          setIsTokenLoading(false)
         }
         else {
           setToken(null)
-          setIsTokenLoading(false)
+          setIsTokenLoading(false)  
         }
       })
       return ()=> unSubscribe()
@@ -37,7 +27,6 @@ const UserLayout = () => {
       {
           skip: !token,
       });
-
       if (token && !user) {
         return <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">Loading user data....</div>
       }

@@ -1,10 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { signInWithPopup, auth, provider } from '../firebase-config';
-import { SetTitle } from '../components/SetTitle';
+import { signInWithPopup, auth, provider, signOut } from '../firebase-config';
 import { toast } from 'react-toastify';
 import { CircularProgress } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import cockies from 'js-cookie'
 
 const Login = () => {
   const [loading, setLoading] = useState(false)
@@ -24,14 +24,14 @@ const Login = () => {
         localStorage.setItem('token', response.data.token);
         navigate('/user/home', { state: { showToast: true, message: `Welcome ${response.data.user.name}`, severity: "success"}});
       }
-      if (response.status === 401) {
-        toast.error(response.data.message)
-      }
     } catch (error) {
       toast.dismiss('loading')
       setLoading(false)
       toast.error(error.response?.data.message || 'Something went wrong, please try again')
       console.error("Error:", error.response?.data || error.message);
+        await signOut(auth)
+        localStorage.clear()
+        indexedDB.deleteDatabase('firebaseLocalStorage')
     } finally {
       toast.dismiss('loading')
       setLoading(false)
