@@ -48,11 +48,11 @@ module.exports.userLogin = async (req, res) => {
 
     try {
         const decodedToken = await admin.auth().verifyIdToken(token);
-        if (!decodedToken) return res.status(400).json({ message: 'User not found. Please signup' });
+        if (!decodedToken) return res.status(401).json({ message: 'User not found. Please signup' });
         const { uid, email } = decodedToken 
 
         const user = await userService.findUserByCredentials(email, uid);
-        if (!user) return res.status(400).json({ message: 'User not found. Please signup' });
+        if (!user) return res.status(401).json({ message: 'User not found. Please signup' })
         await userModel.updateOne({ email }, { loggedIn: uid, token });
         const cookieOptions = {
             expires: new Date(Date.now() + 24 * 3600000),
@@ -135,4 +135,12 @@ module.exports.addAddress = async (req, res)=> {
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }
+}
+
+module.exports.checkUserInDB = async (req, res) => {
+    const uid = req.body
+    if (!uid) return res.status(400).json({ message: 'Uid is required' });
+    const user = await userModel.findOne({uid})
+    if (!user) return res.status(404).json({message: 'User not found, please signup'});
+    return res.status(200).json({message: 'User found', user});
 }

@@ -80,6 +80,15 @@ export const Api = createApi({
                     'Authorization': `Bearer ${token}`,
                 },
             })
+        }),
+        logoutUser: builder.mutation({
+            query: (token) => ({
+                url: `users/logout`,
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
         })
     }),
 })
@@ -92,5 +101,6 @@ export const {
     useGetServicesQuery,
     useGetChangeBookingStatusMutation,
     useGetAddToFavMutation,
-    useAddAddressMutation
+    useAddAddressMutation,
+    useLogoutUserMutation
 } = Api

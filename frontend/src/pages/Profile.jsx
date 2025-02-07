@@ -1,31 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
-import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
 import { signOut, auth } from "../firebase-config";
-import { SetTitle } from "../components/SetTitle";
+import { useLogoutUserMutation } from "../app/api/api";
+import { toast } from "react-toastify";
 
 const ProfilePage = () => {
   const { user, isLoading, isSuccess,token } = useOutletContext()
   const [viewAllBookings, setViewAllBookings] = useState(user?.user.bookings.length <= 3 ? true : false);
-    
-    const navigate = useNavigate(); 
+
+  const [logoutUser, { isLoading: isLogoutLoading, isSuccess: isLogoutSuccess, isError: isLogoutError, error: logoutError }] = useLogoutUserMutation()
+  const navigate = useNavigate(); 
   const handleLogout = async () => {
     try {
-     const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-      });
-      if (response.status === 200){
-        await signOut(auth);
-        localStorage.removeItem("token");
-        window.location.href = "/user/home"
-      }
+      await logoutUser(token)
     } catch (error) {
+      toast.error(error?.data?.message || "Something went wrong, please try again")
      console.error({message: error.message});
   }}
+  useEffect(() => {
+    const onLogoutSuccess = async () => {
+      if (isLogoutSuccess) {
+        await signOut(auth);
+        localStorage.removeItem("token");
+        navigate("/user/home", { state: { showToast: true, message: "You are logged out, see you soon!", severity: "success"} });
+        window.location.reload();
+      }
+    }
+    onLogoutSuccess();
+    return ()=> {}
+  }, [isLogoutSuccess, handleLogout ]);
   
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
@@ -100,7 +105,6 @@ const ProfilePage = () => {
         </div>
         )
       }
-      <SetTitle title="Profile" />
     </div>
   );
 };

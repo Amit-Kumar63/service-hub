@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { lazy } from 'react'
 
 import Start from './pages/Start'
@@ -8,6 +8,8 @@ import UserProtectWrapper from './pages/UserProtectWrapper'
 
 import ProviderLayout from './pages/ProviderLayout'
 import UserLayout from './pages/UserLayout'
+import { ToastContainer } from 'react-toastify'
+import { SetTitle } from './components/SetTitle'
 
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
@@ -24,7 +26,9 @@ const MessagePage = lazy(() => import('./pages/Message'))
 const AllBookings = lazy(() => import('./pages/AllBookings'))
 
 const App = () => {
+  const location = useLocation()
   return (
+    <>
     <Routes>
       <Route path='/user' element={<UserLayout />} >
       <Route path='home' element={ <Home /> } />
@@ -69,6 +73,9 @@ const App = () => {
         <Route path='profile' element={ <ProviderProfile /> }/>
         </Route>
     </Routes> 
+  <ToastContainer position='bottom-center' style={{width: '80%', marginBottom: '100px', transform: 'translateX(12%)', borderRadius: '10px'}}/>
+  <SetTitle path={location.pathname}/>
+    </>
   )
 }
 

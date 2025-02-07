@@ -11,12 +11,13 @@ const UserLayout = () => {
     useEffect(()=> {
       const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
         if (currentUser) {
+          console.log(currentUser);
           setToken(currentUser.accessToken)
           setIsTokenLoading(false)
         }
         else {
           setToken(null)
-          setIsTokenLoading(false)
+          setIsTokenLoading(false)  
         }
       })
       return ()=> unSubscribe()
@@ -26,15 +27,14 @@ const UserLayout = () => {
       {
           skip: !token,
       });
-
       if (token && !user) {
-        return <div className="w-full h-screen flex justify-center items-center text-gray-600">Loading user data....</div>
+        return <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">Loading user data....</div>
       }
 
   return (
     <>
       <main>
-        <Outlet context={{user, isLoading, isSuccess, isError, token}}/>
+        <Outlet context={{user, isLoading, isSuccess, isError, token, isTokenLoading}}/>
       </main>
       <NavigationBar />
     </>

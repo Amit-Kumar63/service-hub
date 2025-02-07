@@ -1,24 +1,26 @@
 import ServiceCard from '../components/ServiceCard'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom'
 import { useGetServicesQuery} from '../app/api/api'
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Slide } from "@mui/material";
 import AddAddressPopup from '../components/AddAddressPopup';
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useEffect, useRef, useState } from 'react';
 import { SetTitle } from '../components/SetTitle';
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const [addAddressPanel, setAddAddressPanel] = useState(false)
-  const { user, token, isSuccess } = useOutletContext()
-
+  const { user, token, isSuccess, isTokenLoading } = useOutletContext()
+  
   const addAddressPopupRef = useRef()
-
+  
   const { data: services, isLoading: isServicesLoading, isError } = useGetServicesQuery(undefined, {
     skip: !token
   })
   
   const navigate = useNavigate()
+  const location = useLocation()
 
     useGSAP(() => {
       if (addAddressPanel) {
@@ -45,10 +47,24 @@ const Home = () => {
         setAddAddressPanel(false)
       }
     }, [token])
-  
-    if (isServicesLoading) {
-      return <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto', marginTop: '20px'}}/>
-    }
+
+    useEffect(() => {
+      if (location.state?.showToast) {
+       const timeOut1 = setTimeout(() => {
+          toast(location.state?.message, { type: location.state?.severity })
+        }, 200)
+        
+        const timeOut2 = setTimeout(() => {
+          toast.dismiss()
+          navigate('/user/home', {state: {showToast: false, message: '', severity: ''}})
+        }, 5000)
+
+        return () => {
+          clearTimeout(timeOut1)
+          clearTimeout(timeOut2)
+        }
+      }
+    }, [location.state])
   // static data
   const popularServices = [
     {
@@ -91,6 +107,11 @@ const Home = () => {
         </div>
         <div className='mt-6 w-full'>
           {
+            isServicesLoading && (
+              <div className='flex items-center justify-center pt-10'><CircularProgress/></div>
+            )
+          }
+          {
             isSuccess ? (
           <h1 className='text-2xl font-bold'>{services?.uniqueServiceType.length > 0 ? 'All Services' : 'Popular Services'}</h1>,
               <div className='mt-6 space-y-7 pb-24'>
@@ -100,7 +121,7 @@ const Home = () => {
               ))
             }
           </div>
-            ) : (
+            ) : !token && !isTokenLoading && (
               <div className='mt-5 space-y-7 pb-24'>
                 <p className='text-xs text-gray-600'><b><i className="ri-information-line"></i> Note: </b>This is a sample list of services ,for testing purpose only. You can add your own services or login for actual services from backend </p>
                 {
@@ -120,7 +141,6 @@ const Home = () => {
         <div ref={addAddressPopupRef} className='fixed z-10 left-0 right-0 bottom-0 translate-y-full h-fit w-full'>
         <AddAddressPopup setAddAddressPanel={setAddAddressPanel}/>
         </div>
-        <SetTitle title='Home'/>
     </div>
   )
 }
