@@ -1,42 +1,39 @@
 const providerModel = require('../models/provider.model');
 
 module.exports.createProvider = async ({
-    firstName,
-    lastName,
+    name,
     email,
-    password,
-    address,
-    phone,
-    location: {
-        lat,
-        lng
-    }
+    token,
+    uid,
+    image
 }) => {
-    if (!firstName || !email || !password || !address || !phone) {
+    
+    if (!name || !email || !token || !uid) {
         throw new Error('Missing required fields! please fill all fields');
     }
     const provider = await providerModel.create({
-        firstName,
-        lastName,
+        name,
         email,
-        password,
-        address,
-        phone,
-        location: {
-            lat,
-            lng
-        }
+        token,
+        uid,
+        image
     });
+
     return provider;
 }
-module.exports.findProviderByCredentials = async (email, password) => {
-    const provider = await providerModel.findOne({ email }).select('+password');
-    if (!provider) {
-        throw new Error('Invalid email or password');
+module.exports.findProviderByCredentials = async (email, uid) => {
+    try {
+        if (!email || !uid) {
+            throw new Error('Missing required fields! please fill all fields');
+        }
+        const provider = await providerModel.findOne({ email, uid });
+        if (!provider) {
+            return null;
+        }
+        else {
+            return provider;
+        }
+    } catch (error) {
+        throw new Error(error.message);
     }
-    const isMatch = await provider.comparePassword(password);
-    if (!isMatch) {
-        throw new Error('Invalid email or password');
-    }
-    return provider;
 }

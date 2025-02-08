@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const Provider = require('../models/provider.model');
 const admin = require('../firebase-admin');
@@ -25,17 +24,18 @@ module.exports.userAuth = async (req, res, next) => {
 }
 module.exports.providerAuth = async (req, res, next) => {
     try {
-        const token = req.cookies.provider || req.headers.authorization?.split(' ')[1];
+        const token = req.cookies.providerToken || req.headers.authorization?.split(' ')[1];
+        
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
-        const provider = await Provider.findOne({ _id: decoded.id});
-        if (!provider) {
-            throw new Error('Unauthorized');
-        }
-        req.token = token;
+        const decodedToken = await admin.auth().verifyIdToken(token)
+        if (!decodedToken) return res.status(400).json({ message: 'Invalid token' });
+
+        const provider = await Provider.findOne({ uid: decodedToken.uid });
+        if (!provider) return res.status(400).json({ message: 'Unauthorized' });
+        if (provider.uid !== decodedToken.uid) return res.status(400).json({ message: 'Unauthorized request' });
+        req.token = decodedToken;
         req.provider = provider;
         next();
     } catch (error) {

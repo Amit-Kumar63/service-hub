@@ -1,33 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useGetProviderProfileQuery } from "../app/api/api";
+import { auth } from "../firebase-config";
 
 const ProviderLayout = () => {
-  const [provider, setProvider] = useState(null);
-  const token = localStorage.getItem("provider-token");
-
-  const { data, isLoading, isError, isSuccess } = useGetProviderProfileQuery(
-    token,
-    {
-        skip: !token,
-    });
-    useEffect(()=> {
-      if (isSuccess && data) {
-        setProvider(data);
-      }
-      if (isError) {
-        localStorage.removeItem('provider-token');
-        setProvider(null);
-      }
-    }, [data, isError, isSuccess])
-
-    if (isLoading || provider === null) {
-      return <div className="w-full h-screen flex justify-center items-center text-gray-600">Loading provider data....</div>
-    }
+  const [token, setToken] = useState(null)
+    const [isTokenLoading, setIsTokenLoading] = useState(true)
+  
+      useEffect(()=> {
+        const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
+          if (currentUser) {
+            setToken(currentUser.accessToken)
+            setIsTokenLoading(false)
+          }
+          else {
+            setToken(null)
+            setIsTokenLoading(false)  
+          }
+        })
+        return ()=> unSubscribe()
+      }, [])
+      const { data: provider, isLoading, isSuccess, isError } = useGetProviderProfileQuery(
+        token,
+        {
+            skip: !token,
+        });
+        if (token && !provider) {
+          return <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">Loading provider data....</div>
+        }
+  
   return (
     <>
       <main>
-        <Outlet context={{provider, isLoading}}/>
+        <Outlet context={{provider, isLoading, isSuccess, isError, token, isTokenLoading}}/>
       </main>
     </>
   );
