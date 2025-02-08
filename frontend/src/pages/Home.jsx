@@ -8,9 +8,11 @@ import { useGSAP } from "@gsap/react";
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { auth, signOut } from '../firebase-config';
+import AlertDialogSlide from '../components/Dialog'
 
 const Home = () => {
   const [addAddressPanel, setAddAddressPanel] = useState(false)
+  const [open, setOpen] = useState(false)
   const { user, token, isSuccess, isTokenLoading } = useOutletContext()
   
   const addAddressPopupRef = useRef()
@@ -134,7 +136,7 @@ const Home = () => {
         <div className='flex items-center justify-between w-full'>
         <h2 className='text-lg font-bold w-full text-center ml-6'>Services</h2>
         {
-          token ? <i onClick={handleLogout} className="text-2xl plas ri-logout-box-line"></i> : <i onClick={()=> navigate('/user/login') } className="text-2xl plas ri-user-3-line"></i>
+          token ? <i onClick={()=> setOpen(true)} className="text-2xl plas ri-logout-box-line"></i> : <i onClick={()=> navigate('/user/login') } className="text-2xl plas ri-user-3-line"></i>
         }
         </div>
         <div className='mt-8 relative'>
@@ -174,6 +176,7 @@ const Home = () => {
             )
           }
         </div>
+        <AlertDialogSlide open={open} setOpen={setOpen} cb={handleLogout} text={{Agree: 'Logout', Disagree: 'Cancel'}} title={"Confirm logout ?"}/>
         <div ref={addAddressPopupRef} className='fixed z-10 left-0 right-0 bottom-0 translate-y-full h-fit w-full'>
         <AddAddressPopup setAddAddressPanel={setAddAddressPanel}/>
         </div>

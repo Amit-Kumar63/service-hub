@@ -73,7 +73,7 @@ const App = () => {
         <Route path='profile' element={ <ProviderProfile /> }/>
         </Route>
     </Routes> 
-  <ToastContainer position='bottom-center' style={{maxWidth: '80%', marginBottom: '100px', transform: 'translateX(12%)', borderRadius: '10px', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}/>
+  <ToastContainer toastStyle={{width: '90%', marginBottom: '100px', borderRadius: '4px'}} position='bottom-center'/>
   <SetTitle path={location.pathname}/>
     </>
   )
