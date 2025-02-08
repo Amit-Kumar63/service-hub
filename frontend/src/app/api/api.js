@@ -89,6 +89,20 @@ export const Api = createApi({
                     'Authorization': `Bearer ${token}`,
                 },
             })
+        }),
+        updateUserProfile: builder.mutation({
+            query: ({name, phone, address, token}) => ({
+                url: 'users/edit-user-profile',
+                method: 'POST',
+                body: {
+                    name,
+                    phone,
+                    address
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
         })
     }),
 })
@@ -102,5 +116,6 @@ export const {
     useGetChangeBookingStatusMutation,
     useGetAddToFavMutation,
     useAddAddressMutation,
-    useLogoutUserMutation
+    useLogoutUserMutation,
+    useUpdateUserProfileMutation
 } = Api

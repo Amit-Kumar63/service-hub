@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ProviderNavigation from "../components/ProviderNavigation";
 import { Avatar } from "@mui/material";
 import AddService from "../components/AddService";
@@ -6,8 +6,9 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CircularProgress } from "@mui/material";
 import BookingLists from "../components/BookingLists";
-import { useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { useGetChangeBookingStatusMutation } from "../app/api/api";
+import { toast } from "react-toastify";
 
 const ProviderHome = () => {
     const [addServicePanel, setAddServicePanel] = useState(false);
@@ -20,6 +21,8 @@ const ProviderHome = () => {
     console.log(provider)
     const addServicePanelRef = useRef(null);
     const recentBookingsPanelRef = useRef(null);
+    const location = useLocation()
+    const navigate = useNavigate()
 
     useGSAP(() => {
         if (addServicePanel) {
@@ -46,7 +49,23 @@ const ProviderHome = () => {
             });
         }
     }, [recentBookingsPanel]);
-
+    useEffect(() => {
+        if (location.state?.showToast) {
+         const timeOut1 = setTimeout(() => {
+            toast(location.state?.message, { type: location.state?.severity })
+          }, 200)
+          
+          const timeOut2 = setTimeout(() => {
+            toast.dismiss()
+            navigate('/provider/home', {state: {showToast: false, message: '', severity: ''}})
+          }, 5000)
+  
+          return () => {
+            clearTimeout(timeOut1)
+            clearTimeout(timeOut2)
+          }
+        }
+      }, [location.state])
     return (
         <>
             {isLoading ? (

@@ -22,5 +22,9 @@ router.post('/add-to-favourites', [
 ], authMiddleware.userAuth, userController.addToFavourites);
 
 router.post('/add-address', authMiddleware.userAuth,userController.addAddress)
-router.get('/check-user-in-db', userController.checkUserInDB)
+router.post('/edit-user-profile', authMiddleware.userAuth, [
+    body('name').isLength({ min: 3 }).withMessage('First name must be at least 3 characters long'),
+    body('phone').isLength({ min: 10 }).withMessage('phone number is must be atleast 10 characters long'),
+    body('address').isLength({ min: 25 }).withMessage('address is must be atleast 25 characters long'),
+], userController.editUserProfile);
 module.exports = router;

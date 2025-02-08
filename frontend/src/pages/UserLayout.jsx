@@ -11,7 +11,6 @@ const UserLayout = () => {
     useEffect(()=> {
       const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
         if (currentUser) {
-          console.log(currentUser);
           setToken(currentUser.accessToken)
           setIsTokenLoading(false)
         }

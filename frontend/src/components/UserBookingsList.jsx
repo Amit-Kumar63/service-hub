@@ -8,7 +8,7 @@ const UserBookingsList = ({user, viewAllBookings}) => {
             {
               bookings.length === 0 ? (
                 <div className="flex items-center justify-center h-full w-full">
-                  <p className={`text-xl font-semibold text-gray-600`}>No Bookings Found</p>
+                  <p className={`text-xl font-semibold text-gray-400`}>No Bookings Found :{')'}</p>
                 </div>
               ) : (
                 <h2 className="font-bold text-lg mb-3">Bookings</h2>,

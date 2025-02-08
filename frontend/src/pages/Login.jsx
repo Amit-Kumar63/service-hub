@@ -3,8 +3,7 @@ import axios from 'axios';
 import { signInWithPopup, auth, provider, signOut } from '../firebase-config';
 import { toast } from 'react-toastify';
 import { CircularProgress } from '@mui/material';
-import { useEffect, useState } from 'react';
-import cockies from 'js-cookie'
+import { useState } from 'react';
 
 const Login = () => {
   const [loading, setLoading] = useState(false)

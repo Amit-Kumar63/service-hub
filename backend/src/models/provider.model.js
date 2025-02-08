@@ -3,13 +3,10 @@ const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 
 const providerSchema = new mongoose.Schema({
-    firstName: {
+    name: {
         type: String,
         required: [true, 'First name is required'],
         length: [3, 'First name must be at least 3 characters long']
-    },
-    lastName: {
-        type: String,
     },
     email: {
         type: String,
@@ -17,28 +14,22 @@ const providerSchema = new mongoose.Schema({
         unique: true,
         match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Invalid email']
     },
+    image: {
+        type: String,
+        default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+    },
     phone: {
         type: String,
-        required: [true, 'Phone number is required'],
-    },
-    password: {
-        type: String,
-        required: [true, 'Password is required'],
-        length: [6, 'Password must be at least 6 characters long'],
-        select: false
     },
     address: {
         type: String,
-        required: [true, 'Address is required'],
     },
     location: {
         lat: {
             type: Number,
-            required: [true, 'Latitude is required'],
         },
         lng: {
             type: Number,
-            required: [true, 'Longitude is required'],
         }
     },
     services: [
@@ -53,21 +44,17 @@ const providerSchema = new mongoose.Schema({
             ref: 'Booking'
         }
     ],
+    token: {
+        type: String,
+        required: [true, 'Token is required']
+    },
+    loggedIn: {
+        type: String,   
+    },
+    uid: {
+        type: String,
+        required: [true, 'UID is required']
+    }
 });
-
-providerSchema.pre('save', async function(next) {
-    if(!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(this.password, 12);
-    next();
-});
-
-providerSchema.methods.comparePassword = async function(password) {
-    return await bcrypt.compare(password, this.password);
-}
-providerSchema.methods.generateToken = function() {
-    const token = jsonwebtoken.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    return token;   
-}
-
 const providerModel = mongoose.model('Provider', providerSchema);
 module.exports = providerModel;

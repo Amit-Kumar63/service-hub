@@ -57,10 +57,6 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-userSchema.methods.generateToken = function() {
-    const token = jsonwebtoken.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    return token;   
-}
 
 const userModel = mongoose.model('User', userSchema);
 module.exports = userModel;

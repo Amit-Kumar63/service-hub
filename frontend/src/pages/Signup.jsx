@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { auth, signInWithPopup, provider } from '../firebase-config.js';
+import { auth, signInWithPopup, provider, signOut } from '../firebase-config.js';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { CircularProgress } from '@mui/material';
@@ -25,6 +25,7 @@ const Signup = () => {
             navigate('/user/home', {state: { showToast: true, message: `Welcome ${response.data.user.name}`, severity: "success"}});
           }
         } catch (error) { 
+          await signOut(auth)
           toast.error(error.response?.data.message || 'Something went wrong, please try again')
           localStorage.removeItem('token');
           setIsLoading(false)
