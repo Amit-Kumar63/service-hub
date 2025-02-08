@@ -1,13 +1,13 @@
 import ServiceCard from '../components/ServiceCard'
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom'
-import { useGetServicesQuery} from '../app/api/api'
+import { useGetServicesQuery, useLogoutUserMutation} from '../app/api/api'
 import { CircularProgress, Slide } from "@mui/material";
 import AddAddressPopup from '../components/AddAddressPopup';
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useEffect, useRef, useState } from 'react';
-import { SetTitle } from '../components/SetTitle';
 import { toast } from 'react-toastify';
+import { auth, signOut } from '../firebase-config';
 
 const Home = () => {
   const [addAddressPanel, setAddAddressPanel] = useState(false)
@@ -18,6 +18,7 @@ const Home = () => {
   const { data: services, isLoading: isServicesLoading, isError } = useGetServicesQuery(undefined, {
     skip: !token
   })
+  const [ logoutUser, { isLoading: isLogoutLoading, isSuccess: isLogoutSuccess, error: logoutError} ] = useLogoutUserMutation()
   
   const navigate = useNavigate()
   const location = useLocation()
@@ -65,6 +66,41 @@ const Home = () => {
         }
       }
     }, [location.state])
+
+    const handleLogout = async () => {
+        try {
+          await logoutUser(token)
+        } catch (error) {
+          toast.dismiss('logout')
+          toast.error(error?.data?.message || "Something went wrong, please try again")
+         console.error({message: error.message});
+        }
+    }
+    useEffect(() => {
+      if (isLogoutLoading) {
+        toast.loading('Logging out...', {toastId: 'logout'})
+      }
+      const onLogoutSuccess = async () => {
+        toast.dismiss('logout')
+        await signOut(auth)
+        localStorage.removeItem('token') 
+        sessionStorage.setItem('logout', JSON.stringify(true))
+        navigate(0)
+      }
+      if (isLogoutSuccess) {
+        onLogoutSuccess()
+      }
+    }, [isLogoutSuccess, isLogoutLoading, logoutError])
+    useEffect(() => {
+      const timeOut = setTimeout(() => {
+        const isLogout = sessionStorage.getItem('logout')
+        if (isLogout) {
+          toast.success('You are logged out, see you soon!')
+          sessionStorage.removeItem('logout')
+        }
+      }, 300)
+      return ()=> clearTimeout(timeOut)
+    }, [sessionStorage.getItem('logout')])
   // static data
   const popularServices = [
     {
@@ -98,7 +134,7 @@ const Home = () => {
         <div className='flex items-center justify-between w-full'>
         <h2 className='text-lg font-bold w-full text-center ml-6'>Services</h2>
         {
-          token ? <i className="text-2xl plas ri-shopping-cart-2-line"></i> : <i onClick={()=> navigate('/user/login') } className="text-2xl plas ri-user-3-line"></i>
+          token ? <i onClick={handleLogout} className="text-2xl plas ri-logout-box-line"></i> : <i onClick={()=> navigate('/user/login') } className="text-2xl plas ri-user-3-line"></i>
         }
         </div>
         <div className='mt-8 relative'>

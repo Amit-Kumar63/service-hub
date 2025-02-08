@@ -145,17 +145,21 @@ module.exports.editUserProfile = async (req, res) => {
     const { name, address, phone } = req.body;
     const user = req.user;
     try {
+        let updated
+        if (user.name !== name) {
+            user.name = name;
+            updated = true;
+        }
         if (user.address !== address) {
             user.address = address;
+            updated = true;
         }
-        else if (user.phone !== phone) {
+        if (user.phone !== phone) {
             user.phone = phone;
+            updated = true;
         }
-        else if (user.name !== name) {
-            user.name = name;    
-        }
-        else {
-            return res.status(400).json({ message: 'No changes detected, nothing to update' });
+        if (!updated) {
+            return res.status(400).json({ message: 'No changes detected' });
         }
         const result = await user.save();
         res.status(200).json({ message: 'User profile updated successfully', user: result });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import UserBookingsList from "../components/UserBookingsList";
@@ -6,6 +6,8 @@ import { signOut, auth } from "../firebase-config";
 import { useLogoutUserMutation, useUpdateUserProfileMutation } from "../app/api/api";
 import { toast } from "react-toastify";
 import AddressSuggestion from "../components/AddressSuggestion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 const ProfilePage = () => {
   const { user, isLoading, isSuccess,token } = useOutletContext()
@@ -16,10 +18,13 @@ const ProfilePage = () => {
   });
   const [address, setAddress] = useState(user?.user.address || "")
   const [isEdit, setIsEdit] = useState(false)
+  const [updateProfilePanel, setUpdateProfilePanel] = useState(false)
 
   const [logoutUser, { isLoading: isLogoutLoading, isSuccess: isLogoutSuccess, isError: isLogoutError, error: logoutError }] = useLogoutUserMutation()
   const [updateProfile, { isLoading: isUpdateLoading, isSuccess: isUpdateSuccess, isError: isUpdateError, error: updateError }] = useUpdateUserProfileMutation()
+
   const navigate = useNavigate(); 
+  const updateProfileRef = useRef()
   const handleLogout = async () => {
     try {
       await logoutUser(token)
@@ -39,16 +44,52 @@ const ProfilePage = () => {
     onLogoutSuccess();
     return ()=> {}
   }, [isLogoutSuccess, handleLogout ]);
+
+  useGSAP(()=> {
+    if (updateProfilePanel) {
+      gsap.to(updateProfileRef.current, {
+        transform: 'translateY(0)',
+        bottom: 20,
+        duration: 0.5,
+        ease: 'power4.out',
+      })
+    } else {
+      gsap.to(updateProfileRef.current, {
+        transform: 'translateY(100%)',
+        bottom: 0,
+        duration: 0.5,
+        ease: 'power4.out',
+      })
+    }
+  }, [updateProfilePanel])
   const updateProfileHandler = async () => {
     await updateProfile({name: editedProfileData.name, address, phone: editedProfileData.phone, token})
+  }
+  useEffect(() => {
     if (isUpdateLoading) {
       toast.loading("Updating...", {toastId: "loading"})
     }
     if (isUpdateSuccess) {
       toast.dismiss("loading")
-      toast.success("Profile updated successfully")
+      setUpdateProfilePanel(false)
+      sessionStorage.setItem('isProfileUpdated', JSON.stringify(true))
+      navigate(0);
     }
-  }
+    if (updateError) {
+      toast.dismiss("loading")
+      toast.error(updateError?.data?.message || "Something went wrong, please try again")
+    }
+  }, [isUpdateSuccess, isUpdateLoading, updateError])
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      const isProfileUpdated = JSON.parse(sessionStorage.getItem('isProfileUpdated'))
+      if (isProfileUpdated) {
+        toast.success("Profile updated successfully")
+        sessionStorage.removeItem('isProfileUpdated')
+      }
+    }, 300);
+    return () => clearTimeout(timeOut);
+  }, [])
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
       {
@@ -70,7 +111,7 @@ const ProfilePage = () => {
               className="w-24 h-24 rounded-full mx-auto object-cover"
             />
             <h1 className="text-lg font-bold mt-4">
-              {user?.user.name.charAt(0).toUpperCase() + user?.user.name.slice(1)}
+              {user?.user.name.charAt(0).toUpperCase() + user?.user.name.slice(1).split(" ")[0] + " " + user?.user.name.split(" ")[1].charAt(0).toUpperCase() + user?.user.name.split(" ")[1].slice(1)}
             </h1>
             <p className="text-sm text-gray-500">
               Joined in {user?.user.createdAt?.split("T")[0]}
@@ -80,7 +121,7 @@ const ProfilePage = () => {
   
           {/* Edit and Logout Buttons */}
           <div className="flex justify-between gap-3 mt-4">
-            <button className="w-1/2 bg-gray-200 font-bold text-gray-700 py-2 px-4 rounded-lg">
+            <button onClick={()=> setUpdateProfilePanel(!updateProfilePanel)} className="w-1/2 bg-gray-200 font-bold text-gray-700 py-2 px-4 rounded-lg">
               Edit
             </button>
             <button onClick={handleLogout} className="w-1/2 bg-blue-500 font-bold text-white py-2 px-4 rounded-lg">
@@ -122,8 +163,9 @@ const ProfilePage = () => {
         </div>
         )
       }
-      <section className="fixed h-fit bottom-20 z-10 w-full bg-white">
-        <div className="pt-7 pb-5 px-2 border-t border-b border-gray-200 border-solid">
+      <section ref={updateProfileRef} className="fixed translate-y-full h-fit bottom-0 z-10 w-full bg-white">
+        <div className="pb-5 px-2 border-t border-b border-gray-200 border-solid">
+        <h1 onClick={() => setUpdateProfilePanel(false)} className='text-center text-gray-300 pt-1'><i className="text-4xl ri-subtract-line"></i></h1>        
           <button 
           onClick={() => setIsEdit(!isEdit)}
           className={`bg-gray-200 font-bold ${isEdit ? 'text-red-500' : 'text-gray-700'} text-sm py-1 px-3 rounded-lg mb-3 float-right`}>
