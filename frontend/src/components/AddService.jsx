@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import ImageIcon from '@mui/icons-material/BrokenImage';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import axios from "axios";
+import { useOutletContext } from "react-router-dom";
 
 const AddService = ({setAddServicePanel, setValue}) => {
+  const { token } = useOutletContext()
   const [formData, setFormData] = useState({
     serviceType: "",
     price: "",
     description: "",
     image: "",
   });
-
-  const token = localStorage.getItem("provider-token");
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -73,15 +73,48 @@ module.exports.providerProfile = async (req, res) => {
         const provider = req.provider;
         const populatedProvider = await provider.populate([
             {
+                path: 'bookings',
+                populate: {
+                    path: 'user',
+                    select: '-bookings -favourites -location -email'
+                }
+            },
+            {
                 path: 'services',
                 populate: {
-                    path: 'users',
-                    select: '-bookings -favourites -location -email'
+                    path: 'provider',
                 }
             }
         ]);
         res.status(200).json({provider: populatedProvider, message: 'Provider profile fetched successfully'});
     } catch (error) {
         res.status(400).json({ message: error.message });
+    }
+}
+module.exports.addProviderAddress = async (req, res)=> {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { address, phone } = req.body;
+    const provider = req.provider;
+    try {
+    let lat;
+    let lng;
+    await fetchLatLng(address)
+    .then((response) => {
+        lat = response.lat;
+        lng = response.lng;
+    }).catch((error) => {
+        if (error.message === "Address not found.") {
+            throw new Error("Error fetching location. Please enter valid address");
+        }
+    })
+
+        const result = await providerModel.findByIdAndUpdate(provider._id, { address, phone, location: { lat, lng } });
+        if (!result) return res.status(400).json({ message: 'address not added' });
+        res.status(200).json({ message: 'Address added successfully' });
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
     }
 }

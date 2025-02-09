@@ -13,6 +13,7 @@ const UserBookingsList = ({user, viewAllBookings}) => {
               ) : (
                 <h2 className="font-bold text-lg mb-3">Bookings</h2>,
                 bookings.map((booking, index) => (
+                  console.log(booking),
                   <Link to='/user/user-booking-summary' state={{booking}} key={index}>
                           <div
                             className="flex justify-between border-b py-2 font-semibold text-sm"
@@ -24,7 +25,7 @@ const UserBookingsList = ({user, viewAllBookings}) => {
                             <p className="text-gray-600">&#8377;{booking?.price}</p>
                             <div>
                             <span className={`${booking.status === "pending" && "text-yellow-600" || booking.status === "accepted" && "text-green-500" || booking.status === "declined" && "text-red-500"}`}>{booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</span>
-                            <p className='text-ellipsis text-gray-700'>{booking.provider.firstName?.charAt(0).toUpperCase() + booking.provider.firstName?.slice(1) + " " + booking.provider.lastName?.charAt(0).toUpperCase() + booking.provider.lastName?.slice(1)}</p>
+                            <p className='text-ellipsis text-gray-700'>{booking.provider.name?.charAt(0).toUpperCase() + booking.provider.name?.slice(1)}</p>
                             </div>
                           </div>
                         </Link> 

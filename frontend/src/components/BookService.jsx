@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import AddressSuggestion from "./AddressSuggestion.jsx";
 import GetLocation from "./GetLocation.jsx";
 import DatePickerComponent from "./DatePicker.jsx";
@@ -11,7 +11,7 @@ const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user, 
   const [getCurrentPosition, setGetCurrentPosition] = useState('')
   const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
 
-  const token = localStorage.getItem('token')
+  const { token } = useOutletContext()
   const navigate = useNavigate();
 
   useEffect(() => {

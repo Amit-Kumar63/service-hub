@@ -103,7 +103,20 @@ export const Api = createApi({
                     'Authorization': `Bearer ${token}`,
                 },
             })
-        })
+        }),
+        addProviderAddress: builder.mutation({
+            query: ({address, phone, token}) => ({
+                url: 'providers/add-provider-address',
+                method: 'POST',
+                body: {
+                    address,
+                    phone
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+        }),
     }),
 })
 
@@ -117,5 +130,6 @@ export const {
     useGetAddToFavMutation,
     useAddAddressMutation,
     useLogoutUserMutation,
-    useUpdateUserProfileMutation
+    useUpdateUserProfileMutation,
+    useAddProviderAddressMutation,
 } = Api

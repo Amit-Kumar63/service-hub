@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios';
 import { useState } from 'react';
 
-const AddressSuggestion = ({address, setAddress, readOnly= false}) => {
+const AddressSuggestion = ({address, setAddress, readOnly=false}) => {
     const [suggestion, setSuggestion] = useState([])
     const [selectedAddress, setSelectedAddress] = useState('')
 

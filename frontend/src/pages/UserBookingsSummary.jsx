@@ -19,15 +19,13 @@ const UserBookingsSummary = () => {
         {/* Provider Image */}
         <img
           src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV4UlS1Ehv87B7_HRdQWlKz8Jw13A0zxuiuQ&s'}
-          alt={`${booking.provider.firstName}'s profile`}
+          alt={`${booking.provider.name}'s profile`}
           className="w-16 h-16 rounded-full border object-cover"
         />
         {/* Provider Name */}
         <div>
           <h3 className="font-semibold text-lg text-gray-800">
-            {`${booking.provider.firstName.charAt(0).toUpperCase() + booking.provider.firstName.slice(1)} ${
-              booking.provider.lastName.charAt(0).toUpperCase() + booking.provider.lastName.slice(1)
-            }`}
+            {`${booking.provider.name.charAt(0).toUpperCase() + booking.provider.name.slice(1)}`}
           </h3>
           <p className="text-gray-500 text-sm">Service provider</p>
         </div>

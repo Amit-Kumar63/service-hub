@@ -9,20 +9,29 @@ import BookingLists from "../components/BookingLists";
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { useGetChangeBookingStatusMutation } from "../app/api/api";
 import { toast } from "react-toastify";
+import AddAddressPopup from "../components/AddAddressPopup";
 
 const ProviderHome = () => {
     const [addServicePanel, setAddServicePanel] = useState(false);
-    const [recentBookingsPanel, setRecentBookingsPanel] = useState(true);
+    const [recentBookingsPanel, setRecentBookingsPanel] = useState(false);
     const [value, setValue] = useState(0);
+    const [addAddressPanel, setAddAddressPanel] = useState(false)
 
-    const { provider, isLoading } = useOutletContext()
-    const [changeBookingStatus, { isLoading: isBookingStatusLoading, isSuccess: isBookingStatusSuccess, isError: isBookingStatusError }] = useGetChangeBookingStatusMutation();
+    const addAddressPopupRef = useRef()
+    const { provider, isLoading, token } = useOutletContext();
+    const [
+        changeBookingStatus,
+        {
+            isLoading: isBookingStatusLoading,
+            isSuccess: isBookingStatusSuccess,
+            isError: isBookingStatusError,
+        },
+    ] = useGetChangeBookingStatusMutation();
 
-    console.log(provider)
     const addServicePanelRef = useRef(null);
     const recentBookingsPanelRef = useRef(null);
-    const location = useLocation()
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useGSAP(() => {
         if (addServicePanel) {
@@ -51,21 +60,50 @@ const ProviderHome = () => {
     }, [recentBookingsPanel]);
     useEffect(() => {
         if (location.state?.showToast) {
-         const timeOut1 = setTimeout(() => {
-            toast(location.state?.message, { type: location.state?.severity })
-          }, 200)
-          
-          const timeOut2 = setTimeout(() => {
-            toast.dismiss()
-            navigate('/provider/home', {state: {showToast: false, message: '', severity: ''}})
-          }, 5000)
-  
-          return () => {
-            clearTimeout(timeOut1)
-            clearTimeout(timeOut2)
-          }
+            const timeOut1 = setTimeout(() => {
+                toast(location.state?.message, {
+                    type: location.state?.severity,
+                });
+            }, 200);
+
+            const timeOut2 = setTimeout(() => {
+                toast.dismiss();
+                navigate("/provider/home", {
+                    state: { showToast: false, message: "", severity: "" },
+                });
+            }, 5000);
+
+            return () => {
+                clearTimeout(timeOut1);
+                clearTimeout(timeOut2);
+            };
         }
-      }, [location.state])
+    }, [location.state]);
+    useGSAP(() => {
+        if (addAddressPanel) {
+           gsap.to(addAddressPopupRef.current, {
+            bottom: 80,
+            transform: 'translateY(0)',
+            delay: 0.3
+          })
+        }
+        else {
+          gsap.to(addAddressPopupRef.current, {
+            bottom: 0,
+            duration: 0.3,
+            transform: 'translateY(100%)'
+          })
+        }
+      }, [addAddressPanel])
+
+      useEffect(()=> {
+        if (provider && !provider?.provider.address) {
+          setAddAddressPanel(true)
+        }
+        else {
+          setAddAddressPanel(false)
+        }
+      }, [token])
     return (
         <>
             {isLoading ? (
@@ -88,17 +126,29 @@ const ProviderHome = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="bg-white p-4 rounded shadow">
                                 <p className="text-gray-500">Total Services</p>
-                                <p className="text-xl font-bold">{provider?.provider.services.length}</p>
+                                <p className="text-xl font-bold">
+                                    {provider?.provider.services.length}
+                                </p>
                             </div>
                             <div className="bg-white p-4 rounded shadow">
-                                <p className="text-gray-500">Total Bookings</p> 
-                                <p className="text-xl font-bold">{provider?.provider.bookings.length}</p>
+                                <p className="text-gray-500">Total Bookings</p>
+                                <p className="text-xl font-bold">
+                                    {provider?.provider.bookings.length}
+                                </p>
                             </div>
                             <div className="bg-white p-4 rounded shadow">
                                 <p className="text-gray-500">
                                     Pending Bookings
                                 </p>
-                                <p className="text-xl font-bold">{provider?.provider.bookings.filter((booking) => booking.status?.toLowerCase() === "Pending"?.toLowerCase()).length}</p>
+                                <p className="text-xl font-bold">
+                                    {
+                                        provider?.provider.bookings.filter(
+                                            (booking) =>
+                                                booking.status?.toLowerCase() ===
+                                                "Pending"?.toLowerCase()
+                                        ).length
+                                    }
+                                </p>
                             </div>
                             <div className="bg-white p-4 rounded shadow">
                                 <p className="text-gray-500">Earnings</p>
@@ -118,30 +168,40 @@ const ProviderHome = () => {
                                 className="bg-white px-4 py-2 rounded shadow flex items-center justify-between space-x-4">
                                 {/* Service Image */}
                                 <div className="flex items-center gap-4">
-                                <img
-                                    src={'https://via.placeholder.com/150/blue?text=Plumbing+Fix'}
-                                    alt={service.serviceType}
-                                    className="w-16 h-16 object-cover rounded"
-                                />
-                                {/* Service Details */}
-                                <div>
-                                    <p className="text-lg font-bold">
-                                        {service.serviceType?.charAt(0).toUpperCase() + service.serviceType?.slice(1)}
-                                    </p>
-                                    <p className="text-gray-500 text-sm font-semibold">
-                                        Price: &#8377; {service.price}
-                                    </p>
-                                    <span
-                                        className={`text-sm ${
-                                            service.status === "active"
-                                                ? "text-green-600"
-                                                : "text-red-500"
-                                        } font-semibold`}>
-                                        {service.status?.charAt(0).toUpperCase() + service.status?.slice(1)}
-                                    </span>
+                                    <img
+                                        src={
+                                            "https://via.placeholder.com/150/blue?text=Plumbing+Fix"
+                                        }
+                                        alt={service.serviceType}
+                                        className="w-16 h-16 object-cover rounded"
+                                    />
+                                    {/* Service Details */}
+                                    <div>
+                                        <p className="text-lg font-bold">
+                                            {service.serviceType
+                                                ?.charAt(0)
+                                                .toUpperCase() +
+                                                service.serviceType?.slice(1)}
+                                        </p>
+                                        <p className="text-gray-500 text-sm font-semibold">
+                                            Price: &#8377; {service.price}
+                                        </p>
+                                        <span
+                                            className={`text-sm ${
+                                                service.status === "active"
+                                                    ? "text-green-600"
+                                                    : "text-red-500"
+                                            } font-semibold`}>
+                                            {service.status
+                                                ?.charAt(0)
+                                                .toUpperCase() +
+                                                service.status?.slice(1)}
+                                        </span>
+                                    </div>
                                 </div>
-                                </div>
-                                <button className="px-3 py-1 bg-red-500 font-semibold text-white rounded">Delete</button>
+                                <button className="px-3 py-1 bg-red-500 font-semibold text-white rounded">
+                                    Delete
+                                </button>
                             </div>
                         ))}
                         <button
@@ -155,7 +215,12 @@ const ProviderHome = () => {
                     </div>
 
                     {/* Bookings List */}
-                    <BookingLists provider={provider} changeBookingStatus={changeBookingStatus} isBookingStatusError={isBookingStatusError} isBookingStatusSuccess={isBookingStatusSuccess}/>
+                    <BookingLists
+                        provider={provider}
+                        changeBookingStatus={changeBookingStatus}
+                        isBookingStatusError={isBookingStatusError}
+                        isBookingStatusSuccess={isBookingStatusSuccess}
+                    />
                     <div
                         ref={addServicePanelRef}
                         className="fixed translate-y-full h-fit left-0 right-0 bottom-0 z-10 w-full bg-white">
@@ -167,9 +232,29 @@ const ProviderHome = () => {
                     <div
                         ref={recentBookingsPanelRef}
                         className="absolute hidden px-4 py-2 h-full z-10 bottom-0 left-0 right-0 w-full bg-gray-100">
-                            <h4 onClick={()=> {setRecentBookingsPanel(false); setValue(0)}} className="w-full text-center"><i className="text-2xl text-gray-400 ri-arrow-down-wide-fill"></i></h4>
-                        <BookingLists provider={provider} changeBookingStatus={changeBookingStatus} isBookingStatusSuccess={isBookingStatusSuccess} isBookingStatusError={isBookingStatusError}/>    
-                    </div>  
+                        <h4
+                            onClick={() => {
+                                setRecentBookingsPanel(false);
+                                setValue(0);
+                            }}
+                            className="w-full text-center">
+                            <i className="text-2xl text-gray-400 ri-arrow-down-wide-fill"></i>
+                        </h4>
+                        <BookingLists
+                            provider={provider}
+                            changeBookingStatus={changeBookingStatus}
+                            isBookingStatusSuccess={isBookingStatusSuccess}
+                            isBookingStatusError={isBookingStatusError}
+                        />
+                    </div>
+                    <div
+                        ref={addAddressPopupRef}
+                        className="fixed z-10 left-0 right-0 bottom-0 translate-y-full h-fit w-full">
+                        <AddAddressPopup
+                            setAddAddressPanel={setAddAddressPanel}
+                            isProviderAddress={true}
+                        />
+                    </div>
                     <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300">
                         <ProviderNavigation
                             value={value}

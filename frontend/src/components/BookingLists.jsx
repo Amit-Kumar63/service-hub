@@ -43,18 +43,14 @@ try {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-lg font-bold">
-                                {booking.serviceName}
+                                {booking.serviceType?.charAt(0).toUpperCase() + booking.serviceType?.slice(1)}
                             </p>
                             <p className="text-gray-800 font-semibold text-ellipsis">
                                 Booked :{" "}
-                                {booking.user.firstName
+                                {booking.user.name
                                     ?.charAt(0)
                                     .toUpperCase() +
-                                    booking.user.firstName?.slice(1)}{" "}
-                                {booking.user.lastName
-                                    ?.charAt(0)
-                                    .toUpperCase() +
-                                    booking.user.lastName?.slice(1)}
+                                    booking.user.name?.slice(1)}{" "}
                             </p>
                             <p className="text-gray-500 text-sm font-semibold">
                                 Date: {booking.createdAt?.split("T")[0]}
