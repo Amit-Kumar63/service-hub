@@ -11,7 +11,7 @@ import HeartOutlineIcon from '@mui/icons-material/FavoriteBorder';
 import HeartIcon  from '@mui/icons-material/Favorite';
 
 const NearbyServiceProvider = () => {
-  const { user } = useOutletContext()
+  const { user, token } = useOutletContext()
     const [servicePanel, setServicePanel] = useState(false);
     const [bookServicePanel, setBookServicePanel] = useState(false);
     const [error, setError] = useState('')
@@ -24,9 +24,7 @@ const NearbyServiceProvider = () => {
     const servicePanelRef = useRef()
     const bookServicePanelRef = useRef()
   
-    const { serviceType  } = useParams()
-
-    const token = localStorage.getItem('token')
+    const { serviceType  } = useParams()    
 
     const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location
         
@@ -157,7 +155,7 @@ const NearbyServiceProvider = () => {
                     className="w-12 h-12 rounded-full object-cover mr-4"
                   />
                   <div>
-                    <h3 className="font-bold">{provider.firstName.charAt(0).toUpperCase() + provider.firstName.slice(1) + ' ' + provider.lastName.charAt(0).toUpperCase() + provider.lastName.slice(1) }</h3>
+                    <h3 className="font-bold">{provider.name.charAt(0).toUpperCase() + provider.name.slice(1) }</h3>
                     <p className="text-sm text-gray-500 font-semibold">{distance + " " + "km away"}</p>
                     <p className="text-sm text-gray-700 font-semibold">&#x20b9; {services[0].price}</p>
                   </div>
