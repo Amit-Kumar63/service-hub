@@ -1,10 +1,35 @@
-import React from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useDeleteUserBookingMutation } from '../app/api/api';
+import { toast } from 'react-toastify';
 
 const UserBookingsSummary = () => {
     const location = useLocation()
     const { booking } = location.state || {};
+    const { token } = useOutletContext()
+    const [deleteUserBooking, { isLoading, error, isSuccess }] = useDeleteUserBookingMutation()
 
+    const deleteBookingHandler = async(id) => {
+      try {
+        await deleteUserBooking({id, token})
+      } catch (error) {
+        toast.error(error?.data?.message || "Something went wrong, please try again")
+        console.error({message: error.message});
+      }
+    }
+    useEffect(() => {
+      if (isSuccess) {
+        toast.dismiss('delete')
+        toast.success('Booking deleted successfully', {toastId: 'delete'})
+        const timeOut = setTimeout(() => {
+          window.history.back()
+        }, 2000);
+        return () => clearTimeout(timeOut)
+      }
+      if (isLoading) {
+        toast.loading('Deleting booking...', {toastId: 'delete'})
+      }
+    }, [isSuccess])
   return (
     <>
     <div className='mt-6 flex items-center justify-between w-full'>
@@ -56,7 +81,11 @@ const UserBookingsSummary = () => {
             {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
           </p>
         </div>
-        <button className='px-6 py-2 bg-red-600 text-white rounded-lg font-semibold w-full'>Cancel</button>
+        <button 
+        onClick={()=> deleteBookingHandler(booking._id)}
+        className='px-6 py-2 bg-red-600 text-white rounded-lg font-semibold w-full'>
+        Cancel
+        </button>
       </div>
     </div>
     </>

@@ -117,6 +117,34 @@ export const Api = createApi({
                 },
             })
         }),
+        bookService: builder.mutation({
+            query: ({serviceDate, address, provider, price, serviceType, token}) => ({
+                url: 'booking/book-service',
+                method: 'POST',
+                body: {
+                    serviceDate,
+                    address,
+                    provider,
+                    price,
+                    serviceType
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+        }),
+        deleteUserBooking: builder.mutation({
+            query: ({id, token}) => ({
+                url: 'users/delete-bookings',
+                method: 'POST',
+                params: {
+                    id
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+        })
     }),
 })
 
@@ -132,4 +160,6 @@ export const {
     useLogoutUserMutation,
     useUpdateUserProfileMutation,
     useAddProviderAddressMutation,
+    useBookServiceMutation,
+    useDeleteUserBookingMutation,
 } = Api

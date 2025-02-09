@@ -32,7 +32,7 @@ module.exports.getBookings = async (user) => {
     }
 }
 
-module.exports.changeBookingStatus = async (bookingId, status, provider) => {
+module.exports.changeBookingStatus = async (bookingId, status, provider=null, user=null) => {
     try {
         const booking = await bookingModel.findById(bookingId);
         if (booking.provider.toString() !== provider._id.toString()) {
@@ -43,6 +43,21 @@ module.exports.changeBookingStatus = async (bookingId, status, provider) => {
         }
         booking.status = status;
         await booking.save();
+        return booking;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+module.exports.deleteBooking = async (bookingId, user) => {
+    try {
+        const booking = await bookingModel.findById(bookingId);
+        if (booking.user.toString() !== user._id.toString() && booking.provider.toString() !== user._id.toString()) {
+            throw new Error('You are not authorized to delete this booking');
+        }
+        if (!booking) {
+            throw new Error('Booking not found');
+        }
+        await booking.deleteOne();
         return booking;
     } catch (error) {
         throw new Error(error.message);

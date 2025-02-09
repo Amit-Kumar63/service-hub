@@ -9,6 +9,10 @@ const UserLayout = () => {
   const [isTokenLoading, setIsTokenLoading] = useState(true)
 
     useEffect(()=> {
+      if (localStorage.getItem('providerToken')) {
+        auth.signOut()
+        localStorage.removeItem('providerToken')
+      }
       const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
         if (currentUser) {
           setToken(currentUser.accessToken)
@@ -21,7 +25,7 @@ const UserLayout = () => {
       })
       return ()=> unSubscribe()
     }, [])
-    const { data: user, isLoading, isSuccess, isError } = useGetUserQuery(
+    const { data: user, isLoading, isSuccess, isError, refetch } = useGetUserQuery(
       token,
       {
           skip: !token,
@@ -33,7 +37,7 @@ const UserLayout = () => {
   return (
     <>
       <main>
-        <Outlet context={{user, isLoading, isSuccess, isError, token, isTokenLoading}}/>
+        <Outlet context={{user, isLoading, isSuccess, isError, token, isTokenLoading, refetch}}/>
       </main>
       <NavigationBar />
     </>

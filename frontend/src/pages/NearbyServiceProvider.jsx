@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import ServiceProviderPop from "../components/ServiceProviderPop";
 import { useState } from "react";
@@ -9,9 +9,10 @@ import { useGetAddToFavMutation, useGetNearbyProvidersQuery } from "../app/api/a
 import { CircularProgress } from '@mui/material';
 import HeartOutlineIcon from '@mui/icons-material/FavoriteBorder';
 import HeartIcon  from '@mui/icons-material/Favorite';
+import {toast} from 'react-toastify'
 
 const NearbyServiceProvider = () => {
-  const { user, token } = useOutletContext()
+  const { user, token, refetch } = useOutletContext()
     const [servicePanel, setServicePanel] = useState(false);
     const [bookServicePanel, setBookServicePanel] = useState(false);
     const [error, setError] = useState('')
@@ -28,11 +29,11 @@ const NearbyServiceProvider = () => {
 
     const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location
         
-    const { isLoading, data, isError, isSuccess, isFetching } = useGetNearbyProvidersQuery({ lat, lng, serviceType: serviceType.slice(1)}, {
+    const { isLoading, data, error: isError } = useGetNearbyProvidersQuery({ lat, lng, serviceType: serviceType.slice(1)}, {
         skip: !user
     });
 
-    const [addToFav, { isLoading: addToFavLoading, isSuccess: addToFavSuccess, isError: addToFavError }] = useGetAddToFavMutation()
+    const [addToFav, { isLoading: addToFavLoading, isSuccess: addToFavSuccess, error: addToFavError }] = useGetAddToFavMutation()
 
     useGSAP(()=> {
         if (servicePanel) {
@@ -90,17 +91,10 @@ const NearbyServiceProvider = () => {
   const addToFavouritesHandler = async (serviceId)=> {
    try {
      await addToFav({serviceId, token})
-     if ( addToFavLoading ) {
-       return <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto'}}/>
-     }
-     if (addToFavSuccess) {
-       return <div className="text-green-600 text-center">Added to favourites</div>
-     }
-     if (addToFavError) {
-       return <div className="text-red-600 text-center">Error adding to favourites</div>
-     }
+     await refetch()
+     return
    } catch (error) {
-    console.error('Error adding to favourites:', error)
+    toast.error(error.response?.data.message || 'Something went wrong, please try again')
    }
   }
 
@@ -110,9 +104,11 @@ const NearbyServiceProvider = () => {
         previousValue = [];
     }
       if (previousValue.includes(serviceId)) {
+        sessionStorage.setItem('isfav', JSON.stringify(false))
         return previousValue.filter((id) => id.toString() !== serviceId.toString())
       }
       else {
+        sessionStorage.setItem('isfav', JSON.stringify(true))
         return [...previousValue, serviceId]
       }
     }
@@ -123,8 +119,24 @@ const NearbyServiceProvider = () => {
   if (useCurrentLocationToFetch && !data) {
     return <div>No service providers found nearby from your current location. Please use saved location</div>
   }
-  // check for error 
-
+  useEffect(() => {
+    if (isError) {
+      toast.error(error?.data?.message || "Something went wrong, please try again")
+  }
+  }, [data, isError])
+  
+  useEffect(() => {
+    if ( addToFavLoading ) {
+      <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto'}}/>
+    }
+    if (addToFavSuccess) {
+      const isFav = JSON.parse(sessionStorage.getItem('isfav'))
+      toast.success(isFav ? 'Added to favourites' : 'Removed from favourites')
+    }
+    if (addToFavError) {
+      toast.error(error?.data?.message || "Something went wrong, while adding to favourites")
+    }
+  }, [addToFavLoading, addToFavSuccess, addToFavError])
   return (
     <div className="bg-gray-100 h-screen flex flex-col pt-4 relative">
         <div className="w-full flex items-center justify-between px-4">
@@ -181,7 +193,7 @@ const NearbyServiceProvider = () => {
         <ServiceProviderPop setServicePanel={setServicePanel} setBookServicePanel={setBookServicePanel} />
       </div>
       <div ref={bookServicePanelRef} className="fixed translate-y-full h-screen bottom-0 z-10 w-full bg-white"> 
-        <BookService setBookServicePanel={setBookServicePanel} selectedProviderId={selectedProviderId} isLoading={isLoading} user={user} selectedServicePrice={selectedServicePrice} serviceType={serviceType.slice(1)}/>
+        <BookService setBookServicePanel={setBookServicePanel} selectedProviderId={selectedProviderId} selectedServicePrice={selectedServicePrice} serviceType={serviceType.slice(1)}/>
       </div>
       {
         error && <div className="text-2xl font-bold text-center mt-8">{error}</div>
