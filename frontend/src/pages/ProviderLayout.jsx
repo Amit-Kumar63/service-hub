@@ -8,6 +8,10 @@ const ProviderLayout = () => {
     const [isTokenLoading, setIsTokenLoading] = useState(true)
   
       useEffect(()=> {
+        if (localStorage.getItem('token')) {
+          auth.signOut()
+          localStorage.removeItem('token')
+        }
         const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
           if (currentUser) {
             setToken(currentUser.accessToken)

@@ -49,7 +49,7 @@ module.exports.changeStatus = async (req, res) => {
         }
         const provider = req.provider;
         const booking = await bookingService.changeBookingStatus(id, status.toLowerCase(), provider);
-        res.status(200).json({ message: 'Booking accepted successfully' });
+        res.status(200).json({ message: `${booking.status} successfully` });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

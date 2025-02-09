@@ -15,7 +15,6 @@ export default function AlertDialogSlide({open, setOpen, cb, text, title}) {
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleAgree = () => {
       cb();
   }

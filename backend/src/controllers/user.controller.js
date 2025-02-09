@@ -3,6 +3,7 @@ const { validationResult, cookie } = require('express-validator');
 const { fetchLatLng } = require("../services/location.service");
 const userModel = require('../models/user.model');
 const admin = require('../firebase-admin');
+const bookingService = require('../services/booking.service');
 
 module.exports.userRegister = async (req, res) => {
     const errors = validationResult(req);
@@ -163,6 +164,23 @@ module.exports.editUserProfile = async (req, res) => {
         }
         const result = await user.save();
         res.status(200).json({ message: 'User profile updated successfully', user: result });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+module.exports.deleteBooking = async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+        const { id } = req.query;
+        if (!id) {
+            throw new Error('Invalid request');
+        }
+        const user = req.user;
+        await bookingService.deleteBooking(id, user);
+        res.status(200).json({ message: 'Booking deleted successfully' });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

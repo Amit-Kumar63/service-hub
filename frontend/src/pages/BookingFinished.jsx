@@ -16,7 +16,7 @@ const BookingFinished = () => {
       { opacity: 1, scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.75)' }
     );
     setTimeout(() => {
-      navigate("/home");
+      navigate("/user/home");
     }, 5000);
   }, [navigate]);
 

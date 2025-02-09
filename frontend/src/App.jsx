@@ -19,7 +19,6 @@ const ProviderLogin = lazy(() => import('./pages/ProviderLogin'))
 const ProviderSignup = lazy(() => import('./pages/ProviderSignup'))
 const ProviderHome = lazy(() => import('./pages/ProviderHome'))
 const BookingFinished = lazy(() => import('./pages/BookingFinished'))
-const PrivateRoute = lazy(() => import('./pages/PrivateRoutes'))
 const UserBookingsSummary = lazy(() => import('./pages/UserBookingsSummary'))
 const ProviderProfile = lazy(() => import('./pages/ProviderProfile'))
 const MessagePage = lazy(() => import('./pages/Message'))
@@ -45,7 +44,9 @@ const App = () => {
         </UserProtectWrapper>
        } />
        <Route path='booking-finished' element={
-        <PrivateRoute element={<BookingFinished/>} redirectTo='/user/home' />
+        <UserProtectWrapper>
+        <BookingFinished />
+        </UserProtectWrapper>
        }/>
        <Route path='user-booking-summary' element={
          <UserProtectWrapper>

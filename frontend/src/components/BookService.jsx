@@ -4,14 +4,19 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import AddressSuggestion from "./AddressSuggestion.jsx";
 import GetLocation from "./GetLocation.jsx";
 import DatePickerComponent from "./DatePicker.jsx";
+import { CircularProgress } from "@mui/material";
+import { useBookServiceMutation } from "../app/api/api.js";
+import { toast } from "react-toastify";
 
-const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user, selectedServicePrice, serviceType}) => {
+const BookService = ({setBookServicePanel, selectedProviderId, selectedServicePrice, serviceType}) => {
   const [date, setDate] = useState(new Date());
   const [address, setAddress] = useState('')
   const [getCurrentPosition, setGetCurrentPosition] = useState('')
   const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
 
-  const { token } = useOutletContext()
+  const { token, user, isLoading } = useOutletContext()
+  const [bookService, { isLoading: isBookServiceLoading, isSuccess: isBookServiceSuccess, error: bookServiceError }] = useBookServiceMutation()
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,23 +28,9 @@ const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user, 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/booking/book-service`, 
-        {
-          serviceDate: date, 
-          address,
-          provider: selectedProviderId,
-          price: selectedServicePrice,
-          serviceType
-        }, 
-        { 
-          withCredentials: true, 
-          headers: {
-          'Authorization': `Bearer ${token}`
-        } });
-    if (response.status === 201) {
-      navigate("/user/booking-finished");
-    }
+      await bookService({serviceDate: date, address, provider: selectedProviderId, price: selectedServicePrice, serviceType, token})  
     } catch (error) {
+      toast.error(error?.data?.message || "Something went wrong, please try again")
       console.error("error while creating booking :", error)
     }
   };  
@@ -55,6 +46,15 @@ const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user, 
     }
     setUseCurrentLocationToFetch(!useCurrentLocationToFetch)
   }
+  useEffect(()=> {
+    if (isBookServiceSuccess) {
+      toast.dismiss('loading')
+      navigate("/user/booking-finished");
+    }
+    if (isBookServiceLoading) {
+      toast.loading("Booking service...", {toastId: 'loading'})
+    }
+  }, [isBookServiceSuccess, isBookServiceLoading])
   return (
       <div className="bg-gray-100 h-screen flex flex-col">
           <div className="flex items-center justify-between p-4">
@@ -67,7 +67,9 @@ const BookService = ({setBookServicePanel, selectedProviderId, isLoading, user, 
           </div>
           {
             isLoading ? (
-              <div>Loading...</div>
+              <div className="wfull h-full flex items-center justify-center">
+                <CircularProgress />
+              </div>
             ): (
               <form className="p-4 flex flex-col space-y-4" onSubmit={handleSubmit}>
               <div className="relative">
