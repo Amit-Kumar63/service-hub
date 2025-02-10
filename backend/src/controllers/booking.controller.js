@@ -18,6 +18,12 @@ module.exports.createBooking = async (req, res) => {
         throw new Error('User not found');
     }
     try {
+        const allbookings = await bookingService.getBookings(user);
+        const matchedBookings = allbookings.filter((booking) => booking.serviceType.toLocaleLowerCase() === serviceType.toLocaleLowerCase());
+        
+        if (matchedBookings) {
+            return res.status(400).json({ message: 'You have already made a booking for this service type' });
+        }
        const booking = await bookingService.CreateBooking({
             user: user._id,
             provider: provider._id,
@@ -30,7 +36,6 @@ module.exports.createBooking = async (req, res) => {
         provider.bookings.push(booking._id);
         await provider.save();
         await user.save();
-        await booking.save();
         res.status(201).json({ message: 'Booking created successfully' });
     } catch (error) {
         console.error(error);   

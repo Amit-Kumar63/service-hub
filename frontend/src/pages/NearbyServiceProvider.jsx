@@ -100,17 +100,10 @@ const NearbyServiceProvider = () => {
 
   const toggleFavouritesHandler = (serviceId)=> {
     setIsFav((previousValue) => {
-      if (!Array.isArray(previousValue)) {
-        previousValue = [];
-    }
-      if (previousValue.includes(serviceId)) {
-        sessionStorage.setItem('isfav', JSON.stringify(false))
-        return previousValue.filter((id) => id.toString() !== serviceId.toString())
-      }
-      else {
-        sessionStorage.setItem('isfav', JSON.stringify(true))
-        return [...previousValue, serviceId]
-      }
+      const newFav = previousValue.includes(serviceId) ?
+        previousValue.filter((id) => id.toString() !== serviceId.toString()) :
+        [...previousValue, serviceId]
+      return newFav
     }
     );
     addToFavouritesHandler(serviceId)
@@ -128,10 +121,6 @@ const NearbyServiceProvider = () => {
   useEffect(() => {
     if ( addToFavLoading ) {
       <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto'}}/>
-    }
-    if (addToFavSuccess) {
-      const isFav = JSON.parse(sessionStorage.getItem('isfav'))
-      toast.success(isFav ? 'Added to favourites' : 'Removed from favourites')
     }
     if (addToFavError) {
       toast.error(error?.data?.message || "Something went wrong, while adding to favourites")
@@ -174,7 +163,7 @@ const NearbyServiceProvider = () => {
                   <h4 onClick={()=> toggleFavouritesHandler(services[0]._id)} className="absolute -top-2 -left-2 text-sm text-gray-700 font-semibold">
                       {
                         user?.user.favourites.includes(services[0]._id) || isFav.includes(services[0]._id) ? (
-                          <HeartIcon sx={{ color: 'red' }}/>
+                          <HeartIcon sx={{ color: 'red'}}/>
                         ) : (
                           <HeartOutlineIcon />
                         )

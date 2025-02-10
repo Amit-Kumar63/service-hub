@@ -6,12 +6,13 @@ import { toast } from 'react-toastify';
 const UserBookingsSummary = () => {
     const location = useLocation()
     const { booking } = location.state || {};
-    const { token } = useOutletContext()
+    const { token, refetch } = useOutletContext()
     const [deleteUserBooking, { isLoading, error, isSuccess }] = useDeleteUserBookingMutation()
 
     const deleteBookingHandler = async(id) => {
       try {
         await deleteUserBooking({id, token})
+        await refetch()
       } catch (error) {
         toast.error(error?.data?.message || "Something went wrong, please try again")
         console.error({message: error.message});
