@@ -144,7 +144,19 @@ export const Api = createApi({
                     'Authorization': `Bearer ${token}`,
                 },
             })
-        })
+        }),
+        deleteService: builder.mutation({
+            query: ({serviceId, token}) => ({
+                url: 'service/delete-service',
+                method: 'POST',
+                params: {
+                    serviceId
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+        }),
     }),
 })
 
@@ -162,4 +174,5 @@ export const {
     useAddProviderAddressMutation,
     useBookServiceMutation,
     useDeleteUserBookingMutation,
+    useDeleteServiceMutation
 } = Api

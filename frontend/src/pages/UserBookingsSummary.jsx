@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { useDeleteUserBookingMutation } from '../app/api/api';
 import { toast } from 'react-toastify';
-
+import AlertDialogSlide  from '../components/Dialog'
 const UserBookingsSummary = () => {
+    const [open, setOpen] = useState(false)
     const location = useLocation()
     const { booking } = location.state || {};
     const { token, refetch } = useOutletContext()
@@ -11,7 +12,7 @@ const UserBookingsSummary = () => {
 
     const deleteBookingHandler = async(id) => {
       try {
-        await deleteUserBooking({id, token})
+        await deleteUserBooking({id: booking._id, token})
         await refetch()
       } catch (error) {
         toast.error(error?.data?.message || "Something went wrong, please try again")
@@ -83,11 +84,12 @@ const UserBookingsSummary = () => {
           </p>
         </div>
         <button 
-        onClick={()=> deleteBookingHandler(booking._id)}
+        onClick={()=> setOpen(true)}
         className='px-6 py-2 bg-red-600 text-white rounded-lg font-semibold w-full'>
-        Cancel
+        Delete
         </button>
       </div>
+      <AlertDialogSlide open={open} setOpen={setOpen} cb={deleteBookingHandler} text={{Agree: 'Delete', Disagree: 'Undo'}} title={"Confirm delete ?"}/>
     </div>
     </>
   );

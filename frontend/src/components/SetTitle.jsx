@@ -30,7 +30,7 @@ export function SetTitle({path}) {
             case '/user/all-bookings':
                 title = 'All Bookings';
             default:
-                title = `${title} | ServiceHub`;
+                title = `ServiceHub`;
                 break;
         }
         document.title = `${title} | ServiceHub`;

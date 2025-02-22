@@ -4,13 +4,14 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ServiceIcon from '@mui/icons-material/HomeRepairService';
 import RecentIcon from '@mui/icons-material/Restore';
 import ProfileIcon from '@mui/icons-material/ManageAccounts';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function ProviderNavigation({setAddServicePanel, addServicePanel, value, setValue, recentBookingsPanel, setRecentBookingsPanel}) {
-
+  const navigate = useNavigate()
   const dashboardIconHandler = ()=> {
     setRecentBookingsPanel(false)
     setAddServicePanel(false)
+    navigate('/provider/home')
   }
   const serviceIconHandler = ()=> {
     setAddServicePanel(!addServicePanel);
