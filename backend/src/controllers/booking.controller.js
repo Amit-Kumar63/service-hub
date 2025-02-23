@@ -18,6 +18,13 @@ module.exports.createBooking = async (req, res) => {
         throw new Error('User not found');
     }
     try {
+        const allbookings = await bookingService.getBookings(user);
+        if (allbookings.length > 0) {
+            const matchedBookings = allbookings.filter((booking) => booking.serviceType.toLowerCase() === serviceType.toLowerCase());
+            if (matchedBookings) {
+                return res.status(400).json({ message: 'You have already made a booking for this service type' });
+            }
+        }
        const booking = await bookingService.CreateBooking({
             user: user._id,
             provider: provider._id,

@@ -2,44 +2,79 @@ import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useGetProviderProfileQuery } from "../app/api/api";
 import { auth } from "../firebase-config";
+import ProviderNavigation from "../components/ProviderNavigation";
 
 const ProviderLayout = () => {
-  const [token, setToken] = useState(null)
-    const [isTokenLoading, setIsTokenLoading] = useState(true)
-  
-      useEffect(()=> {
-        if (localStorage.getItem('token')) {
-          auth.signOut()
-          localStorage.removeItem('token')
+    const [providerToken, setProviderToken] = useState(null);
+    const [isTokenLoading, setIsTokenLoading] = useState(true);
+    const [value, setValue] = useState(0);
+    const [addServicePanel, setAddServicePanel] = useState(false);
+    const [recentBookingsPanel, setRecentBookingsPanel] = useState(false);
+
+    useEffect(() => {
+        if (localStorage.getItem("token")) {
+            auth.signOut();
+            localStorage.removeItem("token");
         }
-        const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
-          if (currentUser) {
-            setToken(currentUser.accessToken)
-            setIsTokenLoading(false)
-          }
-          else {
-            setToken(null)
-            setIsTokenLoading(false)  
-          }
-        })
-        return ()=> unSubscribe()
-      }, [])
-      const { data: provider, isLoading, isSuccess, isError } = useGetProviderProfileQuery(
-        token,
-        {
-            skip: !token,
+        const unSubscribe = auth.onAuthStateChanged((currentUser) => {
+            if (currentUser) {
+                setProviderToken(currentUser.accessToken);
+                setIsTokenLoading(false);
+            } else {
+                setProviderToken(null);
+                setIsTokenLoading(false);
+            }
         });
-        if (token && !provider) {
-          return <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">Loading provider data....</div>
-        }
-  
-  return (
-    <>
-      <main>
-        <Outlet context={{provider, isLoading, isSuccess, isError, token, isTokenLoading}}/>
-      </main>
-    </>
-  );
+        return () => unSubscribe();
+    }, []);
+    const {
+        data: provider,
+        isLoading,
+        isSuccess,
+        isError,
+    } = useGetProviderProfileQuery(providerToken, {
+        skip: !providerToken,
+    });
+    if (providerToken && !provider) {
+        return (
+            <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">
+                Loading provider data....
+            </div>
+        );
+    }
+
+    return (
+        <>
+            <main>
+                <Outlet
+                    context={{
+                        provider,
+                        isLoading,
+                        isSuccess,
+                        isError,
+                        providerToken,
+                        isTokenLoading,
+                        addServicePanel,
+                        setAddServicePanel,
+                        value,
+                        setValue,
+                        recentBookingsPanel,
+                        setRecentBookingsPanel,
+                    }}
+                />
+            </main>
+            <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300">
+            <ProviderNavigation
+                value={value}
+                setValue={setValue}
+                setAddServicePanel={setAddServicePanel}
+                addServicePanel={addServicePanel}
+                setRecentBookingsPanel={setRecentBookingsPanel}
+                recentBookingsPanel={recentBookingsPanel}
+                />
+            </div>
+        </>
+    );
 };
 
 export default ProviderLayout;

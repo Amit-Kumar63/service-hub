@@ -15,9 +15,6 @@ const NearbyServiceProvider = () => {
   const { user, token, refetch } = useOutletContext()
     const [servicePanel, setServicePanel] = useState(false);
     const [bookServicePanel, setBookServicePanel] = useState(false);
-    const [error, setError] = useState('')
-    const [coords, setCoords] = useState('')
-    const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
     const [selectedProviderId, setSelectedProviderId] = useState('')
     const [selectedServicePrice, setSelectedServicePrice] = useState(0)
     const [isFav, setIsFav] = useState([])
@@ -27,10 +24,10 @@ const NearbyServiceProvider = () => {
   
     const { serviceType  } = useParams()    
 
-    const { lat, lng } = useCurrentLocationToFetch ? coords || {} : user?.user.location
+    const { lat, lng } = user?.user.location || {}
         
-    const { isLoading, data, error: isError } = useGetNearbyProvidersQuery({ lat, lng, serviceType: serviceType.slice(1)}, {
-        skip: !user
+    const { isLoading, data, error: isError, isFetching } = useGetNearbyProvidersQuery({ lat, lng, serviceType: serviceType.slice(1)}, {
+        skip: !token
     });
 
     const [addToFav, { isLoading: addToFavLoading, isSuccess: addToFavSuccess, error: addToFavError }] = useGetAddToFavMutation()
@@ -59,29 +56,6 @@ const NearbyServiceProvider = () => {
       }
   }, [bookServicePanel])
 
-  const userCurrentLocationHandler = (e)=> {
-    setUseCurrentLocationToFetch(!useCurrentLocationToFetch)
-
-      if ('geolocation' in navigator) {
-          navigator.geolocation.getCurrentPosition(
-              (position) => {
-                  const { latitude, longitude } = position.coords;
-                  setCoords({ lat:latitude, lng:longitude });
-              },
-              (error) => {
-                  setError(error.message);
-              },
-              {
-                  enableHighAccuracy: true,
-                  timeout: 5000,
-                  maximumAge: 0,
-              }
-          );
-      } else {
-          setError('Geolocation is not supported by this browser.');
-      }
-  }
-
   const bookingHandler = (provider, price)=> {
     setBookServicePanel(true);
     setSelectedProviderId(provider._id)
@@ -100,38 +74,27 @@ const NearbyServiceProvider = () => {
 
   const toggleFavouritesHandler = (serviceId)=> {
     setIsFav((previousValue) => {
-      if (!Array.isArray(previousValue)) {
-        previousValue = [];
-    }
-      if (previousValue.includes(serviceId)) {
-        sessionStorage.setItem('isfav', JSON.stringify(false))
-        return previousValue.filter((id) => id.toString() !== serviceId.toString())
-      }
-      else {
-        sessionStorage.setItem('isfav', JSON.stringify(true))
-        return [...previousValue, serviceId]
-      }
+      const newFav = previousValue.includes(serviceId) ?
+        previousValue.filter((id) => id.toString() !== serviceId.toString()) :
+        [...previousValue, serviceId]
+      return newFav
     }
     );
     addToFavouritesHandler(serviceId)
   }
 
-  if (useCurrentLocationToFetch && !data) {
-    return <div>No service providers found nearby from your current location. Please use saved location</div>
-  }
-  useEffect(() => {
+  useEffect(()=> {
+    if (!data) {
+      <div>No service providers found nearby from your current location. Please use saved location</div>
+    }
     if (isError) {
-      toast.error(error?.data?.message || "Something went wrong, please try again")
+      toast.error(isError?.data?.message || "Something went wrong, please try again")
   }
   }, [data, isError])
   
   useEffect(() => {
     if ( addToFavLoading ) {
       <CircularProgress sx={{marginLeft: 'auto', marginRight: 'auto'}}/>
-    }
-    if (addToFavSuccess) {
-      const isFav = JSON.parse(sessionStorage.getItem('isfav'))
-      toast.success(isFav ? 'Added to favourites' : 'Removed from favourites')
     }
     if (addToFavError) {
       toast.error(error?.data?.message || "Something went wrong, while adding to favourites")
@@ -144,9 +107,7 @@ const NearbyServiceProvider = () => {
         <h1 className="text-2xl font-bold text-center w-full">Services</h1>
         </div>
       <div className="p-4">
-        <h2 className="text-lg font-bold mb-4">Nearby service providers</h2>
-        <button onClick={userCurrentLocationHandler} 
-        className={`w-full font-semibold py-3 text-nowrap mb-4 rounded ${useCurrentLocationToFetch ? 'bg-slate-700' : 'bg-gray-600'} text-white `}>{useCurrentLocationToFetch ? 'Use saved location' : 'Use current location'}</button>       
+        <h2 className="text-lg font-bold mb-4">Nearby service providers</h2>       
         {
           !isLoading && !data && (
             <div className="flex items-center justify-center mt-10 text-2xl font-bold text-center">No service providers found nearby <i className="text-lg ri-emotion-normal-fill"></i></div>
@@ -174,7 +135,7 @@ const NearbyServiceProvider = () => {
                   <h4 onClick={()=> toggleFavouritesHandler(services[0]._id)} className="absolute -top-2 -left-2 text-sm text-gray-700 font-semibold">
                       {
                         user?.user.favourites.includes(services[0]._id) || isFav.includes(services[0]._id) ? (
-                          <HeartIcon sx={{ color: 'red' }}/>
+                          <HeartIcon sx={{ color: 'red'}}/>
                         ) : (
                           <HeartOutlineIcon />
                         )
@@ -195,9 +156,6 @@ const NearbyServiceProvider = () => {
       <div ref={bookServicePanelRef} className="fixed translate-y-full h-screen bottom-0 z-10 w-full bg-white"> 
         <BookService setBookServicePanel={setBookServicePanel} selectedProviderId={selectedProviderId} selectedServicePrice={selectedServicePrice} serviceType={serviceType.slice(1)}/>
       </div>
-      {
-        error && <div className="text-2xl font-bold text-center mt-8">{error}</div>
-      }
     </div>
   );
 };

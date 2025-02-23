@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isBookingStatusLoading, isBookingStatusSuccess }) => {
     const [bookings, setBookings] = useState(provider?.provider.bookings || []);
+    const { providerToken } = useOutletContext();
 
     const changeBookingStatusHandler = async (bookingId, status) => {
         const updateBookings = bookings.map((booking) => 
@@ -9,22 +12,13 @@ const BookingLists = ({ provider, changeBookingStatus, isBookingStatusError, isB
         );
         setBookings(updateBookings);
 
-        const token = localStorage.getItem("provider-token");
 try {
             await changeBookingStatus({
                 id: bookingId,
                 status,
-                token
+                token:providerToken
             })
-            if (isBookingStatusError) {
-                console.log(isBookingStatusError);
-            }
-            if (isBookingStatusSuccess) {
-                console.log(isBookingStatusSuccess);
-            }
-            if (isBookingStatusLoading) {
-                console.log(isBookingStatusLoading);
-            }
+
 } catch (error) {
     console.error(error);
     const revertBookings = bookings.map((booking) => 
@@ -33,6 +27,7 @@ try {
     setBookings(revertBookings);
 }
     }
+
     return (
         <div className="space-y-4 pb-16">
             <h2 className="text-xl font-bold text-gray-800">Recent Bookings</h2>
@@ -97,6 +92,11 @@ try {
                             {booking.status.toLowerCase() === "declined" ? "Declined" : "Decline"}
                         </button>
                     </div>
+                    {
+                        booking.status.toLowerCase() === "declined" && (
+                            <p className="text-[10px] text-gray-500 mt-2 text-center">Booking will be deleted in 24 hours if not accepted</p>
+                        )
+                    }
                 </div>
             ))}
         </div>

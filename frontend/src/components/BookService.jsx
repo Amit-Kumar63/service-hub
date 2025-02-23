@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import AddressSuggestion from "./AddressSuggestion.jsx";
 import GetLocation from "./GetLocation.jsx";
@@ -14,7 +13,7 @@ const BookService = ({setBookServicePanel, selectedProviderId, selectedServicePr
   const [getCurrentPosition, setGetCurrentPosition] = useState('')
   const [useCurrentLocationToFetch, setUseCurrentLocationToFetch] = useState(false)
 
-  const { token, user, isLoading } = useOutletContext()
+  const { token, user, isLoading, refetch} = useOutletContext()
   const [bookService, { isLoading: isBookServiceLoading, isSuccess: isBookServiceSuccess, error: bookServiceError }] = useBookServiceMutation()
 
   const navigate = useNavigate();
@@ -24,11 +23,11 @@ const BookService = ({setBookServicePanel, selectedProviderId, selectedServicePr
       setAddress(user?.user.address)
     }
   }, [user]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await bookService({serviceDate: date, address, provider: selectedProviderId, price: selectedServicePrice, serviceType, token})  
+      await refetch()
     } catch (error) {
       toast.error(error?.data?.message || "Something went wrong, please try again")
       console.error("error while creating booking :", error)
@@ -49,10 +48,16 @@ const BookService = ({setBookServicePanel, selectedProviderId, selectedServicePr
   useEffect(()=> {
     if (isBookServiceSuccess) {
       toast.dismiss('loading')
+      refetch()
       navigate("/user/booking-finished");
     }
     if (isBookServiceLoading) {
       toast.loading("Booking service...", {toastId: 'loading'})
+    }
+    if (bookServiceError) {
+      toast.dismiss('loading')
+      toast.error(bookServiceError?.data?.message || "Something went wrong, please try again")
+      console.error("error while creating booking :", bookServiceError)
     }
   }, [isBookServiceSuccess, isBookServiceLoading])
   return (

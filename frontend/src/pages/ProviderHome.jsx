@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import ProviderNavigation from "../components/ProviderNavigation";
 import { Avatar } from "@mui/material";
 import AddService from "../components/AddService";
 import gsap from "gsap";
@@ -7,18 +6,15 @@ import { useGSAP } from "@gsap/react";
 import { CircularProgress } from "@mui/material";
 import BookingLists from "../components/BookingLists";
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
-import { useGetChangeBookingStatusMutation } from "../app/api/api";
+import { useDeleteServiceMutation, useGetChangeBookingStatusMutation } from "../app/api/api";
 import { toast } from "react-toastify";
 import AddAddressPopup from "../components/AddAddressPopup";
 
 const ProviderHome = () => {
-    const [addServicePanel, setAddServicePanel] = useState(false);
-    const [recentBookingsPanel, setRecentBookingsPanel] = useState(false);
-    const [value, setValue] = useState(0);
+    const { addServicePanel, setAddServicePanel, setValue, recentBookingsPanel, setRecentBookingsPanel, provider, isLoading, providerToken: token } = useOutletContext()
     const [addAddressPanel, setAddAddressPanel] = useState(false)
 
     const addAddressPopupRef = useRef()
-    const { provider, isLoading, token } = useOutletContext();
     const [
         changeBookingStatus,
         {
@@ -28,11 +24,16 @@ const ProviderHome = () => {
         },
     ] = useGetChangeBookingStatusMutation();
 
+    const [deleteService, { isLoading: isDeleteServiceLoading, isSuccess: isDeleteServiceSuccess, isError: isDeleteServiceError }] = useDeleteServiceMutation()
     const addServicePanelRef = useRef(null);
     const recentBookingsPanelRef = useRef(null);
     const location = useLocation();
     const navigate = useNavigate();
 
+    const deleteServiceHandler = async (serviceId)=> {
+        console.log('Delete Service', serviceId)
+        await deleteService({serviceId, token})
+    }
     useGSAP(() => {
         if (addServicePanel) {
             gsap.to(addServicePanelRef.current, {
@@ -199,7 +200,7 @@ const ProviderHome = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <button className="px-3 py-1 bg-red-500 font-semibold text-white rounded">
+                                <button onClick={() => deleteServiceHandler(service._id)} className="px-3 py-1 bg-red-500 font-semibold text-white rounded">
                                     Delete
                                 </button>
                             </div>
@@ -220,6 +221,7 @@ const ProviderHome = () => {
                         changeBookingStatus={changeBookingStatus}
                         isBookingStatusError={isBookingStatusError}
                         isBookingStatusSuccess={isBookingStatusSuccess}
+                        isBookingStatusLoading={isBookingStatusLoading}
                     />
                     <div
                         ref={addServicePanelRef}
@@ -253,16 +255,6 @@ const ProviderHome = () => {
                         <AddAddressPopup
                             setAddAddressPanel={setAddAddressPanel}
                             isProviderAddress={true}
-                        />
-                    </div>
-                    <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300">
-                        <ProviderNavigation
-                            value={value}
-                            setValue={setValue}
-                            setAddServicePanel={setAddServicePanel}
-                            addServicePanel={addServicePanel}
-                            setRecentBookingsPanel={setRecentBookingsPanel}
-                            recentBookingsPanel={recentBookingsPanel}
                         />
                     </div>
                 </div>
