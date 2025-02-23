@@ -6,7 +6,7 @@ import ProviderNavigation from "../components/ProviderNavigation";
 
 const ProviderLayout = () => {
     const [providerToken, setProviderToken] = useState(null);
-    const [isTokenLoading, setIsTokenLoading] = useState(true);
+    const [isProviderTokenLoading, setIsProviderTokenLoading] = useState(true);
     const [value, setValue] = useState(0);
     const [addServicePanel, setAddServicePanel] = useState(false);
     const [recentBookingsPanel, setRecentBookingsPanel] = useState(false);
@@ -19,19 +19,19 @@ const ProviderLayout = () => {
         const unSubscribe = auth.onAuthStateChanged((currentUser) => {
             if (currentUser) {
                 setProviderToken(currentUser.accessToken);
-                setIsTokenLoading(false);
+                setIsProviderTokenLoading(false);
             } else {
                 setProviderToken(null);
-                setIsTokenLoading(false);
+                setIsProviderTokenLoading(false);
             }
         });
         return () => unSubscribe();
     }, []);
     const {
         data: provider,
-        isLoading,
-        isSuccess,
-        isError,
+        isLoading: isProviderLoading,
+        isSuccess:isProviderSuccess,
+        isError: isProivderError,
     } = useGetProviderProfileQuery(providerToken, {
         skip: !providerToken,
     });
@@ -49,11 +49,11 @@ const ProviderLayout = () => {
                 <Outlet
                     context={{
                         provider,
-                        isLoading,
-                        isSuccess,
-                        isError,
+                        isProviderLoading,
+                        isProviderSuccess,
+                        isProivderError,
                         providerToken,
-                        isTokenLoading,
+                        isProviderTokenLoading,
                         addServicePanel,
                         setAddServicePanel,
                         value,

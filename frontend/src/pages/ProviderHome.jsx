@@ -31,7 +31,6 @@ const ProviderHome = () => {
     const navigate = useNavigate();
 
     const deleteServiceHandler = async (serviceId)=> {
-        console.log('Delete Service', serviceId)
         await deleteService({serviceId, token})
     }
     useGSAP(() => {

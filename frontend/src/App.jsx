@@ -5,6 +5,7 @@ import { lazy } from 'react'
 import Start from './pages/Start'
 import Home from './pages/Home'
 import UserProtectWrapper from './pages/UserProtectWrapper'
+import ProviderProtectWrapper from './pages/ProviderProtectWrapper'
 
 import ProviderLayout from './pages/ProviderLayout'
 import UserLayout from './pages/UserLayout'
@@ -70,8 +71,15 @@ const App = () => {
        <Route path='/provider' element={<ProviderLayout />} >
        <Route path='login' element={ <ProviderLogin /> }/>
         <Route path='signup' element={ <ProviderSignup /> }/>
-        <Route path='home' element={ <ProviderHome /> }/>
-        <Route path='profile' element={ <ProviderProfile /> }/>
+        <Route path='home' element={ 
+          <ProviderProtectWrapper>
+            <ProviderHome />
+          </ProviderProtectWrapper> }/>
+        <Route path='profile' element={ 
+          <ProviderProtectWrapper>
+            <ProviderProfile />
+          </ProviderProtectWrapper>
+         }/>
         </Route>
     </Routes> 
   <ToastContainer toastStyle={{width: '90%', marginBottom: '100px', borderRadius: '4px'}} position='bottom-center'/>
