@@ -15,8 +15,16 @@ const UserLayout = () => {
       }
       const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
         if (currentUser) {
-          setToken(currentUser.accessToken)
-          setIsTokenLoading(false)
+          currentUser.getIdToken().then((token)=> {
+            setToken(currentUser.accessToken)
+            setIsTokenLoading(false)
+          })
+          .catch((error)=> {
+            console.log(error)
+            setIsTokenLoading(false)
+            setToken(null)
+          }
+          )
         }
         else {
           setToken(null)

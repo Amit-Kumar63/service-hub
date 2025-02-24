@@ -11,6 +11,17 @@ const ProviderLayout = () => {
     const [addServicePanel, setAddServicePanel] = useState(false);
     const [recentBookingsPanel, setRecentBookingsPanel] = useState(false);
 
+    const {
+        data: provider,
+        isLoading: isProviderLoading,
+        isSuccess:isProviderSuccess,
+        isError: isProivderError,
+        refetch
+    } = useGetProviderProfileQuery(providerToken, {
+        skip: !providerToken,
+    });
+
+
     useEffect(() => {
         if (localStorage.getItem("token")) {
             auth.signOut();
@@ -18,8 +29,17 @@ const ProviderLayout = () => {
         }
         const unSubscribe = auth.onAuthStateChanged((currentUser) => {
             if (currentUser) {
-                setProviderToken(currentUser.accessToken);
-                setIsProviderTokenLoading(false);
+                currentUser.getIdToken().then((token) => {
+                    setProviderToken(token);
+                    setIsProviderTokenLoading(false);
+                }
+                )
+                .catch((error) => {
+                    console.error(error);
+                    setIsProviderTokenLoading(false);
+                    setProviderToken(null);
+                }
+                );
             } else {
                 setProviderToken(null);
                 setIsProviderTokenLoading(false);
@@ -27,14 +47,7 @@ const ProviderLayout = () => {
         });
         return () => unSubscribe();
     }, []);
-    const {
-        data: provider,
-        isLoading: isProviderLoading,
-        isSuccess:isProviderSuccess,
-        isError: isProivderError,
-    } = useGetProviderProfileQuery(providerToken, {
-        skip: !providerToken,
-    });
+
     if (providerToken && !provider) {
         return (
             <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">

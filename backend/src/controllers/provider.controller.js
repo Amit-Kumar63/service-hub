@@ -65,8 +65,11 @@ module.exports.loginProvider = async (req, res) => {
     }
 }
 module.exports.logoutProvider = async (req, res) => {
-    res.clearCookie('provider-token');
-    res.status(200).json({ message: 'Provider logged out successfully' });
+    const provider = req.provider;
+    const result = await providerModel.updateOne({uid: provider.uid}, { loggedIn: null });
+    if (!result) return res.status(400).json({ message: 'Provider logged in failed' });
+    res.clearCookie('providerToken');
+    res.status(200).json({ message: 'User logged out successfully' });
 }
 module.exports.providerProfile = async (req, res) => {
     try {
@@ -116,5 +119,35 @@ module.exports.addProviderAddress = async (req, res)=> {
         res.status(200).json({ message: 'Address added successfully' });
     } catch (error) {
         return res.status(400).json({ message: error.message });
+    }
+}
+module.exports.editProviderProfile = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { name, address, phone } = req.body;
+    const provider = req.provider;
+    try {
+        let updated
+        if (provider.name !== name) {
+            provider.name = name;
+            updated = true;
+        }
+        if (provider.address !== address) {
+            provider.address = address;
+            updated = true;
+        }
+        if (provider.phone !== phone) {
+            provider.phone = phone;
+            updated = true;
+        }
+        if (!updated) {
+            return res.status(400).json({ message: 'No changes detected' });
+        }
+        const result = await provider.save();
+        res.status(200).json({ message: 'Provider profile updated successfully', user: result });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 }
