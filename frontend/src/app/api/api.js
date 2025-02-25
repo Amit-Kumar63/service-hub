@@ -157,6 +157,29 @@ export const Api = createApi({
                 },
             })
         }),
+        updateProviderProfile: builder.mutation({
+            query: ({name, phone, address, token}) => ({
+                url: 'providers/edit-provider-profile',
+                method: 'POST',
+                body: {
+                    name,
+                    phone,
+                    address
+                },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+        }),
+        logoutProvider: builder.mutation({
+            query: (token) => ({
+                url: 'providers/logout',
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            }),
+        }),
     }),
 })
 
@@ -174,5 +197,7 @@ export const {
     useAddProviderAddressMutation,
     useBookServiceMutation,
     useDeleteUserBookingMutation,
-    useDeleteServiceMutation
+    useDeleteServiceMutation,
+    useUpdateProviderProfileMutation,
+    useLogoutProviderMutation,
 } = Api

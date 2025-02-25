@@ -6,10 +6,21 @@ import ProviderNavigation from "../components/ProviderNavigation";
 
 const ProviderLayout = () => {
     const [providerToken, setProviderToken] = useState(null);
-    const [isTokenLoading, setIsTokenLoading] = useState(true);
+    const [isProviderTokenLoading, setIsProviderTokenLoading] = useState(true);
     const [value, setValue] = useState(0);
     const [addServicePanel, setAddServicePanel] = useState(false);
     const [recentBookingsPanel, setRecentBookingsPanel] = useState(false);
+
+    const {
+        data: provider,
+        isLoading: isProviderLoading,
+        isSuccess:isProviderSuccess,
+        isError: isProivderError,
+        refetch
+    } = useGetProviderProfileQuery(providerToken, {
+        skip: !providerToken,
+    });
+
 
     useEffect(() => {
         if (localStorage.getItem("token")) {
@@ -18,23 +29,25 @@ const ProviderLayout = () => {
         }
         const unSubscribe = auth.onAuthStateChanged((currentUser) => {
             if (currentUser) {
-                setProviderToken(currentUser.accessToken);
-                setIsTokenLoading(false);
+                currentUser.getIdToken().then((token) => {
+                    setProviderToken(token);
+                    setIsProviderTokenLoading(false);
+                }
+                )
+                .catch((error) => {
+                    console.error(error);
+                    setIsProviderTokenLoading(false);
+                    setProviderToken(null);
+                }
+                );
             } else {
                 setProviderToken(null);
-                setIsTokenLoading(false);
+                setIsProviderTokenLoading(false);
             }
         });
         return () => unSubscribe();
     }, []);
-    const {
-        data: provider,
-        isLoading,
-        isSuccess,
-        isError,
-    } = useGetProviderProfileQuery(providerToken, {
-        skip: !providerToken,
-    });
+
     if (providerToken && !provider) {
         return (
             <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">
@@ -45,15 +58,15 @@ const ProviderLayout = () => {
 
     return (
         <>
-            <main>
+            <main className="md:hidden">
                 <Outlet
                     context={{
                         provider,
-                        isLoading,
-                        isSuccess,
-                        isError,
+                        isProviderLoading,
+                        isProviderSuccess,
+                        isProivderError,
                         providerToken,
-                        isTokenLoading,
+                        isProviderTokenLoading,
                         addServicePanel,
                         setAddServicePanel,
                         value,
@@ -63,7 +76,10 @@ const ProviderLayout = () => {
                     }}
                 />
             </main>
-            <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300">
+            <div className='w-full h-screen bg-gray-100 flex justify-center items-center'>
+      <span className='text-gray-600 text-2xl'>Please use a Mobile Device or resize your screen</span>
+  </div>
+            <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300 md:hidden">
             <ProviderNavigation
                 value={value}
                 setValue={setValue}

@@ -1,7 +1,7 @@
 import ServiceCard from '../components/ServiceCard'
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom'
 import { useGetServicesQuery, useLogoutUserMutation} from '../app/api/api'
-import { CircularProgress, Slide } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import AddAddressPopup from '../components/AddAddressPopup';
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";

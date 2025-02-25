@@ -24,14 +24,13 @@ const ProviderHome = () => {
         },
     ] = useGetChangeBookingStatusMutation();
 
-    const [deleteService, { isLoading: isDeleteServiceLoading, isSuccess: isDeleteServiceSuccess, isError: isDeleteServiceError }] = useDeleteServiceMutation()
+    const [deleteService, { isLoading: isDeleteServiceLoading, isSuccess: isDeleteServiceSuccess, error: deleteServiceError }] = useDeleteServiceMutation()
     const addServicePanelRef = useRef(null);
     const recentBookingsPanelRef = useRef(null);
     const location = useLocation();
     const navigate = useNavigate();
 
     const deleteServiceHandler = async (serviceId)=> {
-        console.log('Delete Service', serviceId)
         await deleteService({serviceId, token})
     }
     useGSAP(() => {
@@ -105,6 +104,21 @@ const ProviderHome = () => {
           setAddAddressPanel(false)
         }
       }, [token])
+
+      useEffect(() => {
+        if (isDeleteServiceSuccess) {
+          toast.dismiss('deleting')
+          toast.success("Service deleted successfully")
+        }
+        if (deleteServiceError) {
+          toast.dismiss('deleting')
+          toast.error(deleteServiceError.data.message)
+        }
+        if (isDeleteServiceLoading) {
+          toast.loading({toastId: "deleting"}, "Deleting service...")
+        }        
+      }, 
+      [isBookingStatusLoading, isDeleteServiceLoading, deleteServiceError, isDeleteServiceSuccess])
     return (
         <>
             {isLoading ? (

@@ -34,7 +34,7 @@ module.exports.providerAuth = async (req, res, next) => {
 
         const provider = await Provider.findOne({ uid: decodedToken.uid });
         if (!provider) return res.status(400).json({ message: 'Unauthorized' });
-        if (provider.uid !== decodedToken.uid) return res.status(400).json({ message: 'Unauthorized request' });
+        if (provider.loggedIn !== decodedToken.uid) return res.status(400).json({ message: 'Unauthorized request' });
         req.token = decodedToken;
         req.provider = provider;
         next();

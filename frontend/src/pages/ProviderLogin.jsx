@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, replace, useNavigate } from 'react-router-dom';
 import { signInWithPopup, signOut, auth, provider } from '../firebase-config'
 import { toast } from 'react-toastify';
 import { CircularProgress } from '@mui/material';
@@ -22,6 +22,7 @@ const ProviderLogin = () => {
         toast.dismiss('loading')
         localStorage.setItem('providerToken', response.data.token);
         navigate('/provider/home', { state: { showToast: true, message: `Welcome ${response.data.provider.name}`, severity: "success"}});
+        window.location.reload()
       }
     } catch (error) {
       toast.dismiss('loading')

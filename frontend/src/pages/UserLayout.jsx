@@ -15,8 +15,16 @@ const UserLayout = () => {
       }
       const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
         if (currentUser) {
-          setToken(currentUser.accessToken)
-          setIsTokenLoading(false)
+          currentUser.getIdToken().then((token)=> {
+            setToken(currentUser.accessToken)
+            setIsTokenLoading(false)
+          })
+          .catch((error)=> {
+            console.log(error)
+            setIsTokenLoading(false)
+            setToken(null)
+          }
+          )
         }
         else {
           setToken(null)
@@ -37,9 +45,12 @@ const UserLayout = () => {
 
   return (
     <>
-      <main>
+      <main className="md:hidden">
         <Outlet context={{user, isLoading, isSuccess, isError, token, isTokenLoading, refetch}}/>
       </main>
+      <div className='w-full h-screen bg-gray-100 flex justify-center items-center'>
+      <span className='text-gray-600 text-2xl'>Please use a Mobile Device or resize your screen</span>
+  </div>
       <NavigationBar />
     </>
   );
