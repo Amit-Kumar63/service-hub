@@ -5,7 +5,7 @@ import axios from "axios";
 import { useOutletContext } from "react-router-dom";
 
 const AddService = ({setAddServicePanel, setValue}) => {
-  const { token } = useOutletContext()
+  const { providerToken: token } = useOutletContext()
   const [formData, setFormData] = useState({
     serviceType: "",
     price: "",

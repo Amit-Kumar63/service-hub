@@ -8,6 +8,7 @@ import EditProfile from "../components/EditProfile";
 import { useLogoutProviderMutation, useUpdateProviderProfileMutation } from "../app/api/api";
 import {toast} from "react-toastify";
 import { signOut, auth } from "../firebase-config";
+import AlertDialogSlide from "../components/Dialog";
 const ProviderProfile = () => {
     const { provider, isLoading } = useOutletContext()
       const [editedProfileData, setEditedProfileData] = useState({
@@ -17,6 +18,7 @@ const ProviderProfile = () => {
       const [address, setAddress] = useState(provider?.provider.address || "")
       const [isEdit, setIsEdit] = useState(false)
       const [updateProfilePanel, setUpdateProfilePanel] = useState(false)
+      const [open, setOpen] = useState(false)
 
       const updateProfileRef = useRef()
       const [updateProviderProfile, { isLoading: isUpdateLoading, isSuccess: isUpdateSuccess, error: updateError }] = useUpdateProviderProfileMutation()
@@ -105,14 +107,13 @@ const ProviderProfile = () => {
           <div className="flex items-center gap-4">
             <Avatar
               alt={provider?.provider.name}
-              src="https://via.placeholder.com/150"
+              src={provider?.provider.avatar}
               className="w-20 h-20"
             />
             <div>
               <h1 className="text-xl font-bold text-gray-800">
-                {provider?.provider.firstName} {provider?.provider.lastName}
+                {provider?.provider.name}
               </h1>
-              <p className="text-gray-500">{provider?.provider.email}</p>
             </div>
           </div>
 
@@ -140,6 +141,27 @@ const ProviderProfile = () => {
             </div>
           </div>
 
+            <div className="mt-6">
+              <h2 className="font-bold text-lg mb-3">Contact and address</h2>
+              <div className="flex items-center mb-3">
+                <span className="text-gray-500 mr-3">📞</span>
+                <span className="font-semibold text-base text-gray-600">{provider?.provider.phone}</span>
+              </div>
+              <div className="flex items-center mb-2">
+                <span className="text-gray-500 mr-2">📧</span>
+                <span className="font-semibold text-base text-gray-600">{provider?.provider.email}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-gray-500 mr-2">🏠</span>
+                <div>
+                  <span className="font-semibold">Address</span>
+                  <p className="text-sm text-gray-500 font-semibold">
+                    {provider?.provider.address}
+                  </p>
+                </div>
+              </div>
+            </div>
+
           {/* Account Management */}
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-gray-800">
@@ -149,7 +171,7 @@ const ProviderProfile = () => {
               <button onClick={() => setUpdateProfilePanel(!updateProfilePanel)} className="w-full text-left px-4 py-2 rounded bg-blue-500 text-white font-semibold">
                 Edit Profile
               </button>
-              <button onClick={()=> logoutHandler()} className="w-full text-left px-4 py-2 rounded bg-red-500 text-white font-semibold">
+              <button onClick={()=> setOpen(true)} className="w-full text-left px-4 py-2 rounded bg-red-500 text-white font-semibold">
                 Logout
               </button>
             </div>
@@ -167,6 +189,7 @@ const ProviderProfile = () => {
       address={address}
       setAddress={setAddress}
       />
+      <AlertDialogSlide open={open} setOpen={setOpen} cb={logoutHandler} text={{Agree: 'Logout', Disagree: 'Cancel'}} title={"Confirm logout ?"}/>
     </div>
   );
 };
