@@ -23,7 +23,7 @@ const Start = () => {
         <Link to="/provider/login" className='bg-[#0A090D] text-white font-semibold py-3 px-3 mx-5 rounded-md flex justify-center items-center mt-3'>Start as a Service Provider</Link>
       </div>
     </div>
-    
+
     <div className='w-full h-screen bg-gray-100 hidden md:flex justify-center items-center'>
     <span className='text-gray-600 text-2xl'>Please use a Mobile Device or resize your screen</span>
 </div>
