@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 
 const Start = () => {
   return (
-    <div className='w-full h-screen bg-white flex flex-col justify-between items-center font-montserrat'>
+    <>
+    <div className='w-full h-screen bg-white flex flex-col justify-between items-center font-montserrat md:hidden'>
       <div className='w-full h-[60%] relative'>
       <h2 className='text-center text-2xl font-bold py-3'>ServiceHub</h2>
       <div className='absolute w-full text-center z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[15%]'>
@@ -22,6 +23,11 @@ const Start = () => {
         <Link to="/provider/login" className='bg-[#0A090D] text-white font-semibold py-3 px-3 mx-5 rounded-md flex justify-center items-center mt-3'>Start as a Service Provider</Link>
       </div>
     </div>
+    
+    <div className='w-full h-screen bg-gray-100 hidden md:flex justify-center items-center'>
+    <span className='text-gray-600 text-2xl'>Please use a Mobile Device or resize your screen</span>
+</div>
+    </>
   )
 }
 
