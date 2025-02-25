@@ -58,7 +58,7 @@ const ProviderLayout = () => {
 
     return (
         <>
-            <main>
+            <main className="md:hidden">
                 <Outlet
                     context={{
                         provider,
@@ -76,7 +76,10 @@ const ProviderLayout = () => {
                     }}
                 />
             </main>
-            <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300">
+            <div className='w-full h-screen bg-gray-100 flex justify-center items-center'>
+      <span className='text-gray-600 text-2xl'>Please use a Mobile Device or resize your screen</span>
+  </div>
+            <div className="fixed bottom-0 z-10 right-0 left-0 border border-t border-gray-300 md:hidden">
             <ProviderNavigation
                 value={value}
                 setValue={setValue}

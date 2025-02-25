@@ -5,7 +5,7 @@ const NavigationBar = () => {
   const location = useLocation();
   const isActivePath = (path) => location.pathname === path;
     return (
-        <footer className="w-full fixed bottom-0 border-t border-solid border-gray-200">
+        <footer className="w-full fixed bottom-0 border-t border-solid border-gray-200 md:hidden">
             <div className="flex items-center justify-evenly w-full gap-2 pt-4 px-2 bg-slate-50">
                 <NavLink
                     to="/user/home"
