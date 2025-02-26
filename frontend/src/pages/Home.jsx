@@ -26,7 +26,7 @@ const Home = () => {
   
   const navigate = useNavigate()
   const location = useLocation()
-
+  
     useGSAP(() => {
       if (addAddressPanel) {
          gsap.to(addAddressPopupRef.current, {

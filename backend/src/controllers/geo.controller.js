@@ -78,12 +78,3 @@ module.exports.getAutoSugesstion = async (req, res) => {
     const suggestions = await getAddressSuggestions(query)
     res.status(200).json({ suggestions });
 }
-
-module.exports.getAddressFromCoords = async (req, res) => {
-    const coords = req.body
-    const address = await fetchAddressFromCoords(coords)
-    if (!address) {
-        throw new Error('something went wrong while fetching address from coords')
-    }
-    res.status(200).json({ address })
-}

@@ -45,23 +45,3 @@ module.exports.getAddressSuggestions = async (query) => {
     return [];
   }
 }
-
-module.exports.fetchAddressFromCoords = async (coords) => {
-  if (!coords) {
-    throw new Error('coords is required!')
-  }
-  const { lat, lng } = coords;
-  try {
-      const accessToken = process.env.MAPBOX_ACCESS_TOKEN;
-      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${accessToken}&country=IN`;
-      const response = await axios.get(url)
-      if (response.data && response.data.features && response.data.features.length > 0) {
-        return response.data.features[0].place_name; // Full address
-      } else {
-          return "Address not found";
-      }
-
-  } catch (error) {
-    throw new Error(error)
-  }
-}
