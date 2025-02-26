@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
 
     // Configuration
     cloudinary.config({ 
@@ -6,3 +7,21 @@ const cloudinary = require('cloudinary').v2;
         api_key: '931467231933643', 
         api_secret: 'asnX3j_yL3M4JNrpnnuvQQ2NhVc'
     });
+
+const uploadOnCloudinary = async (localFilePath) => {
+    try {
+        if (!localFilePath) throw new Error('Missing required parameters');
+        const response = await cloudinary.uploader.upload(localFilePath, {
+            resource_type: 'auto',
+        })
+        if (response.url) {
+            fs.unlinkSync(localFilePath);
+        }
+        return response.url
+    } catch (error) {
+        fs.unlinkSync(localFilePath);
+        throw error;
+    }
+}
+
+module.exports.uploadOnCloudinary = uploadOnCloudinary;

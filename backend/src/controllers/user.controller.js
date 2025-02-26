@@ -4,6 +4,7 @@ const { fetchLatLng } = require("../services/location.service");
 const userModel = require('../models/user.model');
 const admin = require('../firebase-admin');
 const bookingService = require('../services/booking.service');
+const {uploadOnCloudinary} = require('../services/cloudinary.service');
 
 module.exports.userRegister = async (req, res) => {
     const errors = validationResult(req);
