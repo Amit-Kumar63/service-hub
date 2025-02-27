@@ -37,4 +37,5 @@ router.post('/delete-bookings', authMiddleware.userAuth, [
     query('id').isMongoId().withMessage('Invalid booking id'),
 ], userController.deleteBooking);
 
+router.post('/upload', upload.single('file'), userController.uploadImage);
 module.exports = router;

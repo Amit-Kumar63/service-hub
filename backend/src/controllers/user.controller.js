@@ -186,3 +186,8 @@ module.exports.deleteBooking = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+
+module.exports.uploadImage = async (req, res) => {
+    file = req.file;
+    console.log(file);
+}

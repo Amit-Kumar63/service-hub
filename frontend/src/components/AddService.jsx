@@ -39,7 +39,6 @@ const AddService = ({setAddServicePanel, setValue}) => {
         description: "",
         image: "",
       })
-      console.log(response.data);
       setAddServicePanel(false);
       setValue(0);
 
