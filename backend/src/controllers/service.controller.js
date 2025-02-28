@@ -3,7 +3,7 @@ const serviceModel = require("../models/service.model");
 const { uploadOnCloudinary } = require("../services/cloudinary.service");
 
 module.exports.createServiceController = async (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req.body);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
@@ -19,10 +19,10 @@ module.exports.createServiceController = async (req, res) => {
         const existingService = await serviceModel.findOne({ serviceType });
         if (existingService) throw new Error("Service already exists");
 
-        const imageUrl = await uploadOnCloudinary(file);
+        const imageUrl = await uploadOnCloudinary(file.path);
 
         if (!imageUrl) throw new Error("ImageUrl not returned from cloudinary");
-
+        
         const service = await serviceModel.create({
             provider: provider._id,
             serviceType,
@@ -41,11 +41,7 @@ module.exports.createServiceController = async (req, res) => {
 module.exports.getAllUniqueServicesTypeController = async (req, res) => {
     try {
         const AllServices = await serviceModel.find();
-        const uniqueServiceType = [
-            ...new Set(
-                AllServices.map((service) => service.serviceType.toLowerCase())
-            ),
-        ];
+        const uniqueServiceType = [...new Set(AllServices)]
         res.status(200).json({ uniqueServiceType });
     } catch (error) {
         res.status(400).json({ message: error.message });

@@ -2,7 +2,6 @@ const express = require('express');
 const userController = require('../controllers/user.controller');
 const { body, query } = require('express-validator');
 const authMiddleware = require('../middlewares/auth.middleware');
-const upload = require('../middlewares/multer.middleware');
 
 const router = express.Router();
 
@@ -37,5 +36,4 @@ router.post('/delete-bookings', authMiddleware.userAuth, [
     query('id').isMongoId().withMessage('Invalid booking id'),
 ], userController.deleteBooking);
 
-router.post('/upload', upload.single('file'), userController.uploadImage);
 module.exports = router;
