@@ -15,19 +15,20 @@ const AddService = ({setAddServicePanel, setValue}) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });    
-  };
+    setFormData({ ...formData, [name]: value });
+  };  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/service/create-service`, {
-      serviceType: formData.serviceType,
-      price: formData.price,
-      description: formData.description,
-      image: formData.image,
-    }, {
+    const data = new FormData();
+    data.append('serviceType', formData.serviceType);
+    data.append('price', formData.price);
+    data.append('description', formData.description);
+    data.append('image', e.target.image.files[0]);
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/service/create-service`, data, {
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
       }
     });
 
@@ -39,7 +40,6 @@ const AddService = ({setAddServicePanel, setValue}) => {
         description: "",
         image: "",
       })
-      console.log(response.data);
       setAddServicePanel(false);
       setValue(0);
 

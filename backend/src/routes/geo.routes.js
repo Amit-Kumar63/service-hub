@@ -13,5 +13,4 @@ router.get('/distance', [
 
 router.get('/suggestions' , geoController.getAutoSugesstion);
 
-router.get('/get-address-from-coords', geoController.getAddressFromCoords)
 module.exports = router;

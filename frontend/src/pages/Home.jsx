@@ -26,7 +26,7 @@ const Home = () => {
   
   const navigate = useNavigate()
   const location = useLocation()
-
+  
     useGSAP(() => {
       if (addAddressPanel) {
          gsap.to(addAddressPopupRef.current, {
@@ -171,7 +171,7 @@ const Home = () => {
               <div className='mt-6 space-y-7 pb-24'>
             {
               services?.uniqueServiceType.map((service, key) => (
-                <ServiceCard key={key} serviceType={service}/>
+                <ServiceCard key={key} service={service}/>
               ))
             }
           </div>
@@ -180,11 +180,11 @@ const Home = () => {
                 <p className='text-xs text-gray-600'><b><i className="ri-information-line"></i> Note: </b>This is a sample list of services ,for testing purpose only. You can add your own services or login for actual services from backend </p>
                 {
                   searchedData ? (
-                    <ServiceCard key={searchedData.id} serviceType={searchedData.name} image={searchedData.image}/>
+                    <ServiceCard key={searchedData.id} service={searchedData.name} image={searchedData.image}/>
                   ): (
 
                     popularServices.map((service, key) => (
-                      <ServiceCard key={key} serviceType={service.name} image={service.image}/>
+                      <ServiceCard key={key} service={service}/>
                     ))
                   )
                 }

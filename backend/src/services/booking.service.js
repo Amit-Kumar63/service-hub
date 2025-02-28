@@ -57,8 +57,9 @@ module.exports.deleteBooking = async (bookingId, user) => {
         if (!booking) {
             throw new Error('Booking not found');
         }
-        const deletedBooking = await bookingModel.deleteOne({ _id: bookingId });
-        return deletedBooking;
+        await bookingModel.findByIdAndDelete(bookingId);
+        user.bookings = user.bookings.filter(bookings => bookings.toString() !== bookingId.toString());
+        await user.save();
     } catch (error) {
         throw new Error(error.message);
     }

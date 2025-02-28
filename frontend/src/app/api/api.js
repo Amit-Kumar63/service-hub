@@ -22,9 +22,6 @@ export const Api = createApi({
         getNearbyProviders: builder.query({
             query: ({lat, lng, serviceType})=> `geo/distance?lat=${lat}&lng=${lng}&serviceType=${serviceType}`,
         }),
-        getCurrentLocation: builder.query({
-            query: ()=> 'geo/get-address-from-coords'
-        }),
         getProviderProfile: builder.query({
             query: (token) => ({
                 url: `providers/provider-profile`,
@@ -186,7 +183,6 @@ export const Api = createApi({
 export const {
     useGetUserQuery,
     useGetNearbyProvidersQuery,
-    useGetCurrentLocationQuery,
     useGetProviderProfileQuery,
     useGetServicesQuery,
     useGetChangeBookingStatusMutation,

@@ -21,6 +21,10 @@ const serviceSchema = new mongoose.Schema({
     description: {
         type: String,
     },
+    image: {
+        type: String,
+        required: [true, 'Image is required']
+    },
     status: {
         type: String,
         enum: ['active', 'inactive'],
