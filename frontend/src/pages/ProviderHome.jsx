@@ -185,7 +185,7 @@ const ProviderHome = () => {
                                 <div className="flex items-center gap-4">
                                     <img
                                         src={
-                                            "https://via.placeholder.com/150/blue?text=Plumbing+Fix"
+                                            service.image
                                         }
                                         alt={service.serviceType}
                                         className="w-16 h-16 object-cover rounded"

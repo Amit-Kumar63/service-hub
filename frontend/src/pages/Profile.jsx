@@ -9,9 +9,10 @@ import AddressSuggestion from "../components/AddressSuggestion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import EditProfile from "../components/EditProfile";
+import axios from "axios";
 
 const ProfilePage = () => {
-  const { user, isLoading, isSuccess,token } = useOutletContext()
+  const { user, isLoading, isSuccess,token, refetch } = useOutletContext()
   const [viewAllBookings, setViewAllBookings] = useState(user?.user.bookings.length <= 3 ? true : false);
   const [editedProfileData, setEditedProfileData] = useState({
     phone: user?.user.phone || "",
@@ -66,6 +67,31 @@ const ProfilePage = () => {
   const updateProfileHandler = async () => {
     await updateProfile({name: editedProfileData.name, address, phone: editedProfileData.phone, token})
   }
+
+  const editProfileImageHandler = async (e) => {
+    const data = new FormData()
+    data.append('image', e.target.files[0])
+    if (data.get('image')) {
+      toast.loading("Updating...", {toastId: "loadingEditProfileImage"})
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/users/edit-profile-image`, data, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      }).then((res) => {
+        if (res.status === 200) {
+          toast.dismiss("loadingEditProfileImage")
+          toast.success("Profile image updated successfully")
+          refetch()
+        }
+      }
+      ).catch((error) => {
+        console.error(error)
+        toast.dismiss("loadingEditProfileImage")
+        toast.error(error?.response?.data?.message || "Something went wrong, please try again")
+      }
+      )
+    }
+  }
   useEffect(() => {
     if (isUpdateLoading) {
       toast.loading("Updating...", {toastId: "loading"})
@@ -74,7 +100,7 @@ const ProfilePage = () => {
       toast.dismiss("loading")
       setUpdateProfilePanel(false)
       sessionStorage.setItem('isProfileUpdated', JSON.stringify(true))
-      navigate(0);
+      
     }
     if (updateError) {
       toast.dismiss("loading")
@@ -106,11 +132,19 @@ const ProfilePage = () => {
   
           {/* Profile Section */}
           <div className="text-center mx-2">
+            <div className="relative">
             <img
-              src={`${user?.user.image}`}
+              src={user?.user.image.url}
               alt="Profile"
               className="w-24 h-24 rounded-full mx-auto object-cover"
             />
+            <div className="absolute z-10 bg-white bg-opacity-40 top-0 right-0 w-24 h-fit -translate-x-[145%] translate-y-[250%] rounded-full">
+            <label htmlFor="image" className="w-full">
+            <i className="text-xl ri-pencil-fill m-[0 auto] float-right mr-6 text-gray-800"></i>
+            </label>
+            <input type="file" id="image" name="image" className="hidden" onChange={(e) => editProfileImageHandler(e)}/>
+              </div>
+            </div>
             <h1 className="text-lg font-bold mt-4">
               {user?.user.name.charAt(0).toUpperCase() + user?.user.name.slice(1).split(" ")[0] + " " + user?.user.name.split(" ")[1].charAt(0).toUpperCase() + user?.user.name.split(" ")[1].slice(1)}
             </h1>

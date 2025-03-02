@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 const { fetchLatLng } = require("../services/location.service");
 const providerService = require('../services/provider.service');
 const admin = require('../firebase-admin');
+const { uploadOnCloudinary, deleteFromCloudinary } = require('../services/cloudinary.service');
 
 module.exports.registerProvider = async (req, res) => {
     const errors = validationResult(req);
@@ -147,6 +148,31 @@ module.exports.editProviderProfile = async (req, res) => {
         }
         const result = await provider.save();
         res.status(200).json({ message: 'Provider profile updated successfully', user: result });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+module.exports.editProfileImage = async (req, res) => {
+    const image = req.file;
+    if (!image) {
+        return res.status(400).json({ message: 'Image is required' });
+    }
+    const provider = req.provider;
+    if (!provider) {
+        return res.status(400).json({ message: 'Provider not found' });
+    }
+    try {
+        const result = await uploadOnCloudinary(image.path);
+        const updated = await providerModel.findByIdAndUpdate(provider._id, { 
+            image: {
+                public_id: result.public_id,
+                url: result.secure_url
+            }
+        });
+        if (updated) {
+            await deleteFromCloudinary(provider.image.public_id);
+        }
+        res.status(200).json({ message: 'Profile image updated successfully'});
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

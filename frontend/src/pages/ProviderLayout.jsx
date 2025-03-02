@@ -16,7 +16,7 @@ const ProviderLayout = () => {
         isLoading: isProviderLoading,
         isSuccess:isProviderSuccess,
         isError: isProivderError,
-        refetch
+        refetch: refetchProvider,
     } = useGetProviderProfileQuery(providerToken, {
         skip: !providerToken,
     });
@@ -73,6 +73,7 @@ const ProviderLayout = () => {
                         setValue,
                         recentBookingsPanel,
                         setRecentBookingsPanel,
+                        refetchProvider
                     }}
                 />
             </main>

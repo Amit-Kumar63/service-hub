@@ -15,8 +15,13 @@ const userSchema = new mongoose.Schema({
         match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Invalid email']
     },
     image: {
-        type: String,
-        default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+        url: {
+            type: String,
+            default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+        },
+        public_id: {
+            type: String,
+        }
     },
     phone: {
         type: String,

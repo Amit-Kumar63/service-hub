@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Avatar } from "@mui/material";
 import { CircularProgress } from "@mui/material";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import EditProfile from "../components/EditProfile";
@@ -9,8 +9,10 @@ import { useLogoutProviderMutation, useUpdateProviderProfileMutation } from "../
 import {toast} from "react-toastify";
 import { signOut, auth } from "../firebase-config";
 import AlertDialogSlide from "../components/Dialog";
+import axios from "axios";
+
 const ProviderProfile = () => {
-    const { provider, isLoading } = useOutletContext()
+    const { provider, isLoading, providerToken: token, refetchProvider } = useOutletContext()
       const [editedProfileData, setEditedProfileData] = useState({
         phone: provider?.provider.phone || "",
         name: provider?.provider.name || "",
@@ -73,6 +75,30 @@ const ProviderProfile = () => {
           toast.error(error.data.message)
         }
       }
+      const editProfileImageHandler = async (e) => {
+        const data = new FormData()
+        data.append('image', e.target.files[0])
+        if (data.get('image')) {
+          toast.loading("Updating...", {toastId: "loadingEditProfileImage"})
+          await axios.post(`${import.meta.env.VITE_BASE_URL}/providers/edit-profile-image`, data, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            }
+          }).then((res) => {
+            if (res.status === 200) {
+              toast.dismiss("loadingEditProfileImage")
+              toast.success("Profile image updated successfully")
+              refetchProvider()
+            }
+          }
+          ).catch((error) => {
+            console.error(error)
+            toast.dismiss("loadingEditProfileImage")
+            toast.error(error?.response?.data?.message || "Something went wrong, please try again")
+          }
+          )
+        }
+      }
       useEffect(() => {
         const onLogoutSuccess = async () => {
           if (isLogoutSuccess) {
@@ -105,11 +131,20 @@ const ProviderProfile = () => {
           </div>
           {/* Profile Header */}
           <div className="flex items-center gap-4">
+            <div className="relative overflow-hidden rounded-full">
             <Avatar
               alt={provider?.provider.name}
-              src={provider?.provider.avatar}
+              src={provider?.provider.image.url}
+              sx={{ width: 70, height: 70 }}
               className="w-20 h-20"
             />
+             <div className="absolute bg-white bg-opacity-40 top-0 right-0 w-24 h-fit translate-y-[155%] translate-x-[10%]  rounded-full">
+            <label htmlFor="image" className="w-full">
+            <i className="text-xl ri-pencil-fill m-[0 auto] float-right mr-6 text-gray-800"></i>
+            </label>
+            <input type="file" id="image" name="image" className="hidden" onChange={(e) => editProfileImageHandler(e)}/>
+              </div>
+            </div>
             <div>
               <h1 className="text-xl font-bold text-gray-800">
                 {provider?.provider.name}
