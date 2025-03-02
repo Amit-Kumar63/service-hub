@@ -13,7 +13,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 // Routes
 const userRoutes = require('./routes/user.routes');
 const providerRoutes = require('./routes/provider.routes');

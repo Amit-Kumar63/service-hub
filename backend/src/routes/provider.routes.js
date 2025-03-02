@@ -2,6 +2,7 @@ const express = require('express');
 const providerController = require('../controllers/provider.controller');
 const { body } = require('express-validator');
 const authMiddleware = require('../middlewares/auth.middleware');
+const upload = require('../middlewares/multer.middleware');
 
 const router = express.Router();
 
@@ -26,4 +27,6 @@ router.post('/edit-provider-profile', authMiddleware.providerAuth, [
     body('phone').isLength({ min: 10 }).withMessage('phone number is must be atleast 10 characters long'),
     body('address').isLength({ min: 25 }).withMessage('address is must be atleast 25 characters long'),
 ], providerController.editProviderProfile);
+
+router.post('/edit-profile-image', authMiddleware.providerAuth, upload.single('image'), providerController.editProfileImage);
 module.exports = router;

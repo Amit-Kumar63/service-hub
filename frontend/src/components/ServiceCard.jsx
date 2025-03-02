@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 
 const ServiceCard = ({service}) => {
-  console.log(service?.serviceType);
   return (
     <div className="">
       <div

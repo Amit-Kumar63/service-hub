@@ -166,7 +166,7 @@ const Home = () => {
             )
           }
           {
-            isSuccess ? (
+            isSuccess && (
           <h1 className='text-2xl font-bold'>{services?.uniqueServiceType.length > 0 ? 'All Services' : 'Popular Services'}</h1>,
               <div className='mt-6 space-y-7 pb-24'>
             {
@@ -175,27 +175,14 @@ const Home = () => {
               ))
             }
           </div>
-            ) : !token && !isTokenLoading && (
-              <div className='mt-5 space-y-7 pb-24'>
-                <p className='text-xs text-gray-600'><b><i className="ri-information-line"></i> Note: </b>This is a sample list of services ,for testing purpose only. You can add your own services or login for actual services from backend </p>
-                {
-                  searchedData ? (
-                    <ServiceCard key={searchedData.id} service={searchedData.name} image={searchedData.image}/>
-                  ): (
-
-                    popularServices.map((service, key) => (
-                      <ServiceCard key={key} service={service}/>
-                    ))
-                  )
-                }
-              </div>
-            )
+            ) 
+            
           }
-          {
+          {/* {
             services?.uniqueServiceType.length === 0 && (
               <h4 className='text-base text-gray-600 font-semibold text-center leading-5'>No services found in your location</h4>
             )
-          }
+          } */}
         </div>
         <AlertDialogSlide open={open} setOpen={setOpen} cb={handleLogout} text={{Agree: 'Logout', Disagree: 'Cancel'}} title={"Confirm logout ?"}/>
         <div ref={addAddressPopupRef} className='fixed z-10 left-0 right-0 bottom-0 translate-y-full h-fit w-full'>

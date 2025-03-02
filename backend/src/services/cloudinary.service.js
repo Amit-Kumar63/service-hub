@@ -17,11 +17,23 @@ const uploadOnCloudinary = async (localFilePath) => {
         if (response.url) {
             fs.unlinkSync(localFilePath);
         }
-        return response.url
+        return response
     } catch (error) {
         fs.unlinkSync(localFilePath);
         throw error;
     }
 }
 
-module.exports.uploadOnCloudinary = uploadOnCloudinary;
+const deleteFromCloudinary = async (publicId) => {
+    try {
+        if (!publicId) throw new Error('Missing required parameters');
+        return await cloudinary.uploader.destroy(publicId);
+    } catch (error) {
+        throw error;
+    }
+}
+
+module.exports = {
+    uploadOnCloudinary,
+    deleteFromCloudinary
+};

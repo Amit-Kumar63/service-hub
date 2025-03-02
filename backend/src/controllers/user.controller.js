@@ -4,7 +4,7 @@ const { fetchLatLng } = require("../services/location.service");
 const userModel = require('../models/user.model');
 const admin = require('../firebase-admin');
 const bookingService = require('../services/booking.service');
-const {uploadOnCloudinary} = require('../services/cloudinary.service');
+const {uploadOnCloudinary, deleteFromCloudinary} = require('../services/cloudinary.service');
 
 module.exports.userRegister = async (req, res) => {
     const errors = validationResult(req);
@@ -182,6 +182,32 @@ module.exports.deleteBooking = async (req, res) => {
         const user = req.user;
         await bookingService.deleteBooking(id, user);
         res.status(200).json({ message: 'Booking deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+module.exports.editProfileImage = async (req, res) => {
+    const image = req.file;
+    if (!image) {
+        return res.status(400).json({ message: 'Image is required' });
+    }
+    const user = req.user;
+    if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+    }
+    try {
+        const result = await uploadOnCloudinary(image.path);
+        const updated = await userModel.findByIdAndUpdate(user._id, { 
+            image: {
+                public_id: result.public_id,
+                url: result.secure_url
+            }
+        });
+        if (updated && user.image.public_id) {
+            await deleteFromCloudinary(user.image.public_id);
+        }
+        res.status(200).json({ message: 'Profile image updated successfully'});
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
