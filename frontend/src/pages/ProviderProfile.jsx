@@ -118,6 +118,7 @@ const ProviderProfile = () => {
         return ()=> {}
       },
       [isLogoutSuccess, logoutError, isLogoutLoading])
+  
   return (
     <div className="min-h-screen pb-10 bg-gray-100">
       {isLoading ? (

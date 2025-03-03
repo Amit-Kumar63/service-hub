@@ -5,6 +5,7 @@ const userModel = require('../models/user.model');
 const admin = require('../firebase-admin');
 const bookingService = require('../services/booking.service');
 const {uploadOnCloudinary, deleteFromCloudinary} = require('../services/cloudinary.service');
+const {signinAsGuest} = require('../services/signinAsGuest.service');
 
 module.exports.userRegister = async (req, res) => {
     const errors = validationResult(req);
@@ -208,6 +209,43 @@ module.exports.editProfileImage = async (req, res) => {
             await deleteFromCloudinary(user.image.public_id);
         }
         res.status(200).json({ message: 'Profile image updated successfully'});
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+module.exports.signInAsGuestController = async (req, res) => {
+    const token = req.headers?.authorization?.split(' ')[1]
+
+    try {
+        if (!token) {
+            return res.status(400).json({ message: "Token not provided" });
+        }
+        const uniqueInt = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const email = `guest${uniqueInt}@gmail.com`;
+        const decodedToken = await admin.auth().verifyIdToken(token);
+
+        const guestUser = await userService.createUser({
+            name: "Guest",
+            email,
+            token,
+            uid: decodedToken.uid,
+            image: {
+                url: "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            },
+            loggedIn: decodedToken.uid,
+            address: "Randome address of guest",
+            phone: "0000000024"
+        })
+    
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production'
+        })
+        res.status(200).json({
+            message: "Guest user registered successfully",
+            token,
+            guestUser
+        })
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

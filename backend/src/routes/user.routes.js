@@ -1,6 +1,6 @@
 const express = require('express');
 const userController = require('../controllers/user.controller');
-const { body, query } = require('express-validator');
+const { body, query, header } = require('express-validator');
 const authMiddleware = require('../middlewares/auth.middleware');
 const upload = require('../middlewares/multer.middleware');
 
@@ -38,4 +38,6 @@ router.post('/delete-bookings', authMiddleware.userAuth, [
 ], userController.deleteBooking);
 
 router.post('/edit-profile-image', authMiddleware.userAuth, upload.single('image'), userController.editProfileImage);
+
+router.get('/signin-as-guest', userController.signInAsGuestController);
 module.exports = router;

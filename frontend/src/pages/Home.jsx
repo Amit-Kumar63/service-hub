@@ -70,7 +70,6 @@ const Home = () => {
         }
       }
     }, [location.state])
-
     const handleLogout = async () => {
         try {
           await logoutUser(token)

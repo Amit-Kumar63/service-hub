@@ -4,6 +4,7 @@ import { signInWithPopup, auth, provider, signOut } from '../firebase-config';
 import { toast } from 'react-toastify';
 import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
+import SignInAsGuest from '../components/SignInAsGuest'
 
 const Login = () => {
   const [loading, setLoading] = useState(false)
@@ -55,6 +56,7 @@ const Login = () => {
           </>
         }
       </button>
+      <SignInAsGuest/>
       <p className="text-sm font-bold text-center">
         New user?{' '}
         <Link to="/user/signup" className="text-blue-500 hover:underline">
