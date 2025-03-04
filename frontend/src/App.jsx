@@ -24,6 +24,8 @@ const UserBookingsSummary = lazy(() => import('./pages/UserBookingsSummary'))
 const ProviderProfile = lazy(() => import('./pages/ProviderProfile'))
 const MessagePage = lazy(() => import('./pages/Message'))
 const AllBookings = lazy(() => import('./pages/AllBookings'))
+const InfoForGuest = lazy(()=> import('./pages/InfoForGuest'))
+const HowWeWork = lazy(()=> import('./pages/HowServiceHubWork'))
 
 const App = () => {
   const location = useLocation()
@@ -31,7 +33,11 @@ const App = () => {
     <>
     <Routes>
       <Route path='/user' element={<UserLayout />} >
-      <Route path='home' element={ <Home /> } />
+      <Route path='home' element={ 
+        <UserProtectWrapper>
+          <Home />
+        </UserProtectWrapper>
+       } />
       <Route path='login' element={<Login />} />
       <Route path='signup' element={<Signup />} />
       <Route path='profile' element={
@@ -64,6 +70,14 @@ const App = () => {
          <AllBookings />
          </UserProtectWrapper>
        } />
+       <Route path='info-for-guest' element={
+         <UserProtectWrapper>
+         <InfoForGuest path={location.pathname}/>
+         </UserProtectWrapper>
+       } />
+        <Route path='how-we-work' element={
+         <HowWeWork path={location.pathname}/>
+       } />
       </Route>
       <Route path='/' element={<Start />} />
       
@@ -79,6 +93,14 @@ const App = () => {
           <ProviderProtectWrapper>
             <ProviderProfile />
           </ProviderProtectWrapper>
+         }/>
+         <Route path='info-for-guest' element={ 
+          <ProviderProtectWrapper>
+            <InfoForGuest path={location.pathname}/>
+          </ProviderProtectWrapper>
+         }/>
+          <Route path='how-we-work' element={ 
+            <HowWeWork path={location.pathname}/>
          }/>
         </Route>
     </Routes> 

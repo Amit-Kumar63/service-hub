@@ -139,7 +139,7 @@ const ProviderProfile = () => {
               sx={{ width: 70, height: 70 }}
               className="w-20 h-20"
             />
-             <div className="absolute bg-white bg-opacity-40 top-0 right-0 w-24 h-fit translate-y-[155%] translate-x-[10%]  rounded-full">
+             <div className="absolute z-10 bg-white bg-opacity-40 w-24 h-fit bottom-0 -left-[10px] rounded-full">
             <label htmlFor="image" className="w-full">
             <i className="text-xl ri-pencil-fill m-[0 auto] float-right mr-6 text-gray-800"></i>
             </label>

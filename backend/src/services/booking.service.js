@@ -6,7 +6,8 @@ module.exports.CreateBooking = async ({
     serviceDate,
     address,
     price,
-    serviceType
+    serviceType,
+    isGuestBooking=false
 }) => {
     try {
         const booking = await bookingModel.create({
@@ -15,7 +16,8 @@ module.exports.CreateBooking = async ({
             serviceDate,
             address,
             price,
-            serviceType
+            serviceType,
+            isGuestBooking
         });
         return booking;
     } catch (error) {

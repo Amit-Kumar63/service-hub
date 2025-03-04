@@ -33,8 +33,21 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Service type is required']
     },
+    isGuestBooking: {
+        type: Boolean,
+        default: false
+    },
+    bookingExpiresAt: {
+        type: Date,
+        expires: 3600,
+    }
 }, { timestamps: true });
 
-
+bookingSchema.pre('save', function (next) {
+    if (this.isGuestBooking && !this.bookingExpiresAt) {
+        this.bookingExpiresAt = new Date(Date.now() + 3600000);
+    }
+    next();
+});
 const bookingModel = mongoose.model('Booking', bookingSchema);
 module.exports = bookingModel;

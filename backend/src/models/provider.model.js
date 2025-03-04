@@ -65,10 +65,14 @@ const providerSchema = new mongoose.Schema({
     guestExpiresAt: {
         type: Date,
         expires: 3600,
-        default: ()=> (
-            this.isGuest ? new Date(Date.now() + 3600) : undefined
-        )
     }
+});
+
+providerSchema.pre('save', function (next) {
+    if (this.isGuest && !this.guestExpiresAt) {
+        this.guestExpiresAt = new Date(Date.now() + 3600000);
+    }
+    next();
 });
 const providerModel = mongoose.model('Provider', providerSchema);
 module.exports = providerModel;

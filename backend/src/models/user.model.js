@@ -67,12 +67,14 @@ const userSchema = new mongoose.Schema({
     guestExpiresAt: {
         type: Date,
         expires: 3600,
-        default: ()=> (
-            this.isGuest ? new Date(Date.now() + 3600) : undefined
-        )
     }
 }, { timestamps: true });
 
-
+userSchema.pre('save', function (next) {
+    if (this.isGuest && !this.guestExpiresAt) {
+        this.guestExpiresAt = new Date(Date.now() + 3600000); // 1 hour from now
+    }
+    next();
+});
 const userModel = mongoose.model('User', userSchema);
 module.exports = userModel;

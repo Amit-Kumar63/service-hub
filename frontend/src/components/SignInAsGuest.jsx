@@ -13,7 +13,7 @@ const SignInAsGuest = ({redirectTo}) => {
         }
       } );
       if (response.status === 200) {
-        location.replace(`/${redirectTo}/home`)
+        location.replace(`/${redirectTo}/info-for-guest`)
       }
     } catch (error) {
       console.error("Error signing in as guest:", error);
