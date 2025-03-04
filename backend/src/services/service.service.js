@@ -5,7 +5,8 @@ module.exports.createService = async ({
     provider,
     serviceType,
     price,
-    description
+    description,
+    isGuestService= false
 }) => {
     if (!provider || !serviceType || !price) {
         throw new Error('Missing required fields! please fill all fields');
@@ -14,7 +15,8 @@ module.exports.createService = async ({
         provider,
         serviceType,
         price,
-        description
+        description,
+        isGuestService
     })
     return service
 }

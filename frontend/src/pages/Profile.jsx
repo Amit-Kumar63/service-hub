@@ -34,6 +34,7 @@ const ProfilePage = () => {
       toast.error(error?.data?.message || "Something went wrong, please try again")
      console.error({message: error.message});
   }}
+
   useEffect(() => {
     const onLogoutSuccess = async () => {
       if (isLogoutSuccess) {
@@ -117,6 +118,7 @@ const ProfilePage = () => {
     }, 300);
     return () => clearTimeout(timeOut);
   }, [])
+
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
       {
@@ -131,14 +133,14 @@ const ProfilePage = () => {
           <div onClick={()=> navigate(-1) } className="text-gray-500 text-2xl mb-4">&larr;</div>
   
           {/* Profile Section */}
-          <div className="text-center mx-2">
+          <div className="text-center mx-auto w-fit">
             <div className="relative">
             <img
               src={user?.user.image.url}
               alt="Profile"
               className="w-24 h-24 rounded-full mx-auto object-cover"
             />
-            <div className="absolute z-10 bg-white bg-opacity-40 top-0 right-0 w-24 h-fit -translate-x-[145%] translate-y-[250%] rounded-full">
+            <div className="absolute z-10 bg-white bg-opacity-40 w-24 h-fit bottom-0 left-[20px] rounded-full">
             <label htmlFor="image" className="w-full">
             <i className="text-xl ri-pencil-fill m-[0 auto] float-right mr-6 text-gray-800"></i>
             </label>
@@ -146,7 +148,7 @@ const ProfilePage = () => {
               </div>
             </div>
             <h1 className="text-lg font-bold mt-4">
-              {user?.user.name.charAt(0).toUpperCase() + user?.user.name.slice(1).split(" ")[0] + " " + user?.user.name.split(" ")[1].charAt(0).toUpperCase() + user?.user.name.split(" ")[1].slice(1)}
+              {user?.user.name.charAt(0).toUpperCase() + user?.user.name.slice(1).split(' ')[0]}
             </h1>
             <p className="text-sm text-gray-500">
               Joined in {user?.user.createdAt?.split("T")[0]}

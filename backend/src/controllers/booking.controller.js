@@ -31,7 +31,8 @@ module.exports.createBooking = async (req, res) => {
             serviceDate,
             address,
             price,
-            serviceType: serviceType
+            serviceType: serviceType,
+            isGuestBooking: user.name === 'Guest'
         });
         user.bookings.push(booking._id);
         provider.bookings.push(booking._id);

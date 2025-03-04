@@ -32,6 +32,7 @@ const AddressSuggestion = ({address, setAddress, readOnly=false}) => {
             value={ !selectedAddress ? address : selectedAddress }
             placeholder="Enter full address" 
             onChange={ handleAddressSuggestions }
+            required
             className={`w-full px-4 py-3 mb-5 text-wrap text-lg bg-[#E8EEF2] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 ${!readOnly ? 'text-gray-700' : 'text-gray-400'} ${!readOnly ? 'focus:ring-blue-500' : 'focus:ring-transparent'}`}
         />
         <div name="" id="" className='bg-gray-200 rounded-lg max-h-60 overflow-y-auto shadow-md'>

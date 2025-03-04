@@ -45,7 +45,7 @@ const UserBookingsSummary = () => {
       <div className="flex items-center gap-4 mb-4">
         {/* Provider Image */}
         <img
-          src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV4UlS1Ehv87B7_HRdQWlKz8Jw13A0zxuiuQ&s'}
+          src={booking?.provider.image.url}
           alt={`${booking.provider.name}'s profile`}
           className="w-16 h-16 rounded-full border object-cover"
         />

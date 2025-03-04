@@ -135,7 +135,7 @@ const ProviderHome = () => {
                             </h1>
                             <Avatar
                                 alt="Remy Sharp"
-                                src="https://via.placeholder.com/150"
+                                src={provider?.provider.image.url}
                             />
                         </div>
                         <div className="grid grid-cols-2 gap-4">

@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const serviceModel = require("../models/service.model");
 const { uploadOnCloudinary } = require("../services/cloudinary.service");
+const serviceService = require('../services/service.service')
 
 module.exports.createServiceController = async (req, res) => {
     const errors = validationResult(req.body);
@@ -23,12 +24,13 @@ module.exports.createServiceController = async (req, res) => {
 
         if (!imageUrl) throw new Error("ImageUrl not returned from cloudinary");
         
-        const service = await serviceModel.create({
+        const service = await serviceService.createService({
             provider: provider._id,
             serviceType,
             price,
             description,
             image: imageUrl,
+            isGuestService: provider.name === 'Guest Provider'
         });
         provider.services.push(service._id);
         await provider.save();

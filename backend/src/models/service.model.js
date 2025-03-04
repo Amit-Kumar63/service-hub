@@ -29,6 +29,14 @@ const serviceSchema = new mongoose.Schema({
         type: String,
         enum: ['active', 'inactive'],
         default: 'active'
+    },
+    isGuestService: {
+        type: Boolean,
+        default: false
+    },
+    serviceExpiresAt: {
+        type: Date,
+        expires: 3600,
     }
 }, { timestamps: true });
 
@@ -40,5 +48,12 @@ serviceSchema.statics.incrementBookingCount = async function (serviceId) {
         { new: true }
     );
 };
+
+serviceSchema.pre('save', function (next) {
+    if (this.isGuestService && !this.serviceExpiresAt) {
+        this.serviceExpiresAt = new Date(Date.now() + 3600000);
+    }
+    next();
+});
 const serviceModel = mongoose.model('Service', serviceSchema);
 module.exports = serviceModel;
