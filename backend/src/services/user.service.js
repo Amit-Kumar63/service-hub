@@ -5,7 +5,8 @@ module.exports.createUser = async ({
     email,
     token,
     uid,
-    image
+    image,
+    isGuest= false
 }) => {
     
     if (!name || !email || !token || !uid) {
@@ -16,7 +17,8 @@ module.exports.createUser = async ({
         email,
         token,
         uid,
-        image
+        image,
+        isGuest
     });
 
     return user;

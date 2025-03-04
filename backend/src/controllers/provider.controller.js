@@ -177,3 +177,40 @@ module.exports.editProfileImage = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+module.exports.signInAsGuestController = async (req, res) => {
+    const token = req.headers?.authorization?.split(' ')[1]
+
+    try {
+        if (!token) {
+            return res.status(400).json({ message: "Token not provided" });
+        }
+        const uniqueInt = Math.round(Math.random() * 1E9);
+        const email = `guest${uniqueInt}@gmail.com`;
+        const decodedToken = await admin.auth().verifyIdToken(token);
+
+        const guestProvider = await providerService.createProvider({
+            name: "Guest Provider",
+            email,
+            token,
+            uid: decodedToken.uid,
+            image: {
+                url: "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            },
+            loggedIn: decodedToken.uid,
+            phone: `${uniqueInt.toString().slice(0, 11)}`,
+            isGuest: true
+        })
+    
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production'
+        })
+        res.status(200).json({
+            message: "Guest provider registered successfully",
+            token,
+            guestProvider
+        })
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}

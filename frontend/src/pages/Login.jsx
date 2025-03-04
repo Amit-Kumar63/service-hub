@@ -56,7 +56,7 @@ const Login = () => {
           </>
         }
       </button>
-      <SignInAsGuest/>
+      <SignInAsGuest redirectTo={'user'}/>
       <p className="text-sm font-bold text-center">
         New user?{' '}
         <Link to="/user/signup" className="text-blue-500 hover:underline">

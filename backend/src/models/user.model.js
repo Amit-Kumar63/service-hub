@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jsonwebtoken = require('jsonwebtoken');
+
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -25,6 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
+        default: 'Not Added'
     },
     address: {
         type: String,
@@ -59,6 +59,17 @@ const userSchema = new mongoose.Schema({
     uid: {
         type: String,
         required: [true, 'UID is required']
+    },
+    isGuest: {
+        type: Boolean,
+        default: false
+    },
+    guestExpiresAt: {
+        type: Date,
+        expires: 3600,
+        default: ()=> (
+            this.isGuest ? new Date(Date.now() + 3600) : undefined
+        )
     }
 }, { timestamps: true });
 

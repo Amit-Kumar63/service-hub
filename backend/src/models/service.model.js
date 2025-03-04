@@ -29,6 +29,13 @@ const serviceSchema = new mongoose.Schema({
         type: String,
         enum: ['active', 'inactive'],
         default: 'active'
+    },
+    serviceExpiresAt: {
+        type: Date,
+        expires: 3600,
+        default: ()=> (
+            this.provider ? undefined : new Date(Date.now() + 3600)
+        )
     }
 }, { timestamps: true });
 

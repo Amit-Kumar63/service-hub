@@ -5,7 +5,9 @@ module.exports.createProvider = async ({
     email,
     token,
     uid,
-    image
+    image,
+    loggedIn,
+    isGuest= false
 }) => {
     
     if (!name || !email || !token || !uid) {
@@ -16,7 +18,9 @@ module.exports.createProvider = async ({
         email,
         token,
         uid,
-        image
+        image,
+        isGuest,
+        loggedIn
     });
 
     return provider;

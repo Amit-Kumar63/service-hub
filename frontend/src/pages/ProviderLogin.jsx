@@ -4,6 +4,7 @@ import { Link, replace, useNavigate } from 'react-router-dom';
 import { signInWithPopup, signOut, auth, provider } from '../firebase-config'
 import { toast } from 'react-toastify';
 import { CircularProgress } from '@mui/material';
+import SignInAsGuest from '../components/SignInAsGuest';
 
 const ProviderLogin = () => {
   const [loading, setLoading] = useState(false)
@@ -55,6 +56,7 @@ const ProviderLogin = () => {
           </>
         }
       </button>
+      <SignInAsGuest redirectTo={'provider'}/>
       <p className="text-sm font-bold text-center">
         Don't have an provider account?{' '}
         <Link to="/provider/signup" className="text-blue-500 hover:underline">

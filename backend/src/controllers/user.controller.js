@@ -5,7 +5,6 @@ const userModel = require('../models/user.model');
 const admin = require('../firebase-admin');
 const bookingService = require('../services/booking.service');
 const {uploadOnCloudinary, deleteFromCloudinary} = require('../services/cloudinary.service');
-const {signinAsGuest} = require('../services/signinAsGuest.service');
 
 module.exports.userRegister = async (req, res) => {
     const errors = validationResult(req);
@@ -220,7 +219,7 @@ module.exports.signInAsGuestController = async (req, res) => {
         if (!token) {
             return res.status(400).json({ message: "Token not provided" });
         }
-        const uniqueInt = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const uniqueInt = Math.round(Math.random() * 1E9);
         const email = `guest${uniqueInt}@gmail.com`;
         const decodedToken = await admin.auth().verifyIdToken(token);
 
@@ -234,7 +233,8 @@ module.exports.signInAsGuestController = async (req, res) => {
             },
             loggedIn: decodedToken.uid,
             address: "Randome address of guest",
-            phone: "0000000024"
+            phone: `${uniqueInt.toString().slice(0, 11)}`,
+            isGuest: true
         })
     
         res.cookie('token', token, {

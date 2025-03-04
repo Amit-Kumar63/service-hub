@@ -57,6 +57,17 @@ const providerSchema = new mongoose.Schema({
     uid: {
         type: String,
         required: [true, 'UID is required']
+    },
+    isGuest: {
+        type: Boolean,
+        default: false
+    },
+    guestExpiresAt: {
+        type: Date,
+        expires: 3600,
+        default: ()=> (
+            this.isGuest ? new Date(Date.now() + 3600) : undefined
+        )
     }
 });
 const providerModel = mongoose.model('Provider', providerSchema);

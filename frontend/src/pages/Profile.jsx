@@ -34,6 +34,7 @@ const ProfilePage = () => {
       toast.error(error?.data?.message || "Something went wrong, please try again")
      console.error({message: error.message});
   }}
+
   useEffect(() => {
     const onLogoutSuccess = async () => {
       if (isLogoutSuccess) {
@@ -117,6 +118,7 @@ const ProfilePage = () => {
     }, 300);
     return () => clearTimeout(timeOut);
   }, [])
+
   return (
     <div className="bg-white min-h-screen flex justify-center items-center p-4 pb-20">
       {
@@ -146,7 +148,7 @@ const ProfilePage = () => {
               </div>
             </div>
             <h1 className="text-lg font-bold mt-4">
-              {user?.user.name.charAt(0).toUpperCase() + user?.user.name.slice(1).split(" ")[0] + " " + user?.user.name.split(" ")[1].charAt(0).toUpperCase() + user?.user.name.split(" ")[1].slice(1)}
+              {user?.user.name.charAt(0).toUpperCase() + user?.user.name.slice(1).split(' ')[0]}
             </h1>
             <p className="text-sm text-gray-500">
               Joined in {user?.user.createdAt?.split("T")[0]}

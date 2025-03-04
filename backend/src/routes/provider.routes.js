@@ -29,4 +29,5 @@ router.post('/edit-provider-profile', authMiddleware.providerAuth, [
 ], providerController.editProviderProfile);
 
 router.post('/edit-profile-image', authMiddleware.providerAuth, upload.single('image'), providerController.editProfileImage);
+router.get('/signin-as-guest', providerController.signInAsGuestController);
 module.exports = router;
