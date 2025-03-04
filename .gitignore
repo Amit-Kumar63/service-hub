@@ -29,3 +29,5 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+
+service-hub-e4931-firebase-adminsdk-fbsvc-0f5cc632b6.json
