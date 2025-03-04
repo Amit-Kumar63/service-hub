@@ -60,6 +60,12 @@ const ProviderSignup = () => {
         </Link>
         .
       </p>
+      <p className="text-sm font-bold text-center">
+        Already have an account?{' '}
+        <Link to="/provider/login" className="text-blue-500 hover:underline">
+          Sign In
+        </Link>
+      </p>
     </div>
   );
 };
