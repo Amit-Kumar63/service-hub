@@ -7,13 +7,19 @@ const SignInAsGuest = ({redirectTo}) => {
   const signInAsGuestHandler = async () => {
     try {
       const userCredential = await signInAnonymously(auth);
+      toast.loading('Please wait...', {toastId: 'loading'})
       const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/${redirectTo}s/signin-as-guest`, {
         headers: {
           Authorization: `Bearer ${userCredential.user.accessToken}`,
         }
       } );
       if (response.status === 200) {
-        location.replace(`/${redirectTo}/info-for-guest`)
+        toast.dismiss('loading')
+        localStorage.setItem('token', response.data.token);
+        toast.success('Logged in successfully! you will be redirected to home page', {toastId: 'success'})
+        setTimeout(() => {
+          location.replace(`/${redirectTo}/info-for-guest`)
+        }, 1500);
       }
     } catch (error) {
       console.error("Error signing in as guest:", error);

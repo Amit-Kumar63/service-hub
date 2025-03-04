@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import AddressSuggestion from '../components/AddressSuggestion.jsx';
 import { useAddAddressMutation, useAddProviderAddressMutation } from '../app/api/api.js';
-import Toast from './Toast.jsx';
 import { useOutletContext } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
+import {toast} from 'react-toastify'
 const AddAddressPopup = ({setAddAddressPanel, isProviderAddress=false}) => {
     const [address, setAddress] = useState('')
     const [phone, setPhone] = useState('')
-    const [isToastOpen, setIsToastOpen] = useState(false)
     
-    const { token } = useOutletContext()
+    const { token, refetch } = useOutletContext()
 
     const [addAddress, { isLoading, isError, error, isSuccess }] = isProviderAddress ? useAddProviderAddressMutation() : useAddAddressMutation()
     const handleAddress = async () => {
@@ -18,9 +17,11 @@ const AddAddressPopup = ({setAddAddressPanel, isProviderAddress=false}) => {
         if (isError) console.error('something went wrong while adding address', error)
         if (isSuccess) console.log('address added successfully')
         setAddAddressPanel(false)
-        setIsToastOpen(true)
+      toast.success('Address added successfully')
+        await refetch()
       } catch (error) {
         console.error(error)
+        toast.error(error?.data?.message || "Something went wrong, please try again")
       }
     }
     if (isLoading) {
@@ -51,7 +52,6 @@ const AddAddressPopup = ({setAddAddressPanel, isProviderAddress=false}) => {
             Confirm address
         </button>
         </div>
-        <Toast message={'Address added successfully'} severity={'success'} isOpen={isToastOpen} />
     </div>
   )
 }
