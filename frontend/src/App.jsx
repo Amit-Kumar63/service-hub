@@ -104,7 +104,7 @@ const App = () => {
          }/>
         </Route>
     </Routes> 
-  <ToastContainer toastStyle={{width: '90%', marginBottom: '100px', borderRadius: '4px'}} position='bottom-center'/>
+  <ToastContainer limit={1} toastStyle={{width: '90%', marginBottom: '100px', borderRadius: '4px'}} position='bottom-center'/>
   <SetTitle path={location.pathname}/>
     </>
   )

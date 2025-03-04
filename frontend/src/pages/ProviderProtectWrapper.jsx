@@ -7,27 +7,26 @@ const ProviderProtectWrapper = ({ children }) => {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (!token || isError ) {
+            navigate('/provider/login');
+        }
+    }, [token, isError, navigate]);   
+
+    
+    if (isTokenLoading) {
+            return <div className='w-full h-screen flex justify-center items-center bg-slate-300'>
+                <h4 className='font-semibold text-gray-500'>Please wait while we verify your credentials.</h4>
+            </div>
+        }
     if (isLoading) {
         return <div className='w-full h-screen flex justify-center items-center bg-slate-300'>
             <CircularProgress />
         </div>
     }
 
-    if (isTokenLoading) {
-        return <div className='w-full h-screen flex justify-center items-center bg-slate-300'>
-            <h4 className='font-semibold text-gray-500'>Please wait while we verify your credentials.</h4>
-        </div>
-    }
 
-    useEffect(() => {
-        if (!token || isError ) {
-            navigate('/provider/login');
-        }
-    }, [token, isError, isTokenLoading, navigate]);   
-
-    return <div>
-        {isSuccess && children}
-    </div>;
+    return isSuccess ? <div>{children}</div> : null;
 };
 
 export default ProviderProtectWrapper;
