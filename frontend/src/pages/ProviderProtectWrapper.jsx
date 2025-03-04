@@ -8,10 +8,10 @@ const ProviderProtectWrapper = ({ children }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token || isError ) {
+        if ( !isTokenLoading && (!token || isError)) {
             navigate('/provider/login');
         }
-    }, [token, isError, navigate]);   
+    }, [token, isError, navigate, isTokenLoading]);   
 
     
     if (isTokenLoading) {

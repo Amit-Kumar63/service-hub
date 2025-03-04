@@ -133,14 +133,14 @@ const ProfilePage = () => {
           <div onClick={()=> navigate(-1) } className="text-gray-500 text-2xl mb-4">&larr;</div>
   
           {/* Profile Section */}
-          <div className="text-center mx-auto w-fit">
-            <div className="relative">
+          <div className="text-center mx-auto w-full">
+            <div className="relative w-fit mx-auto">
             <img
               src={user?.user.image.url}
               alt="Profile"
               className="w-24 h-24 rounded-full mx-auto object-cover"
             />
-            <div className="absolute z-10 bg-white bg-opacity-40 w-24 h-fit bottom-0 left-[20px] rounded-full">
+            <div className="absolute z-10 bg-white bg-opacity-40 w-24 h-fit bottom-0 left-[2px] rounded-full">
             <label htmlFor="image" className="w-full">
             <i className="text-xl ri-pencil-fill m-[0 auto] float-right mr-6 text-gray-800"></i>
             </label>

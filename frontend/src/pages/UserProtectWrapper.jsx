@@ -8,10 +8,10 @@ const UserProtectWrapper = ({ children }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token || isError ) {
+        if ( !isTokenLoading && (!token || isError) ) {
             navigate('/user/login');
         }
-    }, [token, isError, navigate]);
+    }, [token, isError, navigate, isTokenLoading]);
     
     if (isTokenLoading) {
         return (<div className='w-full h-screen flex justify-center items-center bg-slate-300'>
