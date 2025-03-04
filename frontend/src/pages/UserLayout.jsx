@@ -15,8 +15,8 @@ const UserLayout = () => {
       }
       const unSubscribe = auth.onAuthStateChanged((currentUser)=> {
         if (currentUser) {
-          currentUser.getIdToken().then((token)=> {
-            setToken(token)
+          currentUser.getIdToken().then((tokenId)=> {
+            setToken(tokenId)
             setIsTokenLoading(false)
           })
           .catch((error)=> {
@@ -38,6 +38,7 @@ const UserLayout = () => {
       {
           skip: !token,
       });
+
       if (token && !user) {
         return <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">Loading user data....</div>
       }      
