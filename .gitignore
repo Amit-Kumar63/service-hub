@@ -30,4 +30,8 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+<<<<<<< HEAD
 service-hub-e4931-firebase-adminsdk-fbsvc-0f5cc632b6.json
+=======
+# service-hub-e4931-firebase-adminsdk-fbsvc-0f5cc632b6.json
+>>>>>>> 059c764 (Refactor Firebase admin initialization to use environment variable for credentials)
