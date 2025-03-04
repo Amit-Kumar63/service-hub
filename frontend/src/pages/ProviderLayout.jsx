@@ -48,7 +48,12 @@ const ProviderLayout = () => {
         return () => unSubscribe();
     }, []);
 
-    if (providerToken && !provider) {
+    useEffect(()=> {
+        if (providerToken) {
+            refetchProvider()
+        }
+    }, [providerToken])
+    if (isProviderLoading && isProviderLoading) {
         return (
             <div className="w-full h-screen flex justify-center items-center bg-slate-300 text-gray-500 font-semibold">
                 Loading provider data....
